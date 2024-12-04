@@ -239,7 +239,7 @@
                                 <div class="historicontent">
                                     <div class="iconpresensi">
                                         <ion-icon name="finger-print-outline"
-                                            style="font-size: 30px; color:green"></ion-icon>
+                                            style="font-size: 20px; color:green"></ion-icon>
                                     </div>
                                     <div class="datapresensi">
                                         <h3 style="line-height: 3px">{{ $d->nama_jam_kerja }}</h3>
@@ -263,6 +263,9 @@
                             </div>
                         </div>
                     @endforeach
+
+                   
+                    
                 </div>
 
                 <div class="tab-pane fade" id="profile" role="tabpanel">

@@ -120,38 +120,50 @@ class KonfigurasiController extends Controller
     public function storesetjamkerja(Request $request)
     {
         $email = $request->email;
-        $hari = $request->hari;
+        $tanggal = $request->tanggal;
         $kode_jam_kerja = $request->kode_jam_kerja;
 
-        for ($i = 0; $i < count($hari); $i++) {
-            $data[] = [
-                'email' => $email,
-                'hari' => $hari[$i],
-                'kode_jam_kerja' => $kode_jam_kerja[$i]
-            ];
-        }
+        DB::beginTransaction();
         try {
-            Setjamkerja::insert($data);
+            DB::table('konfigurasi_jamkerja')->where('email', $email)->delete();
+
+            foreach ($tanggal as $index => $tgl) {
+                
+                if (!empty($kode_jam_kerja[$index])) {
+                    DB::table('konfigurasi_jamkerja')->insert([
+                        'email' => $email,
+                        'tanggal' => $tgl,
+                        'kode_jam_kerja' => $kode_jam_kerja[$index],
+                    ]);
+                }
+            
+        }
+            DB::commit();
             return redirect('/karyawan')->with(['success' => 'Jam Kerja Berhasil di update']);
         } catch (\Exception $e) {
-            return redirect('/karyawan')->with(['warning' => 'Jam Kerja gagal di update']);
+            DB::rollBack();
+            return redirect('/karyawan')->with(['warning' => 'Jam Kerja gagal di update. ' . $e->getMessage()]);
         }
     }
 
     public function updatesetjamkerja(Request $request)
     {
         $email = $request->email;
-        $hari = $request->hari;
+        $tanggal = $request->tanggal;
         $kode_jam_kerja = $request->kode_jam_kerja;
 
-        for ($i = 0; $i < count($hari); $i++) {
-            $data[] = [
-                'email' => $email,
-                'hari' => $hari[$i],
-                'kode_jam_kerja' => $kode_jam_kerja[$i] 
-            ];
+        $data = [];
+        for ($i = 0; $i < count($tanggal); $i++) {
+            // Pastikan input tidak kosong
+            if (!empty($tanggal[$i]) && !empty($kode_jam_kerja[$i])) {
+                $data[] = [
+                    'email' => $email,
+                    'tanggal' => $tanggal[$i],
+                    'kode_jam_kerja' => $kode_jam_kerja[$i]
+                ];
+            }
         }
-        DB::beginTransaction(); 
+        DB::beginTransaction();
         try {
             DB::table('konfigurasi_jamkerja')->where('email', $email)->delete();
             Setjamkerja::insert($data);

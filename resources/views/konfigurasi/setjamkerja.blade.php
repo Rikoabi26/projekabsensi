@@ -30,9 +30,9 @@
             </div>
             <div class="row">
                 <div class="col-6">
-                    <form action="/konfigurasi/storesetjamkerja" method="POST">
+                    {{-- <form action="/konfigurasi/storesetjamkerja" method="POST">
                         @csrf
-                        <input type="hidden" name="email" value="{{$karyawan->email}}">
+                        <input type="hidden" name="email" value="{{ $karyawan->email }}">
                         <table class="table">
                             <thead>
                                 <tr>
@@ -139,6 +139,47 @@
                                     </td>
                                 </tr>
 
+                            </tbody>
+                        </table>
+                        <button class="btn btn-primary w-100" type="submit">Simpan</button>
+                    </form> --}}
+                    <form action="/konfigurasi/storesetjamkerja" method="POST">
+                        @csrf
+                        <input type="hidden" name="email" value="{{ $karyawan->email }}">
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <td>Tanggal</td>
+                                    <td>Jam Kerja</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php
+                                    $currentMonth = date('m'); // Bulan saat ini
+                                    $currentYear = date('Y'); // Tahun saat ini
+                                    $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear); // Hitung jumlah hari dalam bulan
+                                @endphp
+                                @for ($day = 1; $day <= $daysInMonth; $day++)
+                                    @php
+                                        $formattedDate = date('Y-m-d', strtotime("$currentYear-$currentMonth-$day"));
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <input type="date" name="tanggal[]" class="form-control"
+                                                value="{{ $formattedDate }}">
+                                        </td>
+                                        <td>
+                                            <select name="kode_jam_kerja[]" class="form-select">
+                                                <option value="">Pilih Jam Kerja</option>
+                                                @foreach ($jamkerja as $d)
+                                                    <option value="{{ $d->kode_jam_kerja }}">{{ $d->nama_jam_kerja }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </td>
+                                    </tr>
+                                @endfor
                             </tbody>
                         </table>
                         <button class="btn btn-primary w-100" type="submit">Simpan</button>

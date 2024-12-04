@@ -36,29 +36,41 @@
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <td>Hari</td>
+                                    <td>Tanggal</td>
                                     <td>Jam Kerja</td>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($setjamkerja as $s)
+                                @php
+                                    $currentMonth = date('m'); // Bulan saat ini
+                                    $currentYear = date('Y'); // Tahun saat ini
+                                    $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear); // Hitung jumlah hari dalam bulan
+                                @endphp
+                                @for ($day = 1; $day <= $daysInMonth; $day++)
+                                    @php
+                                        $formattedDate = date('Y-m-d', strtotime("$currentYear-$currentMonth-$day"));
+                                        // Cek jam kerja sebelumnya untuk tanggal ini
+                                        $jamKerjaSebelumnya = $setjamkerja->where('tanggal', $formattedDate)->first();
+                                    @endphp
                                     <tr>
                                         <td>
-                                            {{$s->hari}}
-                                            <input type="hidden" name="hari[]" value="{{$s->hari}}">
+                                            <input type="date" name="tanggal[]" class="form-control"
+                                                value="{{ $formattedDate }}">
+
                                         </td>
                                         <td>
-                                            <select name="kode_jam_kerja[]" id="kode_jam_kerja" class="form-select">
+                                            <select name="kode_jam_kerja[]" class="form-select">
                                                 <option value="">Pilih Jam Kerja</option>
                                                 @foreach ($jamkerja as $d)
-                                                    <option {{$d->kode_jam_kerja==$s->kode_jam_kerja ? 'selected' : ''}} value="{{ $d->kode_jam_kerja }}">{{ $d->nama_jam_kerja }}
+                                                    <option value="{{ $d->kode_jam_kerja }}"
+                                                        @if ($jamKerjaSebelumnya && $jamKerjaSebelumnya->kode_jam_kerja == $d->kode_jam_kerja) selected @endif>
+                                                        {{ $d->nama_jam_kerja }}
                                                     </option>
                                                 @endforeach
                                             </select>
                                         </td>
                                     </tr>
-                                @endforeach
-
+                                @endfor
                             </tbody>
                         </table>
                         <button class="btn btn-primary w-100" type="submit">Update</button>

@@ -60,14 +60,14 @@ class PresensiController extends Controller
         $hariini = date("Y-m-d");
         $namahari = $this->gethari();
         $email = Auth::guard('karyawan')->user()->email;
-        $cek = DB::table('presensi')->where('tgl_presensi', $hariini)->where('email', $email)->count();
+        $cek = DB::table('presensi')->where('tgl_presensi')->where('email', $email)->count();
         $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
         $lok_kantor = DB::table('cabang')->where('kode_cabang', $kode_cabang)->first();
         //manggildatadi database
         $jamkerja = DB::table('konfigurasi_jamkerja')
             ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-            ->where('email', $email)->where('hari', $namahari)->first();
-
+            ->where('email', $email)->where('tanggal', date('Y-m-d'))->first();
+            
         if ($jamkerja == null) {
             return view('presensi.notifjadwal');
         } else {
@@ -95,7 +95,7 @@ class PresensiController extends Controller
         $namahari = $this->gethari();
         $jamkerja = DB::table('konfigurasi_jamkerja')
             ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-            ->where('email', $email)->where('hari', $namahari)->first();
+            ->where('email', $email)->where('tanggal', date('Y-m-d'))->first();
 
         $cek = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('email', $email)->count();
         if ($cek > 0) {
@@ -157,6 +157,7 @@ class PresensiController extends Controller
             }
         }
     }
+
     //Menghitung Jarak
     function distance($lat1, $lon1, $lat2, $lon2)
     {
@@ -186,7 +187,7 @@ class PresensiController extends Controller
         $no_hp = $request->no_hp;
         $password = $request->password;
         $karyawan = DB::table('karyawan')->where('email', $email)->first();
-        $request -> validate([
+        $request->validate([
             'foto' => 'image|mimes:png,jpg,jpeg'
         ]);
         if ($request->hasFile('foto')) {
