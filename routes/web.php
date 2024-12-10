@@ -6,6 +6,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\DepartemenController;
+use App\Http\Controllers\IzinabsenController;
+use App\Http\Controllers\IzinsakitController;
 use App\Http\Controllers\KonfigurasiController;
 use Illuminate\Support\Facades\Route;
 
@@ -56,6 +58,14 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/presensi/buatizin', [PresensiController::class, 'buatizin']);
     Route::post('/presensi/storeizin', [PresensiController::class, 'storeizin']);
     Route::post('/presensi/cekpengajuanizin', [PresensiController::class, 'cekpengajuanizin']);
+
+    //izinabsen
+    Route::get('/izinabsen', [IzinabsenController::class, 'create']);
+    Route::post('/izinabsen/store', [IzinabsenController::class, 'store']);
+
+    //izin Sakit
+    Route::get('/izinsakit', [IzinsakitController::class, 'create']);
+
 
 });
 
@@ -109,6 +119,8 @@ Route::middleware(['auth:user'])->group(function(){
     Route::post('/konfigurasi/storesetjamkerja', [KonfigurasiController::class, 'storesetjamkerja']);
     Route::post('/konfigurasi/updatesetjamkerja', [KonfigurasiController::class, 'updatesetjamkerja']);
 
+
+    
 });
 
 

@@ -27,10 +27,27 @@
             @endif
 
             @error('foto')
-            <div class="alert alert-warning"><p>{{ $message }}</p></div>
+                <div class="alert alert-warning">
+                    <p>{{ $message }}</p>
+                </div>
             @enderror
         </div>
     </div>
+    <style>
+        .input-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+        }
+    </style>
+
     <form action="/presensi/{{ $karyawan->email }}/updateprofile" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="col">
@@ -48,7 +65,11 @@
             </div>
             <div class="form-group boxed">
                 <div class="input-wrapper">
-                    <input type="password" class="form-control" name="password" placeholder="Password" autocomplete="off">
+                    <input type="password" class="form-control" name="password" placeholder="Password" id="password"
+                        autocomplete="off">
+                    <span class="toggle-password" onclick="togglePassword()">
+                        <ion-icon name="eye-outline" id="toggleIcon"></ion-icon>
+                    </span>
                 </div>
             </div>
             <div class="custom-file-upload" id="fileUpload1">
@@ -60,6 +81,7 @@
                                 aria-label="cloud upload outline"></ion-icon>
                             <i>Tap to Upload</i>
                         </strong>
+                        <h4 style="color:darkgray">*file: jpg,png,jpeg*</h4>
                     </span>
                 </label>
             </div>
@@ -74,3 +96,19 @@
         </div>
     </form>
 @endsection
+@push('myscript')
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.name = 'eye-off-outline'; // Ganti ikon menjadi "mata tertutup"
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.name = 'eye-outline'; // Kembalikan ikon menjadi "mata terbuka"
+            }
+        }
+    </script>
+@endpush

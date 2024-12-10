@@ -44,7 +44,7 @@
                                         {{$rekappresensi->jmlhadir}}
                                     </div>
                                     <div class="text-secondary">
-                                        Total Hadir
+                                        <a href="/presensi/monitoring"> Total Hadir</a>
                                     </div>
                                 </div>
                             </div>
@@ -77,7 +77,7 @@
                                         {{$rekapizin->jmlizin != null ? $rekapizin->jmlizin : 0}}
                                     </div>
                                     <div class="text-secondary">
-                                        Karyawan Izin
+                                        <a href="/presensi/izinsakit">Karyawan Izin</a>
                                     </div>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@
                                         {{$rekapizin->jmlsakit != null ? $rekapizin->jmlsakit : 0}}
                                     </div>
                                     <div class="text-secondary">
-                                        Karyawan Sakit
+                                        <a href="/presensi/izinsakit">Karyawan Sakit</a>
                                     </div>
                                 </div>
                             </div>
@@ -139,7 +139,7 @@
                                         {{$rekappresensi->jmlterlambat != null ? $rekappresensi->jmlterlambat : 0}}
                                     </div>
                                     <div class="text-secondary">
-                                        Karyawan Terlambat
+                                        <a href="/presensi/monitoring">Karyawan Terlambat</a>
                                     </div>
                                 </div>
                             </div>

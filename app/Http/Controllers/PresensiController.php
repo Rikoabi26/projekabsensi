@@ -463,4 +463,7 @@ class PresensiController extends Controller
         $cek = DB::table('pengajuan_izin')->where('email', $email)->where('tgl_izin', $tgl_izin)->count();
         return $cek;
     }
+
+    
+    
 }
