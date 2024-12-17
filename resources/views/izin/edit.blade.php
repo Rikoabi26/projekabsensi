@@ -7,7 +7,7 @@
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </a>
         </div>
-        <div class="pageTitle">Form Izin Sakit</div>
+        <div class="pageTitle">Edit Izin Absen</div>
         <div class="right"></div>
     </div>
 @endsection
@@ -15,39 +15,26 @@
 @section('content')
     <div class="row" style="margin-top:70px">
         <div class="col">
-            <form action="/izinsakit/store" method="POST" enctype="multipart/form-data">
+            <form action="/izinabsen/{{ $dataizin->kode_izin }}/update" method="POST">
                 @csrf
                 <div class="form-group">
-                    <input type="tetx" id="tgl_izin_dari" name="tgl_izin_dari" class="form-control datepicker"
-                        placeholder="Dari" required>
+                    <input type="tetx" id="tgl_izin_dari" value="{{ $dataizin->tgl_izin_dari }}" name="tgl_izin_dari"
+                        class="form-control datepicker" placeholder="Dari" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" id="tgl_izin_sampai" name="tgl_izin_sampai" class="form-control datepicker"
-                        placeholder="Sampai" required>
+                    <input type="text" id="tgl_izin_sampai" value="{{ $dataizin->tgl_izin_sampai }}"
+                        name="tgl_izin_sampai" class="form-control datepicker" placeholder="Sampai" required>
                 </div>
                 <div class="form-group">
                     <input type="text" id="jml_hari" name="jml_hari" class="form-control" placeholder="Jumlah hari"
                         readonly required>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="keterangan" id="keterangan" class="form-control" autocomplete="off"
-                        placeholder="Keterangan" required></input>
+                    <input type="text" name="keterangan" id="keterangan" value="{{ $dataizin->keterangan }}"
+                        class="form-control" placeholder="--Keterangan--" required></input>
                 </div>
-                <div class="custom-file-upload" id="fileUpload1" style="height: 100px !important">
-                    <input type="file" name="sid" id="fileuploadInput" accept=".png, .jpg, .jpeg">
-                    <label for="fileuploadInput">
-                        <span>
-                            <strong>
-                                <ion-icon name="cloud-upload-outline" role="img" class="md hydrated"
-                                    aria-label="cloud upload outline"></ion-icon>
-                                <i>Tap to Upload SID</i>
-                                <small>maukan file foto</small>
-                            </strong>
-                        </span>
-                    </label>
-                </div>
-                <div class="form-group mt-3">
-                    <button class="btn btn-primary w-100">Kirim</button>
+                <div class="form-group">
+                    <button class="btn btn-primary w-100">Update</button>
                 </div>
             </form>
         </div>
@@ -87,6 +74,8 @@
                 //To Display the final no. of days(result)
                 $("#jml_hari").val(jmlhari + " Hari");
             }
+            loadjumlahhari();
+
             $("#tgl_izin_dari, #tgl_izin_sampai").change(function(e) {
                 loadjumlahhari();
             })

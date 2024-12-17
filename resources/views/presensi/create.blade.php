@@ -71,7 +71,7 @@
             @else
                 <button id="takeabsen" class="btn btn-primary btn-block mt-2">
                     <ion-icon name="camera-outline"></ion-icon>
-                    Absen Masuk</button>
+                    Take Absen</button>
             @endif
 
         </div>

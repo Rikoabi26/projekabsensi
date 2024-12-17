@@ -57,33 +57,57 @@
                         $status = 'Not Found';
                     }
                 @endphp
-                <div class="card">
+                <div class="card mt-1 card_izin" kode_izin="{{ $d->kode_izin }}" data-toggle="modal"
+                    data-target="#actionSheetIconed">
                     <div class="card-body">
                         <div class="historicontent">
                             <div class="iconpresensi">
-                                <ion-icon name="document-outline"
-                                    style="font-size: 48px; color: rgb(33, 33, 199)"></ion-icon>
+                                @if ($d->status == 'i')
+                                    <ion-icon name="document-outline"
+                                        style="font-size: 48px; color: rgb(33, 33, 199)"></ion-icon>
+                                @elseif($d->status == 's')
+                                    <ion-icon name="medkit-outline"
+                                        style="font-size: 48px; color: rgb(199, 33, 33)"></ion-icon>
+                                @elseif ($d->status == 'c')
+                                    <ion-icon name="calendar-clear-outline"
+                                        style="font-size: 48px; color: rgb(228, 193, 36)"></ion-icon>
+                                @endif
                             </div>
                             <div class="datapresensi">
                                 <h3 style="line-height: 3px">{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}
-                                    ({{ $status }})</h3>
+                                    ({{ $status }})
+                                </h3>
                                 <small>{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }} s/d
                                     {{ date('d-m-Y', strtotime($d->tgl_izin_sampai)) }}</small>
-                                <p>{{ $d->keterangan }}</p>
-                            </div>
-                           
-                                <div class="status">
-                                    @if ($d->status_approved == 0)
-                                    <span class="badge bg-warning">Pending</span>
-                                    @elseif($d->status_approved == '1')
-                                    <span class="badge bg-success">Disetujui</span>
-                                    @elseif($d->status_approved == '2')
-                                    <span class="badge bg-danger">Ditolak</span>
+                                <p>
+
+                                    {{ $d->keterangan }}
+                                    <br>
+                                    @if ($d->status == 'c')
+                                        <span class="badge bg-warning">{{ $d->nama_cuti }}</span>
                                     @endif
-                                    <p style="margin-top: 5px; font-weight: bold">{{hitunghari($d->tgl_izin_dari, $d->tgl_izin_sampai)}} Hari</p>
-                                </div>
-                        
-                        </div> 
+                                    <br>
+                                    @if (!empty($d->doc_sid))
+                                        <span style="color: blue">
+                                            <ion-icon name="document-attach-outline"></ion-icon> Lihat SID
+                                        </span>
+                                    @endif
+                                </p>
+                            </div>
+
+                            <div class="status">
+                                @if ($d->status_approved == 0)
+                                    <span class="badge bg-warning">Pending</span>
+                                @elseif($d->status_approved == '1')
+                                    <span class="badge bg-success">Disetujui</span>
+                                @elseif($d->status_approved == '2')
+                                    <span class="badge bg-danger">Ditolak</span>
+                                @endif
+                                <p style="margin-top: 5px; font-weight: bold">
+                                    {{ hitunghari($d->tgl_izin_dari, $d->tgl_izin_sampai) }} Hari</p>
+                            </div>
+
+                        </div>
                     </div>
                 </div>
                 {{-- <ul class="listview image-listview">
@@ -134,4 +158,48 @@
             </a>
         </div>
     </div>
+
+    {{-- Modal Pop UP Action --}}
+    <div class="modal fade action-sheet" id="actionSheetIconed" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Aksi</h5>
+                </div>
+                <div class="modal-body" id="showact">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade dialogbox" id="deleteConfirm" data-backdrop="static" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Yakin Dihapus ?</h5>
+                </div>
+                <div class="modal-body">
+                    Data Pengajuan Izin Akan dihapus
+                </div>
+                <div class="modal-footer">
+                    <div class="btn-inline">
+                        <a href="#" class="btn btn-text-secondary" data-dismiss="modal">Batalkan</a>
+                        <a href="" class="btn btn-text-primary" id="hapuspengajuan">Hapus</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
+
+@push('myscript')
+    <script>
+        $(function() {
+            $(".card_izin").click(function(e) {
+                var kode_izin = $(this).attr("kode_izin");
+                $("#showact").load('/izin/' + kode_izin + '/showact');
+            });
+        });
+    </script>
+@endpush

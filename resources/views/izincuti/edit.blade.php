@@ -7,7 +7,7 @@
                 <ion-icon name="chevron-back-outline"></ion-icon>
             </a>
         </div>
-        <div class="pageTitle">Form Izin Sakit</div>
+        <div class="pageTitle">Edit Izin Cuti</div>
         <div class="right"></div>
     </div>
 @endsection
@@ -15,14 +15,14 @@
 @section('content')
     <div class="row" style="margin-top:70px">
         <div class="col">
-            <form action="/izinsakit/store" method="POST" enctype="multipart/form-data">
+            <form action="/izincuti/{{ $dataizin->kode_izin }}/update" method="POST">
                 @csrf
                 <div class="form-group">
-                    <input type="tetx" id="tgl_izin_dari" name="tgl_izin_dari" class="form-control datepicker"
-                        placeholder="Dari" required>
+                    <input type="tetx" value="{{ $dataizin->tgl_izin_dari }}" id="tgl_izin_dari" name="tgl_izin_dari"
+                        class="form-control datepicker" placeholder="Dari" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" id="tgl_izin_sampai" name="tgl_izin_sampai" class="form-control datepicker"
+                    <input type="text" value="{{ $dataizin->tgl_izin_sampai }}" id="tgl_izin_sampai" name="tgl_izin_sampai" class="form-control datepicker"
                         placeholder="Sampai" required>
                 </div>
                 <div class="form-group">
@@ -30,23 +30,18 @@
                         readonly required>
                 </div>
                 <div class="form-group">
-                    <input type="text" name="keterangan" id="keterangan" class="form-control" autocomplete="off"
-                        placeholder="Keterangan" required></input>
+                    <select name="kode_cuti" id="kode_cuti" class="form-control" required>
+                        <option value="">--Pilih Kategori Cuti--</option>
+                        @foreach ($mastercuti as $c)
+                            <option {{$dataizin->kode_cuti == $c->kode_cuti ? 'selected' : ''}} value="{{ $c->kode_cuti }}">{{ $c->nama_cuti }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="custom-file-upload" id="fileUpload1" style="height: 100px !important">
-                    <input type="file" name="sid" id="fileuploadInput" accept=".png, .jpg, .jpeg">
-                    <label for="fileuploadInput">
-                        <span>
-                            <strong>
-                                <ion-icon name="cloud-upload-outline" role="img" class="md hydrated"
-                                    aria-label="cloud upload outline"></ion-icon>
-                                <i>Tap to Upload SID</i>
-                                <small>maukan file foto</small>
-                            </strong>
-                        </span>
-                    </label>
+                <div class="form-group">
+                    <input name="keterangan" value="{{ $dataizin->keterangan }}" id="keterangan" type="text" class="form-group" placeholder="--Keterangan"
+                        required></input>
                 </div>
-                <div class="form-group mt-3">
+                <div class="form-group">
                     <button class="btn btn-primary w-100">Kirim</button>
                 </div>
             </form>
@@ -87,6 +82,7 @@
                 //To Display the final no. of days(result)
                 $("#jml_hari").val(jmlhari + " Hari");
             }
+            loadjumlahhari();
             $("#tgl_izin_dari, #tgl_izin_sampai").change(function(e) {
                 loadjumlahhari();
             })

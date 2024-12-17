@@ -67,7 +67,7 @@ class PresensiController extends Controller
         $jamkerja = DB::table('konfigurasi_jamkerja')
             ->join('jam_kerja', 'konfigurasi_jamkerja.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('email', $email)->where('tanggal', date('Y-m-d'))->first();
-            
+
         if ($jamkerja == null) {
             return view('presensi.notifjadwal');
         } else {
@@ -253,7 +253,10 @@ class PresensiController extends Controller
     public function izin()
     {
         $email = Auth::guard('karyawan')->user()->email;
-        $dataizin = DB::table('pengajuan_izin')->where('email', $email)->get();
+        $dataizin = DB::table('pengajuan_izin')
+            ->leftJoin('master_cuti', 'pengajuan_izin.kode_cuti', '=', 'master_cuti.kode_cuti')
+           ->orderBy('tgl_izin_dari', 'desc')
+            ->where('email', $email)->get();
         return view('presensi/izin', compact('dataizin'));
     }
 
@@ -464,6 +467,9 @@ class PresensiController extends Controller
         return $cek;
     }
 
-    
-    
+    public function showact($kode_izin)
+    {
+        $dataizin = DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->first();
+        return view('presensi.showact', compact('dataizin'));
+    }
 }

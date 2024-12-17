@@ -2,11 +2,13 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\CutiController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KaryawanController;
 use App\Http\Controllers\PresensiController;
 use App\Http\Controllers\DepartemenController;
 use App\Http\Controllers\IzinabsenController;
+use App\Http\Controllers\IzincutiController;
 use App\Http\Controllers\IzinsakitController;
 use App\Http\Controllers\KonfigurasiController;
 use Illuminate\Support\Facades\Route;
@@ -34,13 +36,12 @@ Route::middleware(['guest:user'])->group(function () {
     })->name('loginadmin');
     Route::post('/prosesloginadmin', [AuthController::class, 'prosesloginadmin']);
     Route::post('/loginadmin', [AuthController::class, 'loginadmin']);
-    
 });
 
 Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/proseslogout', [AuthController::class, 'proseslogout']);
-    
+
 
     ///presensi
     Route::get('/presensi/create', [PresensiController::class, 'create']);
@@ -62,14 +63,27 @@ Route::middleware(['auth:karyawan'])->group(function () {
     //izinabsen
     Route::get('/izinabsen', [IzinabsenController::class, 'create']);
     Route::post('/izinabsen/store', [IzinabsenController::class, 'store']);
+    Route::get('/izinabsen/{kode_izin}/edit', [IzinabsenController::class, 'edit']);
+    Route::post('/izinabsen/{kode_izin}/update', [IzinabsenController::class, 'update']);
 
     //izin Sakit
     Route::get('/izinsakit', [IzinsakitController::class, 'create']);
+    Route::post('/izinsakit/store', [IzinsakitController::class, 'store']);
+    Route::get('/izinsakit/{kode_izin}/edit', [IzinsakitController::class, 'edit']);
+    Route::post('/izinsakit/{kode_izin}/update', [IzinsakitController::class, 'update']);
 
+    //izincuti
+    Route::get('izincuti', [IzincutiController::class, 'create']);
+    Route::post('/izincuti/store', [IzincutiController::class, 'store']);
+    Route::get('/izincuti/{kode_izin}/edit', [IzincutiController::class, 'edit']);
+    Route::post('/izincuti/{kode_izin}/update', [IzincutiController::class, 'update']);
+
+    Route::get('/izin/{kode_izin}/showact', [PresensiController::class, 'showact']);
+    Route::get('/izin/{kode_izin}/delete', [PresensiController::class, 'deleteizin']);
 
 });
 
-Route::middleware(['auth:user'])->group(function(){
+Route::middleware(['auth:user'])->group(function () {
     Route::get('/proseslogoutadmin', [AuthController::class, 'proseslogoutadmin']);
     Route::get('/panel/dashboardadmin', [DashboardController::class, 'dashboardadmin']);
 
@@ -119,8 +133,11 @@ Route::middleware(['auth:user'])->group(function(){
     Route::post('/konfigurasi/storesetjamkerja', [KonfigurasiController::class, 'storesetjamkerja']);
     Route::post('/konfigurasi/updatesetjamkerja', [KonfigurasiController::class, 'updatesetjamkerja']);
 
+    //cuti
+    Route::get('/cuti', [CutiController::class, 'index']);
+    Route::post('/cuti/store', [CutiController::class, 'store']);
+    Route::post('/cuti/edit', [CutiController::class, 'edit']);
+    Route::post('/cuti/{kode_cuti}/update', [CutiController::class, 'update']);
+    Route::post('/cuti/{kode_cuti}/delete', [CutiController::class, 'delete']);
 
-    
 });
-
-
