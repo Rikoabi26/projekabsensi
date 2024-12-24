@@ -41,7 +41,7 @@
                                         </svg>
                                     </span>
                                     <input type="text" value="{{ Request('dari') }}" name="dari" id="dari"
-                                        class="form-control" placeholder="Dari">
+                                        class="form-control" autocomplete="off" placeholder="Dari">
                                 </div>
                             </div>
                             <div class="col-3">
@@ -67,7 +67,7 @@
                                         </svg>
                                     </span>
                                     <input type="text" value="{{ Request('sampai') }}" name="sampai" id="sampai"
-                                        class="form-control" placeholder="Sampai">
+                                        class="form-control" autocomplete="off" placeholder="Sampai">
                                 </div>
                             </div>
                         </div>
@@ -86,17 +86,21 @@
                                             <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
                                         </svg>
                                     </span>
-                                    <input type="text" value="{{Request('nama_lengkap')}}" name="nama_lengkap" id="nama_lengkap"
-                                        class="form-control" placeholder="Nama Lengkap">
+                                    <input type="text" value="{{ Request('nama_lengkap') }}" name="nama_lengkap"
+                                        id="nama_lengkap" class="form-control" autocomplete="off"
+                                        placeholder="Nama Lengkap">
                                 </div>
                             </div>
                             <div class="col-3">
                                 <div class="form-group">
-                                    <select name="status_approved" id="status_approved" class="form-select" >
+                                    <select name="status_approved" id="status_approved" class="form-select">
                                         <option value="">Pilih Status</option>
-                                        <option value="0" {{Request('status_approved') === '0' ? 'selected' : ''}}>Pending</option>
-                                        <option value="1" {{Request('status_approved') == 1 ? 'selected' : ''}}>Disetujui</option>
-                                        <option value="2" {{Request('status_approved') == 2 ? 'selected' : ''}}>Ditolak</option>
+                                        <option value="0" {{ Request('status_approved') === '0' ? 'selected' : '' }}>
+                                            Pending</option>
+                                        <option value="1" {{ Request('status_approved') == 1 ? 'selected' : '' }}>
+                                            Disetujui</option>
+                                        <option value="2" {{ Request('status_approved') == 2 ? 'selected' : '' }}>
+                                            Ditolak</option>
                                     </select>
                                 </div>
                             </div>
@@ -125,6 +129,7 @@
                         <thead>
                             <tr>
                                 <th>No.</th>
+                                <th>Kode Izin</th>
                                 <th>Tanggal</th>
                                 <th>Email</th>
                                 <th>Nama Karyawan</th>
@@ -139,11 +144,19 @@
                             @foreach ($izinsakit as $d)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ date('d-m-Y', strtotime($d->tgl_izin)) }}</td>
+                                    <td>{{ $d->kode_izin }}</td>
+                                    <td>
+                                        {{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }} s/d
+                                        {{ date('d-m-Y', strtotime($d->tgl_izin_sampai)) }}
+                                    </td>
                                     <td>{{ $d->email }}</td>
                                     <td>{{ $d->nama_lengkap }}</td>
                                     <td>{{ $d->jabatan }}</td>
-                                    <td>{{ $d->status == 'i' ? 'Izin' : 'Sakit' }}</td>
+                                    {{-- <td>{{ $d->status == 'i' ? 'Izin' : 'Sakit' }}</td> --}}
+                                    <td>
+                                        {{ $d->status == 'i' ? 'Izin' : ($d->status == 's' ? 'Sakit' : ($d->status == 'c' ? 'Cuti' : 'Tidak Diketahui')) }}
+                                    </td>
+                                    
                                     <td>{{ $d->keterangan }}</td>
                                     <td>
                                         @if ($d->status_approved == 1)
@@ -156,8 +169,8 @@
                                     </td>
                                     <td>
                                         @if ($d->status_approved == 0)
-                                            <a href="#" class="btn btn-sm btn-primary" id="approve"
-                                                id_izinsakit="{{ $d->id }}">
+                                            <a href="#" class="btn btn-sm btn-primary approve"
+                                                kode_izin="{{ $d->kode_izin }}">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -170,7 +183,7 @@
                                                 </svg>
                                             </a>
                                         @else
-                                            <a href="/presensi/{{ $d->id }}/batalkanizinsakit"
+                                            <a href="/presensi/{{ $d->kode_izin }}/batalkanizinsakit"
                                                 class="btn btn-sm bg-danger">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -203,7 +216,7 @@
                 <div class="modal-body">
                     <form action="/presensi/approveizinsakit" method="POST">
                         @csrf
-                        <input type="hidden" id="id_izinsakit_form" name="id_izinsakit_form">
+                        <input type="hidden" id="kode_izin_form" name="kode_izin_form">
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
@@ -239,11 +252,11 @@
 @push('myscript')
     <script>
         $(function() {
-            $("#approve").click(function(e) {
+            $(".approve").click(function(e) {
                 e.preventDefault();
-                var id_izinsakit = $(this).attr('id_izinsakit');
+                var kode_izin = $(this).attr('kode_izin');
                 // alert(id_izinsakit);
-                $("#id_izinsakit_form").val(id_izinsakit);
+                $("#kode_izin_form").val(kode_izin);
                 $("#modal-izinsakit").modal('show');
             });
 

@@ -36,6 +36,23 @@ class IzincutiController extends Controller
         $lastkodeizin = $lastizin != null ? $lastizin->kode_izin : "";
         $format = "IZ" . $bulan . $thn;
         $kode_izin = buatkode($lastkodeizin, $format, 3);
+        //hitung jumla hhari yang di ajukan
+        $jmlhari = hitunghari($tgl_izin_dari, $tgl_izin_sampai);
+
+        //cek jumlah maksimal cuti
+        $cuti = DB::table('master_cuti')->where('kode_cuti', $kode_cuti)->first();
+
+        $jmlmaxcuti = $cuti->jml_hari;
+
+        //cek jml cuti yang sudah digunakan
+        $cutidigunakan = DB::table('presensi')
+            ->whereRaw('YEAR(tgl_presensi)="' . $tahun . '"')
+            ->where('status', 'c')
+            ->where('email', $email)
+            ->count();
+
+        //sisa cuti
+        $sisacuti = $jmlmaxcuti - $cutidigunakan;
 
         $data = [
             'kode_izin' => $kode_izin,
@@ -46,13 +63,32 @@ class IzincutiController extends Controller
             'status' => $status,
             'keterangan' => $keterangan
         ];
-        $simpan = DB::table('pengajuan_izin')->insert($data);
 
 
-        if ($simpan) {
-            return redirect('/presensi/izin')->with(['success' => 'Data BERHASIL Diajukan']);
+        $cekpresensi = DB::table('presensi')
+            ->whereBetween('tgl_presensi', [$tgl_izin_dari, $tgl_izin_sampai])
+            ->where('email', $email)
+            ->count();
+        $cekpengajuan = DB::table('pengajuan_izin')
+            ->whereRaw('"' . $tgl_izin_dari . '" BETWEEN tgl_izin_dari AND tgl_izin_sampai')
+            ->where('email', $email)
+            ->count();
+
+        if ($jmlhari > $sisacuti) {
+            return redirect('/presensi/izin')->with(['error' => 'Tak bisa melakukan pengajuan cuti jatah hari nya sudah habis, sisa cuti ' . $sisacuti . " Hari"]);
+        } else if ($cekpresensi > 0) {
+            return redirect('/presensi/izin')->with(['warning' => 'Tak bisa melakukan pengajuan di tanggal tersebut, karna ada tanggal yang anda sudah melakukan absen']);
+        } else if ($cekpengajuan > 0) {
+            return redirect('/presensi/izin')->with(['error' => 'Tak bisa melakukan pengajuan di tanggal tersebut, karna ada tanggal yang sudah di gunakan']);
         } else {
-            return redirect('/presensi/izin')->with(['error' => 'Data GAGAL Diajukan']);
+            $simpan = DB::table('pengajuan_izin')->insert($data);
+
+
+            if ($simpan) {
+                return redirect('/presensi/izin')->with(['success' => 'Data BERHASIL Diajukan']);
+            } else {
+                return redirect('/presensi/izin')->with(['error' => 'Data GAGAL Diajukan']);
+            }
         }
     }
 

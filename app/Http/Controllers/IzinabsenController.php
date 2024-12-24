@@ -41,13 +41,31 @@ class IzinabsenController extends Controller
             'status' => $status,
             'keterangan' => $keterangan
         ];
-        $simpan = DB::table('pengajuan_izin')->insert($data);
+        //cerk sudah absen atau belum
+        $cekpresensi = DB::table('presensi')
+            ->whereBetween('tgl_presensi', [$tgl_izin_dari, $tgl_izin_sampai])
+            ->where('email', $email)
+            ->count();
+
+        //cek sudah di ajukan atau belum
+        $cekpengajuan = DB::table('pengajuan_izin')
+            ->whereRaw('"' . $tgl_izin_dari . '" BETWEEN tgl_izin_dari AND tgl_izin_sampai')
+            ->where('email', $email)
+            ->count();
 
 
-        if ($simpan) {
-            return redirect('/presensi/izin')->with(['success' => 'Data BERHASIL Diajukan']);
+        if ($cekpresensi > 0) {
+            return redirect('/presensi/izin')->with(['error' => 'Tak bisa melakukan pengajuan di tanggal tersebut, karna ada tanggal yang anda sudah melakukan absen']);
+        } else if ($cekpengajuan > 0) {
+            return redirect('/presensi/izin')->with(['error' => 'Tak bisa melakukan pengajuan di tanggal tersebut, karna ada tanggal yang sudah di gunakan']);
         } else {
-            return redirect('/presensi/izin')->with(['error' => 'Data GAGAL Diajukan']);
+            $simpan = DB::table('pengajuan_izin')->insert($data);
+
+            if ($simpan) {
+                return redirect('/presensi/izin')->with(['success' => 'Data BERHASIL Diajukan']);
+            } else {
+                return redirect('/presensi/izin')->with(['error' => 'Data GAGAL Diajukan']);
+            }
         }
     }
     public function edit($kode_izin)
@@ -67,7 +85,7 @@ class IzinabsenController extends Controller
             $data = [
                 'tgl_izin_dari' => $tgl_izin_dari,
                 'tgl_izin_sampai' => $tgl_izin_sampai,
-                'keterangan'=>$keterangan
+                'keterangan' => $keterangan
             ];
             DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->update($data);
             return redirect('/presensi/izin')->with(['success' => 'Data BERHASIL diupdate']);

@@ -15,6 +15,7 @@
     <style>
         .historicontent {
             display: flex;
+            margin-top: 10px;
         }
 
         .datapresensi {
@@ -25,6 +26,7 @@
             position: absolute;
             right: 15px;
         }
+        
     </style>
 @endsection
 
@@ -45,6 +47,49 @@
     </div>
     <div class="row">
         <div class="col">
+            <form method="GET" action="/presensi/izin">
+                <div class="row">
+                    <div class="col-8">
+                        <div class="form-group">
+                            <select name="bulan" id="bulan" class="form-control selectmaterialize">
+                                <option value="">Bulan</option>
+                                @for ($i = 1; $i <= 12; $i++)
+                                    <option {{ Request('bulan') == $i ? 'selected' : '' }} value="{{ $i }}">
+                                        {{ $namabulan[$i] }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="form-group">
+                            <select name="tahun" id="tahun" class="form-control selectmaterialize">
+                                <option value="">Tahun</option>
+                                @php
+                                    $tahun_awal = 2023;
+                                    $tahun_sekarang = date('Y');
+                                    for ($t = $tahun_awal; $t <= $tahun_sekarang; $t++) {
+                                        if (Request('tahun') == $t) {
+                                            $selected = 'selected';
+                                        } else {
+                                            $selected = '';
+                                        }
+                                        echo "<option $selected value='$t'>$t</option>";
+                                    }
+                                @endphp
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button class="btn btn-primary form-control mb-2">Cari Data</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row" style="position: fixed; width: 100%; margin: auto; overflow-y:scroll; height: 430px">
+        <div class="col">
             @foreach ($dataizin as $d)
                 @php
                     if ($d->status == 'i') {
@@ -57,7 +102,7 @@
                         $status = 'Not Found';
                     }
                 @endphp
-                <div class="card mt-1 card_izin" kode_izin="{{ $d->kode_izin }}" data-toggle="modal"
+                <div class="card mt-1 card_izin" kode_izin="{{ $d->kode_izin }}" status_approved = "{{$d->status_approved}}" data-toggle="modal"
                     data-target="#actionSheetIconed">
                     <div class="card-body">
                         <div class="historicontent">
@@ -89,7 +134,7 @@
                                     <br>
                                     @if (!empty($d->doc_sid))
                                         <span style="color: blue">
-                                            <ion-icon name="document-attach-outline"></ion-icon> Lihat SID
+                                            <ion-icon name="document-attach-outline"></ion-icon>SID
                                         </span>
                                     @endif
                                 </p>
@@ -198,7 +243,18 @@
         $(function() {
             $(".card_izin").click(function(e) {
                 var kode_izin = $(this).attr("kode_izin");
-                $("#showact").load('/izin/' + kode_izin + '/showact');
+                var status_approved = $(this).attr("status_approved");
+
+                if(status_approved == 1){
+                    Swal.fire({
+                        title: 'OOps !',
+                        text: "Data Sudah Disetujui, Tidak dapat di ubah",
+                        icon: 'warning'
+                    })
+                }else{
+                    $("#showact").load('/izin/' + kode_izin + '/showact');
+                }
+
             });
         });
     </script>

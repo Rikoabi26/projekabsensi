@@ -5,12 +5,8 @@
         <div class="container-xl">
             <div class="row g-2 align-items-center">
                 <div class="col">
-                    <!-- Page pre-title -->
-                    <div class="page-pretitle">
-                        Overview
-                    </div>
-                    <h2 class="page-title">
-                        Dashboard
+                    <h2 class="page-title" style="font-family:'Times New Roman', Times, serif">
+                        Rekap Presensi {{ date('d-m-Y', strtotime(date('Y-m-d'))) }}
                     </h2>
                 </div>
             </div>
@@ -41,7 +37,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="font-weight-medium">
-                                        {{$rekappresensi->jmlhadir}}
+                                        {{ $rekappresensi->jmlhadir }}
                                     </div>
                                     <div class="text-secondary">
                                         <a href="/presensi/monitoring"> Total Hadir</a>
@@ -74,7 +70,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="font-weight-medium">
-                                        {{$rekapizin->jmlizin != null ? $rekapizin->jmlizin : 0}}
+                                        {{ $rekappresensi->jmlizin }}
                                     </div>
                                     <div class="text-secondary">
                                         <a href="/presensi/izinsakit">Karyawan Izin</a>
@@ -105,7 +101,7 @@
                                 </div>
                                 <div class="col">
                                     <div class="font-weight-medium">
-                                        {{$rekapizin->jmlsakit != null ? $rekapizin->jmlsakit : 0}}
+                                        {{ $rekappresensi->jmlsakit }}
                                     </div>
                                     <div class="text-secondary">
                                         <a href="/presensi/izinsakit">Karyawan Sakit</a>
@@ -125,21 +121,20 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-alarm">
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-file">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M12 13m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-                                            <path d="M12 10l0 3l2 0" />
-                                            <path d="M7 4l-2.75 2" />
-                                            <path d="M17 4l2.75 2" />
+                                            <path d="M14 3v4a1 1 0 0 0 1 1h4" />
+                                            <path
+                                                d="M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z" />
                                         </svg>
                                     </span>
                                 </div>
                                 <div class="col">
                                     <div class="font-weight-medium">
-                                        {{$rekappresensi->jmlterlambat != null ? $rekappresensi->jmlterlambat : 0}}
+                                        {{ $rekappresensi->jmlcuti }}
                                     </div>
                                     <div class="text-secondary">
-                                        <a href="/presensi/monitoring">Karyawan Terlambat</a>
+                                        <a href="/presensi/izinsakit">Pengajuan Cuti</a>
                                     </div>
                                 </div>
                             </div>

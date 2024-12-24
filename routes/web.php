@@ -12,6 +12,8 @@ use App\Http\Controllers\IzincutiController;
 use App\Http\Controllers\IzinsakitController;
 use App\Http\Controllers\KonfigurasiController;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,7 +82,6 @@ Route::middleware(['auth:karyawan'])->group(function () {
 
     Route::get('/izin/{kode_izin}/showact', [PresensiController::class, 'showact']);
     Route::get('/izin/{kode_izin}/delete', [PresensiController::class, 'deleteizin']);
-
 });
 
 Route::middleware(['auth:user'])->group(function () {
@@ -93,6 +94,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('/karyawan/edit', [KaryawanController::class, 'edit']);
     Route::post('/karyawan/{email}/update', [KaryawanController::class, 'update']);
     Route::post('/karyawan/{email}/delete', [KaryawanController::class, 'delete']);
+    Route::get('karyawan/{email}/resetpassword', [KaryawanController::class, 'resetpassword']);
 
     //departemen
     Route::get('/departemen', [DepartemenController::class, 'index']);
@@ -111,7 +113,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('/presensi/cetakrekap', [PresensiController::class, 'cetakrekap']);
     Route::get('/presensi/izinsakit', [PresensiController::class, 'izinsakit']);
     Route::post('/presensi/approveizinsakit', [PresensiController::class, 'approveizinsakit']);
-    Route::get('/presensi/{id}/batalkanizinsakit', [PresensiController::class, 'batalkanizinsakit']);
+    Route::get('/presensi/{kode_izin}/batalkanizinsakit', [PresensiController::class, 'batalkanizinsakit']);
 
     //cabang
     Route::get('/cabang', [CabangController::class, 'index']);
@@ -139,5 +141,20 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('/cuti/edit', [CutiController::class, 'edit']);
     Route::post('/cuti/{kode_cuti}/update', [CutiController::class, 'update']);
     Route::post('/cuti/{kode_cuti}/delete', [CutiController::class, 'delete']);
+});
 
+
+// role permision baru sampe sini
+Route::get('/createrolepermission', function () {
+
+    try {
+        //code...
+        Role::create(['name' => 'administrator']);
+        Permission::create(['name' => 'view-karyawan']);
+        Permission::create(['name' => 'view-departemen']);
+        echo "sukses";
+    } catch (\Throwable $th) {
+        //throw $e;
+        echo "Error";
+    } 
 });

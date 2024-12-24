@@ -44,6 +44,7 @@ class KonfigurasiController extends Controller
         $jam_masuk = $request->jam_masuk;
         $akhir_jam_masuk = $request->akhir_jam_masuk;
         $jam_pulang = $request->jam_pulang;
+        
 
         $data = [
             'kode_jam_kerja' => $kode_jam_kerja,
@@ -51,7 +52,8 @@ class KonfigurasiController extends Controller
             'awal_jam_masuk' => $awal_jam_masuk,
             'jam_masuk' => $jam_masuk,
             'akhir_jam_masuk' => $akhir_jam_masuk,
-            'jam_pulang' => $jam_pulang
+            'jam_pulang' => $jam_pulang,
+            
         ];
         // dd($data);
         try {

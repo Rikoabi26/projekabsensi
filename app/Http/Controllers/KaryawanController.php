@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
@@ -23,6 +24,9 @@ class KaryawanController extends Controller
         }
         if (!empty($request->kode_dept)) {
             $query->where('karyawan.kode_dept', $request->kode_dept);
+        }
+        if (!empty($request->kode_cabang)) {
+            $query->where('karyawan.kode_cabang', $request->kode_cabang);
         }
         $karyawan = $query->paginate(10);
         $departemen = DB::table('departemen')->get();
@@ -135,6 +139,20 @@ class KaryawanController extends Controller
             return Redirect::back()->with(['success'=>'Data berhasil di hapus']);
         }else{
             return Redirect::back()->with(['warning'=>'Data Gagal di hapus']);
+        }
+    }
+
+    public function resetpassword($email){
+        $email = Crypt::decrypt($email);
+        $password = Hash::make('Lisna2024');
+        $reset = DB::table('karyawan')->where('email', $email)->update([
+            'password'=>$password
+        ]);
+
+        if($reset){
+            return Redirect::back()->with(['success'=>'Data Berhasil di Reset']);
+        }else{
+            return Redirect::back()->with(['warning'=>'Data Gagal di Reset']);
         }
     }
 }

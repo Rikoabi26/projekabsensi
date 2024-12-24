@@ -52,14 +52,14 @@
                                 <div class="col-12">
                                     <form action="/karyawan" method="GET">
                                         <div class="row">
-                                            <div class="col-6">
+                                            <div class="col-4">
                                                 <div class="form-group">
                                                     <input type="text" name="nama_karyawan" id="nama_karyawan"
                                                         class="form-control" placeholder="Nama Karyawan"
                                                         value="{{ Request('nama_karyawan') }}">
                                                 </div>
                                             </div>
-                                            <div class="col-4">
+                                            <div class="col-3">
                                                 <div class="form-group">
                                                     <select name="kode_dept" class="form-select" id="kode_dept">
                                                         <option value="">Pilih Bidang</option>
@@ -67,6 +67,18 @@
                                                             <option
                                                                 {{ Request('kode_dept') == $d->kode_dept ? 'selected' : '' }}
                                                                 value="{{ $d->kode_dept }}">{{ $d->nama_dept }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-3">
+                                                <div class="form-group">
+                                                    <select name="kode_cabang" class="form-select" id="kode_cabang">
+                                                        <option value="">Semua Cabang</option>
+                                                        @foreach ($cabang as $d)
+                                                            <option
+                                                                {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
+                                                                value="{{ $d->kode_cabang }}">{{ $d->nama_cabang }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>
@@ -182,6 +194,28 @@
                                                                         <path
                                                                             d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
                                                                         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                                                                    </svg>
+                                                                </a>
+                                                                <a href="/karyawan/{{ Crypt::encrypt($d->email) }}/resetpassword" method="GET"
+                                                                    class="btn btn-sm btn-warning">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                        height="24" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="icon icon-tabler icons-tabler-outline icon-tabler-password-user">
+                                                                        <path stroke="none" d="M0 0h24v24H0z"
+                                                                            fill="none" />
+                                                                        <path d="M12 17v4" />
+                                                                        <path d="M10 20l4 -2" />
+                                                                        <path d="M10 18l4 2" />
+                                                                        <path d="M5 17v4" />
+                                                                        <path d="M3 20l4 -2" />
+                                                                        <path d="M3 18l4 2" />
+                                                                        <path d="M19 17v4" />
+                                                                        <path d="M17 20l4 -2" />
+                                                                        <path d="M17 18l4 2" />
+                                                                        <path d="M9 6a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                                                                        <path d="M7 14a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2" />
                                                                     </svg>
                                                                 </a>
                                                             </div>
@@ -305,7 +339,7 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col-12">
-                                <select name="kode_dept" class="form-select" id="kode_dept">
+                                <select name="kode_dept" class="form-select" id="kode_dept" required>
                                     <option value="">Pilih Bidang</option>
                                     @foreach ($departemen as $d)
                                         <option value="{{ $d->kode_dept }}">{{ $d->nama_dept }}</option>
@@ -315,7 +349,7 @@
                         </div>
                         <div class="row mt-3">
                             <div class="col-12">
-                                <select name="kode_cabang" class="form-select" id="kode_cabang">
+                                <select name="kode_cabang" class="form-select" id="kode_cabang" required>
                                     <option value="">Cabang</option>
                                     @foreach ($cabang as $d)
                                         <option value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>

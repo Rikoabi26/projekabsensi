@@ -86,7 +86,7 @@
                         {{-- <div>
                             <a href="page-register.html">Register Now</a>
                         </div> --}}
-                        <div><a href="page-forgot-password.html" class="text-muted">Forgot Password?</a></div>
+                        {{-- <div><a href="page-forgot-password.html" class="text-muted">Forgot Password?</a></div> --}}
                         <div><a href="{{ route('loginadmin') }}" class="text-muted">Login Admin</a></div>
 
                     </div>
