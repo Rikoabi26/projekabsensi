@@ -49,7 +49,10 @@ class DashboardController extends Controller
 
     public function dashboardadmin()
     {
+        $bulanini = date('m');
+        $tahunini = date('Y');
         $hariini = date('Y-m-d');
+
         $rekappresensi = DB::table('presensi')
             ->selectRaw('
             SUM(IF(status="h", 1,0))as jmlhadir,
@@ -61,6 +64,9 @@ class DashboardController extends Controller
             ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
             ->where('tgl_presensi', $hariini)
             ->first();
+
+
         return view('dashboard.dashboardadmin', compact('rekappresensi'));
+       
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
 use App\Models\Pengajuanizin;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -123,7 +124,7 @@ class PresensiController extends Controller
 
                 if ($jam < $jamkerja->jam_pulang) {
                     echo "error| Belum waktunya pulang|out";
-                }else if(!empty($datapresensi->jam_out)){
+                } else if (!empty($datapresensi->jam_out)) {
                     echo "error|Anda sudah absen pulang|out";
                 } else {
                     $data_pulang = [
@@ -248,12 +249,12 @@ class PresensiController extends Controller
         $tahun = $request->tahun;
         $email = Auth::guard('karyawan')->user()->email;
         $histori = DB::table('presensi')
-        ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-        ->where('email', $email)
-        ->whereRaw('MONTH(tgl_presensi)="' . $bulan . '"')
-        ->whereRaw('YEAR(tgl_presensi)="' . $tahun . '"')
-        ->orderBy('tgl_presensi')
-        ->get();
+            ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+            ->where('email', $email)
+            ->whereRaw('MONTH(tgl_presensi)="' . $bulan . '"')
+            ->whereRaw('YEAR(tgl_presensi)="' . $tahun . '"')
+            ->orderBy('tgl_presensi')
+            ->get();
 
         return view('presensi.gethistori', compact('histori'));
     }
@@ -313,29 +314,40 @@ class PresensiController extends Controller
 
     public function monitoring()
     {
-        return view('presensi.monitoring');
+        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        return view('presensi.monitoring', compact('cabang'));
     }
 
     public function getpresensi(Request $request)
     {
+        $kode_dept = Auth::guard('user')->user()->kode_dept;
+        $kode_cabang = Auth::guard('user')->user()->kode_cabang;
+        $user = User::find(Auth::guard('user')->user()->id);
         $tanggal = $request->tanggal;
+       
 
         $query = Karyawan::query();
-        $query->select('karyawan.email','nama_lengkap', 'karyawan.kode_dept', 'karyawan.kode_cabang');
+        $query->selectRaw('karyawan.email, nama_lengkap, karyawan.kode_dept, karyawan.kode_cabang,jam_in,datapresensi.id,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,datapresensi.status,nama_jam_kerja, jam_masuk, jam_pulang,keterangan');
         $query->leftjoin(
             DB::raw("(
             SELECT 
-            presensi.email
+            presensi.email,presensi.id,jam_in,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,presensi.status,nama_jam_kerja, jam_masuk, jam_pulang,keterangan
             FROM presensi
             LEFT JOIN jam_kerja ON presensi.kode_jam_kerja = jam_kerja.kode_jam_kerja
             LEFT JOIN pengajuan_izin ON presensi.kode_izin = pengajuan_izin.kode_izin
-            WHERE tgl_presensi = $tanggal
-            GROUP BY nik
-            )presensi"),
-            function($join){
-                $join->on('karyawan.email', '=', 'presensi.email');
+            WHERE tgl_presensi = '$tanggal'
+            )datapresensi"),
+            function ($join) {
+                $join->on('karyawan.email', '=', 'datapresensi.email');
             }
+
         );
+
+        if(!empty($request->kode_cabang)){
+            $query->where('karyawan.kode_cabang', $request->kode_cabang);
+        }
+        $query->orderBy('nama_lengkap');
+        $presensi = $query->get();
 
         // $presensi = DB::table('presensi')
         //     ->select('presensi.*', 'nama_lengkap', 'karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_pulang', 'keterangan')
@@ -517,11 +529,14 @@ class PresensiController extends Controller
         if ($request->status_approved === "0" || $request->status_approved === "1" || $request->status_approved === "2") {
             $query->where('status_approved', $request->status_approved);
         }
-
+        if(!empty($request->kode_cabang)){
+            $query->where('karyawan.kode_cabang', $request->kode_cabang);
+        }
         $query->orderBy('tgl_izin_dari', 'desc');
         $izinsakit = $query->paginate(10);
         $izinsakit->appends($request->all());
-        return view('presensi.izinsakit', compact('izinsakit'));
+        $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
+        return view('presensi.izinsakit', compact('izinsakit', 'cabang'));
     }
 
     public function approveizinsakit(Request $request)

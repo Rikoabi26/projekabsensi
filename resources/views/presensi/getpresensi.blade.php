@@ -51,10 +51,12 @@
                             <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z" />
                         </svg>
                     @endif
+                    
                 </td>
                 <td>{{ $d->status }}</td>
+               
                 <td>
-                    {{-- lanjutkandisini --}}
+                    
                     @if ($d->jam_in >= $d->jam_masuk)
                         @php
                             $jamterlambat = selisih($d->jam_masuk, $d->jam_in);
@@ -86,7 +88,9 @@
                 <td>{{ $d->email }}</td>
                 <td>{{ $d->nama_lengkap }}</td>
                 <td>{{ $d->kode_dept }}</td>
-                <td></td>
+                <td>
+                    <span class="badge bg-danger">Belum Absen</span>
+                </td>
                 <td></td>
                 <td></td>
                 <td></td>
@@ -102,8 +106,6 @@
                 </td>
                 <td>{{ $d->keterangan }}</td>
                 <td></td>
-
-
             </tr>
         @endif
     @endforeach

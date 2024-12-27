@@ -134,7 +134,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/konfigurasi/{nik}/setjamkerja', [KonfigurasiController::class, 'setjamkerja']);
     Route::post('/konfigurasi/storesetjamkerja', [KonfigurasiController::class, 'storesetjamkerja']);
     Route::post('/konfigurasi/updatesetjamkerja', [KonfigurasiController::class, 'updatesetjamkerja']);
-
+    Route::post('/konfigurasi/getjadwal',[KonfigurasiController::class, 'getjadwal']);
     //cuti
     Route::get('/cuti', [CutiController::class, 'index']);
     Route::post('/cuti/store', [CutiController::class, 'store']);

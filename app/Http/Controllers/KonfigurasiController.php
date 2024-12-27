@@ -44,7 +44,7 @@ class KonfigurasiController extends Controller
         $jam_masuk = $request->jam_masuk;
         $akhir_jam_masuk = $request->akhir_jam_masuk;
         $jam_pulang = $request->jam_pulang;
-        
+
 
         $data = [
             'kode_jam_kerja' => $kode_jam_kerja,
@@ -54,6 +54,7 @@ class KonfigurasiController extends Controller
             'akhir_jam_masuk' => $akhir_jam_masuk,
             'jam_pulang' => $jam_pulang,
             
+
         ];
         // dd($data);
         try {
@@ -108,14 +109,15 @@ class KonfigurasiController extends Controller
     public function setjamkerja($email)
     {
         $karyawan = DB::table('karyawan')->where('email', $email)->first();
+        $namabulan = ["", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
         $jamkerja = DB::table('jam_kerja')->orderBy('nama_jam_kerja')->get();
         $cekjamkerja = DB::table('konfigurasi_jamkerja')->where('email', $email)->count();
         if ($cekjamkerja > 0) {
             # code...
             $setjamkerja = DB::table('konfigurasi_jamkerja')->where('email', $email)->get();
-            return view('konfigurasi.editsetjamkerja', compact('karyawan', 'jamkerja', 'setjamkerja'));
+            return view('konfigurasi.editsetjamkerja', compact('karyawan', 'jamkerja', 'setjamkerja', 'namabulan'));
         } else {
-            return view('konfigurasi.setjamkerja', compact('karyawan', 'jamkerja'));
+            return view('konfigurasi.setjamkerja', compact('karyawan', 'jamkerja', 'namabulan'));
         }
     }
 
@@ -130,7 +132,7 @@ class KonfigurasiController extends Controller
             DB::table('konfigurasi_jamkerja')->where('email', $email)->delete();
 
             foreach ($tanggal as $index => $tgl) {
-                
+
                 if (!empty($kode_jam_kerja[$index])) {
                     DB::table('konfigurasi_jamkerja')->insert([
                         'email' => $email,
@@ -138,8 +140,7 @@ class KonfigurasiController extends Controller
                         'kode_jam_kerja' => $kode_jam_kerja[$index],
                     ]);
                 }
-            
-        }
+            }
             DB::commit();
             return redirect('/karyawan')->with(['success' => 'Jam Kerja Berhasil di update']);
         } catch (\Exception $e) {
@@ -150,9 +151,12 @@ class KonfigurasiController extends Controller
 
     public function updatesetjamkerja(Request $request)
     {
+
         $email = $request->email;
         $tanggal = $request->tanggal;
         $kode_jam_kerja = $request->kode_jam_kerja;
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
 
         $data = [];
         for ($i = 0; $i < count($tanggal); $i++) {
@@ -167,7 +171,11 @@ class KonfigurasiController extends Controller
         }
         DB::beginTransaction();
         try {
-            DB::table('konfigurasi_jamkerja')->where('email', $email)->delete();
+            DB::table('konfigurasi_jamkerja')->where('email', $email)
+            ->where('email', $email)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->delete();
             Setjamkerja::insert($data);
             DB::commit();
             return redirect('/karyawan')->with(['success' => 'Jam Kerja Berhasil di update']);
@@ -176,4 +184,29 @@ class KonfigurasiController extends Controller
             return redirect('/karyawan')->with(['warning' => 'Jam Kerja gagal di update']);
         }
     }
+
+    public function getJadwal(Request $request)
+{
+    try {
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
+        $email = $request->email;
+
+        $jadwal = DB::table('konfigurasi_jamkerja')
+            ->where('email', $email)
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $jadwal
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ], 500);
+    }
+}
 }

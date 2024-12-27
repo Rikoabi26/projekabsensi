@@ -148,9 +148,10 @@
                         <input type="hidden" name="email" value="{{ $karyawan->email }}">
 
                         <table class="table">
+                            
                             <thead>
                                 <tr>
-                                    <td>Tanggal</td>
+                                    <td>Set Jadwal</td>
                                     <td>Jam Kerja</td>
                                 </tr>
                             </thead>

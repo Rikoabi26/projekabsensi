@@ -74,7 +74,7 @@
                                                     <td>{{ $d->jam_masuk }}</td>
                                                     <td>{{ $d->akhir_jam_masuk }}</td>
                                                     <td>{{ $d->jam_pulang }}</td>
-                                                    
+                        
                                                     <td>
                                                         <div class="btn-group">
                                                             <a href="#" class="edit btn btn-info btn-sm"

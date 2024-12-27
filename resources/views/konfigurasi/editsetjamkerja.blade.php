@@ -34,23 +34,55 @@
                         @csrf
                         <input type="hidden" name="email" value="{{ $karyawan->email }}">
                         <table class="table">
+                            <div class="row mt-3">
+                                <div class="col-6">
+                                    <div class="form-goup">
+                                        <select name="bulan" id="bulan" class="form-select">
+                                            <option value="">Bulan</option>
+                                            @for ($i = 1; $i <= 12; $i++)
+                                                <option value="{{ $i }}" {{ date('m') == $i ? 'selected' : '' }}>
+                                                    {{ $namabulan[$i] }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 mb-2">
+                                    <div class="form-goup">
+                                        <select name="tahun" id="tahun" class="form-select">
+                                            <option value="">Tahun</option>
+                                            @php
+                                                $tahunmulai = 2023;
+                                                $tahunskrg = date('Y');
+                                                $tahundatang = $tahunskrg + 1;
+                                            @endphp
+                                            @for ($tahun = $tahunmulai; $tahun <= $tahundatang; $tahun++)
+                                                <option value="{{ $tahun }}"
+                                                    {{ date('Y') == $tahun ? 'selected' : '' }}>
+                                                    {{ $tahun }}</option>
+                                            @endfor
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
                             <thead>
                                 <tr>
-                                    <td>Tanggal</td>
+                                    <td>Set Jadwal</td>
                                     <td>Jam Kerja</td>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="setjadwal">
                                 @php
                                     $currentMonth = date('m'); // Bulan saat ini
                                     $currentYear = date('Y'); // Tahun saat ini
                                     $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $currentMonth, $currentYear); // Hitung jumlah hari dalam bulan
+
                                 @endphp
                                 @for ($day = 1; $day <= $daysInMonth; $day++)
                                     @php
                                         $formattedDate = date('Y-m-d', strtotime("$currentYear-$currentMonth-$day"));
                                         // Cek jam kerja sebelumnya untuk tanggal ini
                                         $jamKerjaSebelumnya = $setjamkerja->where('tanggal', $formattedDate)->first();
+
                                     @endphp
                                     <tr>
                                         <td>
@@ -110,3 +142,122 @@
         </div>
     </div>
 @endsection
+
+@push('myscript')
+    <script>
+        $(function() {
+            // Event handler untuk perubahan bulan atau tahun
+            $('#bulan, #tahun').change(function() {
+                var bulan = $('#bulan').val();
+                var tahun = $('#tahun').val();
+
+                if (bulan && tahun) {
+                    generateJadwal(bulan, tahun);
+                }
+            });
+
+            function generateJadwal(bulan, tahun) {
+                var email = $('input[name="email"]').val();
+
+                // Hitung jumlah hari dalam bulan yang dipilih
+                var daysInMonth = new Date(tahun, bulan, 0).getDate();
+
+                // Kosongkan tbody
+                $('#setjadwal').empty();
+
+                // Ambil data jadwal yang sudah ada
+                $.ajax({
+                    type: 'POST',
+                    url: '/konfigurasi/getjadwal',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        bulan: bulan,
+                        tahun: tahun,
+                        email: email
+                    },
+                    success: function(response) {
+                        // Generate row untuk setiap tanggal
+                        for (let i = 1; i <= daysInMonth; i++) {
+                            // Format tanggal YYYY-MM-DD
+                            var currentDate = tahun + '-' +
+                                bulan.toString().padStart(2, '0') + '-' +
+                                i.toString().padStart(2, '0');
+
+                            // Cari data yang sudah ada untuk tanggal ini
+                            var jadwalHariIni = response.data ? response.data.find(item => item
+                                .tanggal === currentDate) : null;
+
+                            var row = `
+                        <tr>
+                            <td>
+                                <input type="date" name="tanggal[]" class="form-control" 
+                                    value="${currentDate}" readonly>
+                            </td>
+                            <td>
+                                <select name="kode_jam_kerja[]" class="form-select">
+                                    <option value="">Pilih Jam Kerja</option>`;
+
+                            // Tambahkan opsi jam kerja
+                            $('.table:last tbody tr').each(function() {
+                                var kodeJK = $(this).find('td:eq(0)').text().trim();
+                                var namaJK = $(this).find('td:eq(1)').text().trim();
+
+                                if (kodeJK && namaJK) {
+                                    var selected = jadwalHariIni && jadwalHariIni
+                                        .kode_jam_kerja === kodeJK ? 'selected' : '';
+                                    row +=
+                                        `<option value="${kodeJK}" ${selected}>${namaJK}</option>`;
+                                }
+                            });
+
+                            row += `
+                                </select>
+                            </td>
+                        </tr>`;
+
+                            $('#setjadwal').append(row);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        // Tetap generate tanggal meskipun terjadi error
+                        for (let i = 1; i <= daysInMonth; i++) {
+                            var currentDate = tahun + '-' +
+                                bulan.toString().padStart(2, '0') + '-' +
+                                i.toString().padStart(2, '0');
+
+                            var row = `
+                        <tr>
+                            <td>
+                                <input type="date" name="tanggal[]" class="form-control" 
+                                    value="${currentDate}" readonly>
+                            </td>
+                            <td>
+                                <select name="kode_jam_kerja[]" class="form-select">
+                                    <option value="">Pilih Jam Kerja</option>`;
+
+                            // Tambahkan opsi jam kerja
+                            $('.table:last tbody tr').each(function() {
+                                var kodeJK = $(this).find('td:eq(0)').text().trim();
+                                var namaJK = $(this).find('td:eq(1)').text().trim();
+
+                                if (kodeJK && namaJK) {
+                                    row += `<option value="${kodeJK}">${namaJK}</option>`;
+                                }
+                            });
+
+                            row += `
+                                </select>
+                            </td>
+                        </tr>`;
+
+                            $('#setjadwal').append(row);
+                        }
+                        console.error('Ajax Error:', error);
+                    }
+                });
+            }
+
+            
+        });
+    </script>
+@endpush

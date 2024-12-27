@@ -18,7 +18,7 @@
                 <div class="col-12">
                     <form action="/presensi/izinsakit" method="GET" autocomplete="off">
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-4">
                                 <div class="input-icon mb-3">
                                     <span class="input-icon-addon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -44,7 +44,7 @@
                                         class="form-control" autocomplete="off" placeholder="Dari">
                                 </div>
                             </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 <div class="input-icon mb-3">
                                     <span class="input-icon-addon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -70,9 +70,20 @@
                                         class="form-control" autocomplete="off" placeholder="Sampai">
                                 </div>
                             </div>
+                            <div class="col-4">
+                                <div class="form-group">
+                                    <select name="kode_cabang" class="form-select" id="kode_cabang" required>
+                                        <option value="">Cabang</option>
+                                        @foreach ($cabang as $d)
+                                            <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
+                                                value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                         <div class="row">
-                            <div class="col-3">
+                            <div class="col-4">
                                 <div class="input-icon mb-3">
                                     <span class="input-icon-addon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -91,7 +102,7 @@
                                         placeholder="Nama Lengkap">
                                 </div>
                             </div>
-                            <div class="col-3">
+                            <div class="col-4">
                                 <div class="form-group">
                                     <select name="status_approved" id="status_approved" class="form-select">
                                         <option value="">Pilih Status</option>
@@ -104,7 +115,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="form-group">
                                     <button class="btn btn-primary" type="submit">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -156,7 +167,7 @@
                                     <td>
                                         {{ $d->status == 'i' ? 'Izin' : ($d->status == 's' ? 'Sakit' : ($d->status == 'c' ? 'Cuti' : 'Tidak Diketahui')) }}
                                     </td>
-                                    
+
                                     <td>{{ $d->keterangan }}</td>
                                     <td>
                                         @if ($d->status_approved == 1)

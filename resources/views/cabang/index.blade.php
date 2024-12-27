@@ -48,7 +48,7 @@
                                         Tambah Data</a>
                                 </div>
                             </div>
-                            <div class="row mt-2">
+                            {{-- <div class="row mt-2">
                                 <div class="col-12">
                                     <form action="/cabang" method="GET">
                                         <div class="row">
@@ -77,7 +77,7 @@
                                         </div>
                                     </form>
                                 </div>
-                            </div>
+                            </div> --}}
                             <div class="row mt-3">
                                 <div class="col-12">
                                     <table class="table table-bordered">

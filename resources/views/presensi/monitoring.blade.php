@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="page-header d-print-none">
-        <div class="container-xl">
+        <div class="container-fluid">
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
@@ -13,17 +13,25 @@
         </div>
     </div>
     <div class="page-body">
-        <div class="container-xl">
+        <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-12">
+                                <div class="col-4">
                                     <div class="input-icon mb-3">
                                         <input type="date" id="tanggal" name="tanggal" value="{{ date('Y-m-d') }}"
                                             class="form-control">
                                     </div>
+                                </div>
+                                <div class="col-4">
+                                    <select name="kode_cabang" class="form-select" id="kode_cabang" required>
+                                        <option value="">Cabang</option>
+                                        @foreach ($cabang as $d)
+                                            <option value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
                             </div>
                             <div class="row">
@@ -74,13 +82,14 @@
         $(function() {
             function loadpresensi() {
                 var tanggal = $("#tanggal").val();
-
+                var kode_cabang = $("#kode_cabang").val();
                 $.ajax({
                     type: 'POST',
                     url: '/getpresensi',
                     data: {
                         _token: "{{ csrf_token() }}",
-                        tanggal: tanggal
+                        tanggal: tanggal,
+                        kode_cabang: kode_cabang
                     },
                     cache: false,
                     success: function(respond) {
@@ -89,6 +98,9 @@
                 });
             }
             $('#tanggal').change(function(e) {
+                loadpresensi();
+            });
+            $("#kode_cabang").change(function(e){
                 loadpresensi();
             });
             loadpresensi();
