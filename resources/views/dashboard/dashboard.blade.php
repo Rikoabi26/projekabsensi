@@ -239,12 +239,13 @@
                                 <div class="card-body">
                                     <div class="historicontent">
                                         <div class="iconpresensi">
-                                            <ion-icon name="finger-print-outline"
-                                                style="font-size: 20px; color:green" class="text-success"></ion-icon>
+                                            <ion-icon name="finger-print-outline" style="font-size: 20px; color:green"
+                                                class="text-success"></ion-icon>
                                         </div>
                                         <div class="datapresensi">
                                             <h3 style="line-height: 3px">{{ $d->nama_jam_kerja }}</h3>
-                                            <h4 style="margin: 0px !important"> {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
+                                            <h4 style="margin: 0px !important">
+                                                {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
                                             </h4>
                                             <span>
                                                 {!! $d->jam_in != null ? date('H:i', strtotime($d->jam_in)) : '<span class="text-danger">Belum Absen</span>' !!}
@@ -279,7 +280,12 @@
                                             <small class="text-muted">{{ $d->jabatan }}</small>
                                         </div>
                                         <span
-                                            class="badge {{ $d->jam_in < '08:00' ? 'bg-success' : 'bg-danger' }}">{{ $d->jam_in }}</span>
+                                            class="badge {{ $d->jam_in < 'jam_masuk' ? 'bg-success' : 'bg-danger' }}">{{ $d->jam_in }}</span>
+                                        <span class="badge bg-info">
+                                            {{ $d->jam_out != null
+                                                ? date('H:i', strtotime($d->jam_out))
+                                                : '- Belum Absen' }}
+                                        </span>
                                     </div>
                                 </div>
                             </li>

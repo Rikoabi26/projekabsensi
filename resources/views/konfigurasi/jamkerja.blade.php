@@ -60,7 +60,6 @@
                                                 <th>Jam Masuk</th>
                                                 <th>Akhir Jam Masuk</th>
                                                 <th>Jam Pulang</th>
-                                               
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -74,7 +73,7 @@
                                                     <td>{{ $d->jam_masuk }}</td>
                                                     <td>{{ $d->akhir_jam_masuk }}</td>
                                                     <td>{{ $d->jam_pulang }}</td>
-                        
+                                                   
                                                     <td>
                                                         <div class="btn-group">
                                                             <a href="#" class="edit btn btn-info btn-sm"
@@ -267,7 +266,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="row mt-3">
                             <div class="col-12">
                                 <div class="form-group">
@@ -354,6 +353,8 @@
                 });
                 $("#modal-editjk").modal("show");
             });
+
+
         });
     </script>
 @endpush

@@ -18,25 +18,29 @@
             <form action="/izincuti/store" method="POST">
                 @csrf
                 <div class="form-group">
-                    <input type="tetx" id="tgl_izin_dari" name="tgl_izin_dari" class="form-control datepicker" placeholder="Dari"
-                        required>
+                    <input type="text" id="tgl_izin_dari" name="tgl_izin_dari" class="form-control datepicker"
+                        placeholder="Dari" required>
                 </div>
                 <div class="form-group">
                     <input type="text" id="tgl_izin_sampai" name="tgl_izin_sampai" class="form-control datepicker"
                         placeholder="Sampai" required>
                 </div>
                 <div class="form-group">
-                    <input type="text" id="jml_hari" name="jml_hari" class="form-control" placeholder="Jumlah hari" readonly
-                        required>
+                    <input type="text" id="jml_hari" name="jml_hari" class="form-control" placeholder="Jumlah hari"
+                        readonly required>
                 </div>
                 <div class="form-group">
                     <select name="kode_cuti" id="kode_cuti" class="form-control" required>
                         <option value="">--Pilih Kategori Cuti--</option>
                         @foreach ($mastercuti as $c)
-                        <option value="{{$c->kode_cuti}}">{{$c->nama_cuti}}</option>
-                            
+                            <option value="{{ $c->kode_cuti }}">{{ $c->nama_cuti }}</option>
                         @endforeach
                     </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="max_cuti" name="max_cuti" class="form-control" placeholder="sisa cuti"
+                        readonly>
+                    
                 </div>
                 <div class="form-group">
                     <textarea name="keterangan" id="keterangan" cols="30" rows="5" class="form-group" placeholder="--Keterangan"
@@ -86,7 +90,34 @@
             $("#tgl_izin_dari, #tgl_izin_sampai").change(function(e) {
                 loadjumlahhari();
             })
+            $("#kode_cuti").change(function(e) {
+                var kode_cuti = $(this).val();
+                var tgl_izin_dari = $("#tgl_izin_dari").val();
+                if (tgl_izin_dari == "") {
+                    Swal.fire({
+                        title: 'Oops !',
+                        text: 'Silahkan Isi tanggal Cuti terlebih dulu!',
+                        icon: 'warning'
+                    });
+                    $("#kode_cuti").val("");
+                } else {
+                    $.ajax({
+                        url: '/izincuti/getmaxcuti',
+                        type: 'POST',
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            kode_cuti: kode_cuti,
+                            tgl_izin_dari: tgl_izin_dari
+                        },
+                        cache: false,
+                        success: function(respond) {
+                            $("#max_cuti").val(respond);
+                            
+                        }
+                    });
+                }
 
+            });
         });
     </script>
 @endpush

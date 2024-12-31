@@ -26,6 +26,7 @@
 
         @endphp
         @if ($d->status == 'h')
+        
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $d->email }}</td>
@@ -34,11 +35,23 @@
                 <td>{{ $d->nama_jam_kerja }} ({{ $d->jam_masuk }})</td>
                 <td>{{ $d->jam_in }}</td>
                 <td>
-                    <img src="{{ url($foto_in) }}" class="avatar" alt="">
+                    @if ($d->foto_in != null)
+                        <img src="{{ url($foto_in) }}" class="avatar" alt="">
+                    @else
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="icon icon-tabler icons-tabler-outline icon-tabler-hourglass-low">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                            <path d="M6.5 17h11" />
+                            <path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z" />
+                            <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z" />
+                        </svg>
+                    @endif
                 </td>
                 <td>{!! $d->jam_out != null ? $d->jam_out : '<span class="badge bg-info"> Belum absen</span> ' !!}</td>
                 <td>
-                    @if ($d->jam_out != null)
+                    @if ($d->foto_out != null)
                         <img src="{{ url($foto_out) }}" class="avatar" alt="">
                     @else
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -51,12 +64,12 @@
                             <path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z" />
                         </svg>
                     @endif
-                    
+
                 </td>
                 <td>{{ $d->status }}</td>
-               
+
                 <td>
-                    
+
                     @if ($d->jam_in >= $d->jam_masuk)
                         @php
                             $jamterlambat = selisih($d->jam_masuk, $d->jam_in);
@@ -67,19 +80,24 @@
                     @endif
                 </td>
                 <td>
-                    <a href="#" class="btn btn-primary tampilkanpeta" id="{{ $d->id }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-map-2">
-                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                            <path d="M12 18.5l-3 -1.5l-6 3v-13l6 -3l6 3l6 -3v7.5" />
-                            <path d="M9 4v13" />
-                            <path d="M15 7v5.5" />
-                            <path
-                                d="M21.121 20.121a3 3 0 1 0 -4.242 0c.418 .419 1.125 1.045 2.121 1.879c1.051 -.89 1.759 -1.516 2.121 -1.879z" />
-                            <path d="M19 18v.01" />
-                        </svg>
-                    </a>
+                    @if ($d->lokasi_in != null)
+                        <a href="#" class="btn btn-primary tampilkanpeta" id="{{ $d->id }}">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-map-2">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path d="M12 18.5l-3 -1.5l-6 3v-13l6 -3l6 3l6 -3v7.5" />
+                                <path d="M9 4v13" />
+                                <path d="M15 7v5.5" />
+                                <path
+                                    d="M21.121 20.121a3 3 0 1 0 -4.242 0c.418 .419 1.125 1.045 2.121 1.879c1.051 -.89 1.759 -1.516 2.121 -1.879z" />
+                                <path d="M19 18v.01" />
+                            </svg>
+                        </a>
+                    @endif
+
+                    <a href="#" class="btn btn-success btn-sm mt-1 koreksipresensi"
+                        email="{{ $d->email }}">Koreksi</a>
                 </td>
             </tr>
         @else
@@ -100,12 +118,15 @@
                         <span class="badge bg-warning">I</span>
                     @elseif ($d->status == 's')
                         <span class="badge bg-info">S</span>
-                        @elseif ($d->status == 'c')
+                    @elseif ($d->status == 'a')
+                        <span class="badge bg-danger">A</span>
+                    @elseif ($d->status == 'c')
                         <span class="badge" style="background-color: #a600ff">C</span>
                     @endif
                 </td>
                 <td>{{ $d->keterangan }}</td>
-                <td></td>
+                <td><a href="#" class="btn btn-success btn-sm mt-1 koreksipresensi"
+                        email="{{ $d->email }}">Koreksi</a></td>
             </tr>
         @endif
     @endforeach
@@ -128,6 +149,25 @@
                 }
             });
             $('#modal-tampilkanpeta').modal("show");
+        });
+
+        $(".koreksipresensi").click(function(e) {
+            var email = $(this).attr("email");
+            var tanggal = "{{ $tanggal }}";
+            $.ajax({
+                type: "POST",
+                url: '/koreksipresensi',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    email: email,
+                    tanggal: tanggal
+                },
+                cache: false,
+                success: function(respond) {
+                    $("#loadkoreksipresensi").html(respond);
+                }
+            });
+            $('#modal-koreksipresensi').modal("show");
         });
     });
 </script>

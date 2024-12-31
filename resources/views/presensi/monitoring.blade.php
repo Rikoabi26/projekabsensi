@@ -19,6 +19,22 @@
                     <div class="card">
                         <div class="card-body">
                             <div class="row">
+                                <div class="col-12">
+
+                                    @if (Session::get('success'))
+                                        <div class="alert alert-success">
+                                            {{ Session::get('success') }}
+                                        </div>
+                                    @endif
+
+                                    @if (Session::get('warning'))
+                                        <div class="alert alert-warning">
+                                            {{ Session::get('warning') }}
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-4">
                                     <div class="input-icon mb-3">
                                         <input type="date" id="tanggal" name="tanggal" value="{{ date('Y-m-d') }}"
@@ -76,6 +92,19 @@
             </div>
         </div>
     </div>
+    <div class="modal modal-blur fade" id="modal-koreksipresensi" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Data Presensi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="loadkoreksipresensi">
+
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('myscript')
     <script>
@@ -100,7 +129,7 @@
             $('#tanggal').change(function(e) {
                 loadpresensi();
             });
-            $("#kode_cabang").change(function(e){
+            $("#kode_cabang").change(function(e) {
                 loadpresensi();
             });
             loadpresensi();

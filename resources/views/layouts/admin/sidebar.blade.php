@@ -49,6 +49,13 @@
 </style>
 <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
     <div class="container-fluid">
+         <!-- Tombol Toggle untuk Layar Kecil -->
+         <div class="navbar-nav flex-row d-lg-none">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
+                aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
         <div class="navbar-nav flex-row d-lg-none">
             <div class="nav-item d-flex align-items-center">
                 <!-- Logo -->

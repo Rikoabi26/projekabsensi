@@ -49,7 +49,10 @@
             border: 1px solid #000;
             padding: 8px;
             font-size: 12px;
-
+        }
+        body.A4.landscape .sheet{
+            
+            height: auto !important;
         }
     </style>
 </head>

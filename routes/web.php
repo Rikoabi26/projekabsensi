@@ -79,6 +79,8 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::post('/izincuti/store', [IzincutiController::class, 'store']);
     Route::get('/izincuti/{kode_izin}/edit', [IzincutiController::class, 'edit']);
     Route::post('/izincuti/{kode_izin}/update', [IzincutiController::class, 'update']);
+    Route::post('/izincuti/getmaxcuti', [IzincutiController::class, 'getmaxcuti']);
+
 
     Route::get('/izin/{kode_izin}/showact', [PresensiController::class, 'showact']);
     Route::get('/izin/{kode_izin}/delete', [PresensiController::class, 'deleteizin']);
@@ -114,6 +116,9 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/presensi/izinsakit', [PresensiController::class, 'izinsakit']);
     Route::post('/presensi/approveizinsakit', [PresensiController::class, 'approveizinsakit']);
     Route::get('/presensi/{kode_izin}/batalkanizinsakit', [PresensiController::class, 'batalkanizinsakit']);
+    Route::post('/koreksipresensi', [PresensiController::class, 'koreksipresensi']);
+    Route::post('/storekoreksipresensi', [PresensiController::class, 'storekoreksipresensi']);
+
 
     //cabang
     Route::get('/cabang', [CabangController::class, 'index']);
@@ -134,7 +139,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/konfigurasi/{nik}/setjamkerja', [KonfigurasiController::class, 'setjamkerja']);
     Route::post('/konfigurasi/storesetjamkerja', [KonfigurasiController::class, 'storesetjamkerja']);
     Route::post('/konfigurasi/updatesetjamkerja', [KonfigurasiController::class, 'updatesetjamkerja']);
-    Route::post('/konfigurasi/getjadwal',[KonfigurasiController::class, 'getjadwal']);
+    Route::post('/konfigurasi/getjadwal', [KonfigurasiController::class, 'getjadwal']);
     //cuti
     Route::get('/cuti', [CutiController::class, 'index']);
     Route::post('/cuti/store', [CutiController::class, 'store']);
@@ -156,5 +161,5 @@ Route::get('/createrolepermission', function () {
     } catch (\Throwable $th) {
         //throw $e;
         echo "Error";
-    } 
+    }
 });

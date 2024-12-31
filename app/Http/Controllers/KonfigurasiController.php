@@ -53,7 +53,7 @@ class KonfigurasiController extends Controller
             'jam_masuk' => $jam_masuk,
             'akhir_jam_masuk' => $akhir_jam_masuk,
             'jam_pulang' => $jam_pulang,
-            
+
 
         ];
         // dd($data);
@@ -96,6 +96,7 @@ class KonfigurasiController extends Controller
             return Redirect::back()->with(['warning' => 'Data gagal Diupdate']);
         }
     }
+
     public function deletejamkerja($kode_jam_kerja)
     {
         $hapus = DB::table('jam_kerja')->where('kode_jam_kerja', $kode_jam_kerja)->delete();
@@ -172,10 +173,10 @@ class KonfigurasiController extends Controller
         DB::beginTransaction();
         try {
             DB::table('konfigurasi_jamkerja')->where('email', $email)
-            ->where('email', $email)
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->delete();
+                ->where('email', $email)
+                ->whereMonth('tanggal', $bulan)
+                ->whereYear('tanggal', $tahun)
+                ->delete();
             Setjamkerja::insert($data);
             DB::commit();
             return redirect('/karyawan')->with(['success' => 'Jam Kerja Berhasil di update']);
@@ -186,27 +187,27 @@ class KonfigurasiController extends Controller
     }
 
     public function getJadwal(Request $request)
-{
-    try {
-        $bulan = $request->bulan;
-        $tahun = $request->tahun;
-        $email = $request->email;
+    {
+        try {
+            $bulan = $request->bulan;
+            $tahun = $request->tahun;
+            $email = $request->email;
 
-        $jadwal = DB::table('konfigurasi_jamkerja')
-            ->where('email', $email)
-            ->whereMonth('tanggal', $bulan)
-            ->whereYear('tanggal', $tahun)
-            ->get();
+            $jadwal = DB::table('konfigurasi_jamkerja')
+                ->where('email', $email)
+                ->whereMonth('tanggal', $bulan)
+                ->whereYear('tanggal', $tahun)
+                ->get();
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $jadwal
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'error',
-            'message' => $e->getMessage()
-        ], 500);
+            return response()->json([
+                'status' => 'success',
+                'data' => $jadwal
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
-}
 }

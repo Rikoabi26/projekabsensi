@@ -24,7 +24,7 @@
                     class="form-control" placeholder="Kode Jam Kerja" required>
             </div>
             <small id="warning-kode-dept" class="text-danger" style="display: none;">
-                Kode Dept tidak boleh lebih dari 3 karakter.
+                Kode Dept tidak boleh lebih dari 4 karakter.
             </small>
         </div>
     </div>

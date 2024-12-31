@@ -120,4 +120,27 @@ class IzincutiController extends Controller
             return redirect('/presensi/izin')->with(['error' => 'Data GAGAL Di update']);
         }
     }
+
+    public function getmaxcuti(Request $request)
+    {
+        $email = Auth::guard('karyawan')->user()->email;
+        $kode_cuti = $request->kode_cuti;
+        $tgl_izin_dari = $request->tgl_izin_dari;
+        $tahun_cuti = date('Y', strtotime($tgl_izin_dari));
+        $cuti = DB::table('master_cuti')->where('kode_cuti', $kode_cuti)->first();
+        if ($kode_cuti == "C01") {
+            $cuti_digunakan = DB::table('presensi')
+                ->join('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
+                ->where('presensi.status', 'c')
+                ->where('kode_cuti', 'C01')
+                ->whereRaw('YEAR(tgl_presensi)="' . $tahun_cuti . '"')
+                ->where('presensi.email', $email)
+                ->count();
+            $max_cuti = $cuti->jml_hari - $cuti_digunakan;
+        } else {
+            $max_cuti = $cuti->jml_hari;
+        }
+        
+        return $max_cuti;
+    }
 }
