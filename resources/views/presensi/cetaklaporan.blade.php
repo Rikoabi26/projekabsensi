@@ -130,51 +130,66 @@
                 <th>Foto</th>
                 <th>Jam Pulang</th>
                 <th>Foto</th>
+                <th>Status</th>
                 <th>Keterangan</th>
                 <th>Jam Kerja</th>
             </tr>
             @foreach ($presensi as $d)
-                @php
-                    $path_in = Storage::url('uploads/absensi/' . $d->foto_in);
-                    $path_out = Storage::url('uploads/absensi/' . $d->foto_out);
-                    $jamterlambat = selisih($d->jam_masuk, $d->jam_in);
-                @endphp
-                <tr>
-                    <td>{{ $loop->iteration }}</td>
-                    <td>{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</td>
-                    <td>{{ $d->jam_in }}</td>
-                    <td><img src="{{ url($path_in) }}" alt="" width="50px" height="50px"></td>
-                    <td>{{ $d->jam_out != null ? $d->jam_out : 'belum absen' }}</td>
-                    <td>
-                        @if ($d->jam_out != null)
-                            <img src="{{ url($path_out) }}" alt="" width="50px" height="50px">
-                        @else
-                            No Photo
-                        @endif
+                @if ($d->status == 'h')
+                    @php
+                        $path_in = Storage::url('uploads/absensi/' . $d->foto_in);
+                        $path_out = Storage::url('uploads/absensi/' . $d->foto_out);
+                        $jamterlambat = selisih($d->jam_masuk, $d->jam_in);
+                    @endphp
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</td>
+                        <td>{{ $d->jam_in }}</td>
+                        <td><img src="{{ url($path_in) }}" alt="" width="50px" height="50px"></td>
+                        <td>{{ $d->jam_out != null ? $d->jam_out : 'belum absen' }}</td>
+                        <td>
+                            @if ($d->jam_out != null)
+                                <img src="{{ url($path_out) }}" alt="" width="50px" height="50px">
+                            @else
+                                No Photo
+                            @endif
 
-                    </td>
-                    <td>
-                        @if ($d->jam_in > $d->jam_masuk)
-                            Terlambat {{ $jamterlambat }}
-                        @else
-                            tepat waktu
-                        @endif
-                    </td>
-                    {{-- menghitung jam kerja, jika tidak absen pulang dianggap tidak kerja --}}
-                    <td>
-                        @if ($d->jam_out != null)
-                            @php
-                                $jmljamkerja = selisih($d->jam_in, $d->jam_out);
-                            @endphp
-                        @else
-                            @php
-                                $jmljamkerja = 0;
-                            @endphp
-                        @endif
-                        {{ $jmljamkerja }}
-                    </td>
-
-                </tr>
+                        </td>
+                        <td>{{$d->status}}</td>
+                        <td>
+                            @if ($d->jam_in > $d->jam_masuk)
+                                Terlambat {{ $jamterlambat }}
+                            @else
+                                tepat waktu
+                            @endif
+                        </td>
+                        {{-- menghitung jam kerja, jika tidak absen pulang dianggap tidak kerja --}}
+                        <td>
+                            @if ($d->jam_out != null)
+                                @php
+                                    $jmljamkerja = selisih($d->jam_in, $d->jam_out);
+                                @endphp
+                            @else
+                                @php
+                                    $jmljamkerja = 0;
+                                @endphp
+                            @endif
+                            {{ $jmljamkerja }}
+                        </td>
+                    </tr>
+                @else
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>{{$d->status}}</td>
+                        <td>{{$d->keterangan}}</td>
+                        <td></td>
+                    </tr>
+                @endif
             @endforeach
         </table>
         <table width="100%" style="margin-top: 100px;">
@@ -191,7 +206,7 @@
                 </td>
             </tr>
         </table>
-        
+
 
     </section>
 

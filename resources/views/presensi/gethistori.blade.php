@@ -1,22 +1,46 @@
+<style>
+    .historicontent {
+        display: flex;
+    }
+
+    .datapresensi {
+        margin-left: 10px;
+    }
+</style>
+
 @if ($histori->isEmpty())
     <div class="alert alert-warning">Data Kosong</div>
 @endif
 
 @foreach ($histori as $d)
-    <ul class="listview image-listview">
-        <li>
-            <div class="item">
-                <img src="{{ asset('assets/img/sample/avatar/avatar1.jpg') }}" alt="image" class="image">
-                <div class="in">
-                    <div>
-                        <b>{{ date('d-m-Y', strtotime($d->tgl_presensi)) }}</b><br>
-                        {{-- <small class="text-muted">{{ $d->jabatan }}</small> --}}
-                    </div>
-                    <span
-                        class="badge {{ $d->jam_in < '08:00' ? 'bg-success' : 'bg-danger' }}">{{ $d->jam_in }}</span>
-                    <span class="badge bg-primary">{{ $d->jam_out }}</span>
-                </div>
+@if ($d->status == 'h')
+<div class="card">
+    <div class="card-body">
+        <div class="historicontent">
+            <div class="iconpresensi">
+                <ion-icon name="finger-print-outline"
+                    style="font-size: 20px; color:green" class="text-success"></ion-icon>
             </div>
-        </li>
-    </ul>
+            <div class="datapresensi">
+                <h3 style="line-height: 3px">{{ $d->nama_jam_kerja }}</h3>
+                <h4 style="margin: 0px !important"> {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
+                </h4>
+                <span>
+                    {!! $d->jam_in != null ? date('H:i', strtotime($d->jam_in)) : '<span class="text-danger">Belum Absen</span>' !!}
+                </span>
+                <span>
+                    {!! $d->jam_out != null
+                        ? '-' . date('H:i', strtotime($d->jam_out))
+                        : '<span class="text-danger">- Belum Absen</span>' !!}
+                </span>
+                <br>
+                <span>
+                    {!! date('H:i', strtotime($d->jam_in)) > date('H:i', strtotime($d->jam_masuk))
+                        ? '<span class="text-danger">Terlambat</span>'
+                        : '<span class="text-success">Tepat waktu</span>' !!}</span>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 @endforeach

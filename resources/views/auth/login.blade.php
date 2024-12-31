@@ -11,10 +11,24 @@
     <title>e-Presensi</title>
     <meta name="description" content="Mobilekit HTML Mobile UI Kit">
     <meta name="keywords" content="bootstrap 4, mobile template, cordova, phonegap, mobile, html" />
-    <link rel="icon" type="image/png" href="{{asset('assets/img/favicon.png')}}" sizes="32x32">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{asset('assets/img/icon/192x192.png')}}">
-    <link rel="stylesheet" href="{{asset('assets/css/style.css')}}">
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/favicon.png') }}" sizes="32x32">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('assets/img/icon/192x192.png') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
     <link rel="manifest" href="__manifest.json">
+    <style>
+        .input-wrapper {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+        }
+    </style>
 </head>
 
 <body class="bg-white">
@@ -31,7 +45,7 @@
 
         <div class="login-form mt-1">
             <div class="section">
-                <img src="{{asset('assets/img/login/login.jpg')}}" alt="image" class="form-image">
+                <img src="{{ asset('assets/img/login/login.jpg') }}" alt="image" class="form-image">
             </div>
             <div class="section mt-1">
                 <h1>e-Presensi</h1>
@@ -42,15 +56,16 @@
                     $messagewarning = Session::get('warning');
                 @endphp
                 @if (Session::get('warning'))
-                <div class="aler alert-outline-warning">
-                    {{$messagewarning}}
-                </div>
+                    <div class="aler alert-outline-warning">
+                        {{ $messagewarning }}
+                    </div>
                 @endif
                 <form action="/proseslogin" method="POST">
                     @csrf
                     <div class="form-group boxed">
                         <div class="input-wrapper">
-                            <input type="email" name="email" class="form-control" id="email" placeholder="Email address ">
+                            <input type="email" name="email" class="form-control" id="email"
+                                placeholder="Email address ">
                             <i class="clear-input">
                                 <ion-icon name="close-circle"></ion-icon>
                             </i>
@@ -59,10 +74,11 @@
 
                     <div class="form-group boxed">
                         <div class="input-wrapper">
-                            <input type="password" name="password" class="form-control" id="password" placeholder="Password">
-                            <i class="clear-input">
-                                <ion-icon name="close-circle"></ion-icon>
-                            </i>
+                            <input type="password" name="password" class="form-control" id="password"
+                                placeholder="Password">
+                            <span class="toggle-password" onclick="togglePassword()" aria-label="Show password">
+                                <ion-icon name="eye-outline" id="toggleIcon"></ion-icon>
+                            </span>
                         </div>
                     </div>
 
@@ -70,7 +86,7 @@
                         {{-- <div>
                             <a href="page-register.html">Register Now</a>
                         </div> --}}
-                        <div><a href="page-forgot-password.html" class="text-muted">Forgot Password?</a></div>
+                        {{-- <div><a href="page-forgot-password.html" class="text-muted">Forgot Password?</a></div> --}}
                         <div><a href="{{ route('loginadmin') }}" class="text-muted">Login Admin</a></div>
 
                     </div>
@@ -87,24 +103,38 @@
     </div>
     <!-- * App Capsule -->
 
-
-
     <!-- ///////////// Js Files ////////////////////  -->
     <!-- Jquery -->
-    <script src="{{asset('assets/js/lib/jquery-3.4.1.min.js')}}"></script>
+    <script src="{{ asset('assets/js/lib/jquery-3.4.1.min.js') }}"></script>
     <!-- Bootstrap-->
-    <script src="{{asset('assets/js/lib/popper.min.js')}}"></script>
-    <script src="{{asset('')}}assets/js/lib/bootstrap.min.js"></script>
+    <script src="{{ asset('assets/js/lib/popper.min.js') }}"></script>
+    <script src="{{ asset('') }}assets/js/lib/bootstrap.min.js"></script>
     <!-- Ionicons -->
     <script type="module" src="https://unpkg.com/ionicons@5.0.0/dist/ionicons/ionicons.js"></script>
     <!-- Owl Carousel -->
-    <script src="{{asset('assets/js/plugins/owl-carousel/owl.carousel.min.js')}}"></script>
+    <script src="{{ asset('assets/js/plugins/owl-carousel/owl.carousel.min.js') }}"></script>
     <!-- jQuery Circle Progress -->
-    <script src="{{asset('assets/js/plugins/jquery-circle-progress/circle-progress.min.js')}}"></script>
+    <script src="{{ asset('assets/js/plugins/jquery-circle-progress/circle-progress.min.js') }}"></script>
     <!-- Base Js File -->
-    <script src="{{asset('assets/js/base.js')}}"></script>
+    <script src="{{ asset('assets/js/base.js') }}"></script>
 
+    <script>
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggleIcon');
+            const toggleButton = toggleIcon.parentElement;
 
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.name = 'eye-off-outline'; // Change icon to "eye-off"
+                toggleButton.setAttribute('aria-label', 'Hide password'); 
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.name = 'eye-outline'; // Change icon back to "eye"
+                toggleButton.setAttribute('aria-label', 'Show password');
+            }
+        }
+    </script>
 </body>
 
 </html>

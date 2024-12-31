@@ -1,12 +1,11 @@
 @extends('layouts.admin.tabler')
-
 @section('content')
     <div class="page-header d-print-none">
         <div class="container-xl">
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        Data Cabang
+                        Data Cuti
                     </h2>
                 </div>
             </div>
@@ -35,7 +34,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-12">
-                                    <a href="#" class="btn btn-primary" id="btntambahcabang">
+                                    <a href="#" class="btn btn-primary" id="btntambahcuti">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"
@@ -48,99 +47,69 @@
                                         Tambah Data</a>
                                 </div>
                             </div>
-                            {{-- <div class="row mt-2">
-                                <div class="col-12">
-                                    <form action="/cabang" method="GET">
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <select name="kode_cabang" id="" class="form-select">
-                                                    <option value="">Semua Cabang</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="col-2">
-                                                <div class="form-group">
-                                                    <button type="submit" class="btn btn-primary">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                            height="24" viewBox="0 0 24 24" fill="none"
-                                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                            stroke-linejoin="round"
-                                                            class="icon icon-tabler icons-tabler-outline icon-tabler-search">
-                                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                            <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-                                                            <path d="M21 21l-6 -6" />
-                                                        </svg>
-                                                        Cari
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div> --}}
                             <div class="row mt-3">
                                 <div class="col-12">
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th>No.</th>
-                                                <th>Kode Cabang</th>
-                                                <th>Nama Cabang</th>
-                                                <th>Lokasi</th>
-                                                <th>Radius</th>
+                                                <th>Kode Cuti</th>
+                                                <th>Nama Cuti</th>
+                                                <th>Jumlah hari</th>
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        
-                                        @foreach ($cabang as $d)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $d->kode_cabang }}</td>
-                                                <td>{{ $d->nama_cabang }}</td>
-                                                <td>{{ $d->lokasi_cabang }}</td>
-                                                <td>{{ $d->radius_cabang }} Meter</td>
-                                                <td>
-                                                    <div class="btn-group">
-                                                        <a href="#" class="edit btn btn-info btn-sm"
-                                                            style="margin-right: 5px" kode_cabang="{{ $d->kode_cabang }}">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                height="24" viewBox="0 0 24 24" fill="none"
-                                                                stroke="currentColor" stroke-width="2"
-                                                                stroke-linecap="round" stroke-linejoin="round"
-                                                                class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
-                                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                                <path
-                                                                    d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
-                                                                <path
-                                                                    d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
-                                                                <path d="M16 5l3 3" />
-                                                            </svg>
-                                                        </a>
-                                                        <form action="/cabang/{{ $d->kode_cabang }}/delete"
-                                                            method="POST">
-                                                            @csrf
-                                                            <a class="btn btn-danger btn-sm delete-confirm">
+                                            @foreach ($cuti as $d)
+                                                <tr>
+                                                    <td>{{ $loop->iteration }}</td>
+                                                    <td>{{ $d->kode_cuti }}</td>
+                                                    <td>{{ $d->nama_cuti }}</td>
+                                                    <td>{{ $d->jml_hari }}</td>
+                                                    
+                                                    <td>
+                                                        <div class="btn-group">
+                                                            <a href="#" class="edit btn btn-info btn-sm"
+                                                                style="margin-right: 5px" kode_cuti="{{ $d->kode_cuti }}">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                     height="24" viewBox="0 0 24 24" fill="none"
                                                                     stroke="currentColor" stroke-width="2"
                                                                     stroke-linecap="round" stroke-linejoin="round"
-                                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+                                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
                                                                     <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                                    <path d="M4 7l16 0" />
-                                                                    <path d="M10 11l0 6" />
-                                                                    <path d="M14 11l0 6" />
                                                                     <path
-                                                                        d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-                                                                    <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                                                        d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
+                                                                    <path
+                                                                        d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z" />
+                                                                    <path d="M16 5l3 3" />
                                                                 </svg>
                                                             </a>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
+                                                            <form action="/cuti/{{ $d->kode_cuti }}/delete"
+                                                                method="POST">
+                                                                @csrf
+                                                                <a class="btn btn-danger btn-sm delete-confirm">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                        height="24" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="icon icon-tabler icons-tabler-outline icon-tabler-trash">
+                                                                        <path stroke="none" d="M0 0h24v24H0z"
+                                                                            fill="none" />
+                                                                        <path d="M4 7l16 0" />
+                                                                        <path d="M10 11l0 6" />
+                                                                        <path d="M14 11l0 6" />
+                                                                        <path
+                                                                            d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                                                                        <path
+                                                                            d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                                                                    </svg>
+                                                                </a>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -151,15 +120,15 @@
         </div>
     </div>
 
-    <div class="modal modal-blur fade" id="modal-inputcabang" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal modal-blur fade" id="modal-inputcuti" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Tambah Data Cabang</h5>
+                    <h5 class="modal-title">Tambah Data Cuti</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form action="/cabang/store" method="POST" id="frmcabang">
+                    <form action="/cuti/store" method="POST">
                         @csrf
                         <div class="row">
                             <div class="col-12">
@@ -181,11 +150,11 @@
                                             <path d="M19 11l0 2" />
                                         </svg>
                                     </span>
-                                    <input type="text" value="" id="kode_cabang" name="kode_cabang"
-                                        class="form-control" placeholder="Kode Cabang" required>
+                                    <input type="text" value="" id="kode_cuti" name="kode_cuti"
+                                        class="form-control" placeholder="Kode Cuti" required>
                                 </div>
                                 <small id="warning-kode-dept" class="text-danger" style="display: none;">
-                                    Kode Dept tidak boleh lebih dari 3 karakter.
+                                    Kode Cuti tidak boleh lebih dari 3 karakter.
                                 </small>
                             </div>
                         </div>
@@ -197,18 +166,16 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-building-community">
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-user-plus">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path
-                                                d="M8 9l5 5v7h-5v-4m0 4h-5v-7l5 -5m1 1v-6a1 1 0 0 1 1 -1h10a1 1 0 0 1 1 1v17h-8" />
-                                            <path d="M13 7l0 .01" />
-                                            <path d="M17 7l0 .01" />
-                                            <path d="M17 11l0 .01" />
-                                            <path d="M17 15l0 .01" />
+                                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                                            <path d="M16 19h6" />
+                                            <path d="M19 16v6" />
+                                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
                                         </svg>
                                     </span>
-                                    <input type="text" value="" name="nama_cabang" id="nama_cabang"
-                                        class="form-control" placeholder="Nama Cabang" required>
+                                    <input type="text" value="" name="nama_cuti" class="form-control"
+                                        placeholder="Nama Cuti" required>
                                 </div>
                             </div>
                         </div>
@@ -220,34 +187,16 @@
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-map-pin">
+                                            class="icon icon-tabler icons-tabler-outline icon-tabler-user-plus">
                                             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M9 11a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                                            <path
-                                                d="M17.657 16.657l-4.243 4.243a2 2 0 0 1 -2.827 0l-4.244 -4.243a8 8 0 1 1 11.314 0z" />
+                                            <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                                            <path d="M16 19h6" />
+                                            <path d="M19 16v6" />
+                                            <path d="M6 21v-2a4 4 0 0 1 4 -4h4" />
                                         </svg>
                                     </span>
-                                    <input type="text" value="" name="lokasi_cabang" id="lokasi_cabang"
-                                        class="form-control" placeholder="Lokasi" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="input-icon mb-3">
-                                    <span class="input-icon-addon">
-                                        <!-- Download SVG icon from http://tabler-icons.io/i/user -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-gps">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-                                            <path d="M12 17l-1 -4l-4 -1l9 -4z" />
-                                        </svg>
-                                    </span>
-                                    <input type="text" value="" name="radius_cabang" id="radius_cabang"
-                                        class="form-control" placeholder="Radius" required>
+                                    <input type="text" value="" name="jml_hari" id="jml_hari"
+                                        class="form-control" placeholder="Jumlah Hari" required>
                                 </div>
                             </div>
                         </div>
@@ -276,11 +225,11 @@
         </div>
     </div>
     {{-- modal edit  --}}
-    <div class="modal modal-blur fade" id="modal-editcabang" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal modal-blur fade" id="modal-editcuti" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Data Cabang</h5>
+                    <h5 class="modal-title">Edit Data Cuti</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body" id="loadeditfoam">
@@ -293,26 +242,26 @@
 @push('myscript')
     <script>
         $(function() {
-            $("#btntambahcabang").click(function() {
-                $("#modal-inputcabang").modal("show");
+            $("#btntambahcuti").click(function() {
+                $("#modal-inputcuti").modal("show");
             });
             //class menggunakan(.), sedangkan id menggunakan(#)
             $(".edit").click(function() {
-                var kode_cabang = $(this).attr('kode_cabang');
+                var kode_cuti = $(this).attr('kode_cuti');
                 $.ajax({
                     type: 'POST',
-                    url: '/cabang/edit',
+                    url: '/cuti/edit',
                     cache: false,
                     data: {
                         _token: "{{ csrf_token() }}",
-                        kode_cabang: kode_cabang
+                        kode_cuti: kode_cuti
 
                     },
                     success: function(respond) {
                         $("#loadeditfoam").html(respond);
                     }
                 });
-                $("#modal-editcabang").modal("show");
+                $("#modal-editcuti").modal("show");
             });
             $(".delete-confirm").click(function(e) {
                 var form = $(this).closest('form');
@@ -339,14 +288,14 @@
         });
 
         //blok untuk kode dept
-        document.getElementById('kode_cabang').addEventListener('input', function() {
-            var kodeDept = this.value;
-            var warningElement = document.getElementById('warning-kode-dept');
+        document.getElementById('kode_cuti').addEventListener('input', function() {
+            var kode_cuti = this.value;
+            var warningElement = document.getElementById('warning-kode-cuti');
 
-            if (kodeDept.length > 3) {
+            if (kode_cuti.length > 3) {
                 // Tampilkan warning
                 warningElement.style.display = 'block';
-                this.value = kodeDept.slice(0, 3); // Potong input menjadi 3 karakter
+                this.value = kode_cuti.slice(0, 3); // Potong input menjadi 3 karakter
             } else {
                 // Sembunyikan warning
                 warningElement.style.display = 'none';

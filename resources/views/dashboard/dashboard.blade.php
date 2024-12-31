@@ -150,7 +150,7 @@
                     <div class="card">
                         <div class="card-body text-center" style="padding :12px 12px !important; line-height: 0.8rem">
                             <span class="badge bg-danger"
-                                style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index:999">{{ $rekapizin->jmlizin }}</span>
+                                style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index:999">{{ $rekappresensi->jmlizin }}</span>
                             <ion-icon name="newspaper-outline" style="font-size: 1.6rem; color"
                                 class="text-success mb-1"></ion-icon>
                             <br>
@@ -162,7 +162,7 @@
                     <div class="card">
                         <div class="card-body text-center" style="padding :12px 12px !important; line-height: 0.8rem">
                             <span class="badge bg-danger"
-                                style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index:999">{{ $rekapizin->jmlsakit }}</span>
+                                style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index:999">{{ $rekappresensi->jmlsakit }}</span>
                             <ion-icon name="medkit-outline" style="font-size: 1.6rem; color"
                                 class="text-warning mb-1"></ion-icon>
                             <br>
@@ -174,11 +174,11 @@
                     <div class="card">
                         <div class="card-body text-center" style="padding :12px 12px !important; line-height: 0.8rem">
                             <span class="badge bg-danger"
-                                style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index:999">{{ $rekappresensi->jmlterlambat }}</span>
-                            <ion-icon name="alarm-outline" style="font-size: 1.6rem; color"
+                                style="position: absolute; top: 3px; right: 10px; font-size:0.6rem; z-index:999">{{ $rekappresensi->jmlcuti }}</span>
+                            <ion-icon name="document-outline" style="font-size: 1.6rem; color"
                                 class="text-danger mb-1"></ion-icon>
                             <br>
-                            <span style="font-size: 0.6rem; font-weight: 500">Terlambat</span>
+                            <span style="font-size: 0.6rem; font-weight: 500">Cuti</span>
                         </div>
                     </div>
                 </div>
@@ -234,38 +234,38 @@
                         }
                     </style>
                     @foreach ($historibulanini as $d)
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="historicontent">
-                                    <div class="iconpresensi">
-                                        <ion-icon name="finger-print-outline"
-                                            style="font-size: 20px; color:green"></ion-icon>
-                                    </div>
-                                    <div class="datapresensi">
-                                        <h3 style="line-height: 3px">{{ $d->nama_jam_kerja }}</h3>
-                                        <h4> {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
-                                        </h4>
-                                        <span>
-                                            {!! $d->jam_in != null ? date('H:i', strtotime($d->jam_in)) : '<span class="text-danger">Belum Absen</span>' !!}
-                                        </span>
-                                        <span>
-                                            {!! $d->jam_out != null
-                                                ? '-' . date('H:i', strtotime($d->jam_out))
-                                                : '<span class="text-danger">- Belum Absen</span>' !!}
-                                        </span>
-                                        <br>
-                                        <span>
-                                            {!! date('H:i', strtotime($d->jam_in)) > date('H:i', strtotime($d->jam_masuk))
-                                                ? '<span class="text-danger">Terlambat</span>'
-                                                : '<span class="text-success">Tepat waktu</span>' !!}</span>
+                        @if ($d->status == 'h')
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="historicontent">
+                                        <div class="iconpresensi">
+                                            <ion-icon name="finger-print-outline" style="font-size: 20px; color:green"
+                                                class="text-success"></ion-icon>
+                                        </div>
+                                        <div class="datapresensi">
+                                            <h3 style="line-height: 3px">{{ $d->nama_jam_kerja }}</h3>
+                                            <h4 style="margin: 0px !important">
+                                                {{ date('d-m-Y', strtotime($d->tgl_presensi)) }}
+                                            </h4>
+                                            <span>
+                                                {!! $d->jam_in != null ? date('H:i', strtotime($d->jam_in)) : '<span class="text-danger">Belum Absen</span>' !!}
+                                            </span>
+                                            <span>
+                                                {!! $d->jam_out != null
+                                                    ? '-' . date('H:i', strtotime($d->jam_out))
+                                                    : '<span class="text-danger">- Belum Absen</span>' !!}
+                                            </span>
+                                            <br>
+                                            <span>
+                                                {!! date('H:i', strtotime($d->jam_in)) > date('H:i', strtotime($d->jam_masuk))
+                                                    ? '<span class="text-danger">Terlambat</span>'
+                                                    : '<span class="text-success">Tepat waktu</span>' !!}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        @endif
                     @endforeach
-
-                   
-                    
                 </div>
 
                 <div class="tab-pane fade" id="profile" role="tabpanel">
@@ -280,7 +280,12 @@
                                             <small class="text-muted">{{ $d->jabatan }}</small>
                                         </div>
                                         <span
-                                            class="badge {{ $d->jam_in < '08:00' ? 'bg-success' : 'bg-danger' }}">{{ $d->jam_in }}</span>
+                                            class="badge {{ $d->jam_in < 'jam_masuk' ? 'bg-success' : 'bg-danger' }}">{{ $d->jam_in }}</span>
+                                        <span class="badge bg-info">
+                                            {{ $d->jam_out != null
+                                                ? date('H:i', strtotime($d->jam_out))
+                                                : '- Belum Absen' }}
+                                        </span>
                                     </div>
                                 </div>
                             </li>

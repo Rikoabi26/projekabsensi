@@ -60,7 +60,7 @@
         <p>{{date("d-m-Y")}}</p>
         <p id="jam"></p>
         <p>{{$jamkerja->nama_jam_kerja}}</p>
-        <p>Jam Masuk : {{$jamkerja->jam_masuk}}</p>
+        {{-- <p>Jam Masuk : {{$jamkerja->jam_masuk}}</p> --}}
     </div>
     <div class="row">
         <div class="col">
@@ -71,7 +71,11 @@
             @else
                 <button id="takeabsen" class="btn btn-primary btn-block mt-2">
                     <ion-icon name="camera-outline"></ion-icon>
+
                     Take Absen</button>
+
+                    Ambil Absen</button>
+
             @endif
 
         </div>

@@ -49,12 +49,22 @@
 </style>
 <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
     <div class="container-fluid">
+
+         <!-- Tombol Toggle untuk Layar Kecil -->
+         <div class="navbar-nav flex-row d-lg-none">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
+                aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+
         <div class="navbar-nav flex-row d-lg-none">
-            <div class="nav-item d-flex align-items-center me-3">
+            <div class="nav-item d-flex align-items-center">
                 <!-- Logo -->
-                <img src="{{ asset('assets/img/Logo Lisna.png') }}" alt="Company Logo" style="height: 40px; margin-right: 10px;">
+                <img src="{{ asset('assets/img/Logo Lisna.png') }}" alt="Company Logo"
+                    style="height: 40px; margin-right: 10px;">
                 <!-- Nama Perusahaan -->
-                <span class="navbar-brand mb-0 h1">Absensi Lisna</span>
+                <span class="navbar-brand">Absensi Lisna</span>
             </div>
         </div>
         <div class="collapse navbar-collapse" id="sidebar-menu">
@@ -99,7 +109,7 @@
                             Data Master
                         </span>
                     </a>
-                    <div class="dropdown-menu {{ request()->is(['karyawan', 'departemen', 'cabang']) ? 'show' : '' }}">
+                    <div class="dropdown-menu {{ request()->is(['karyawan', 'departemen', 'cabang', 'cuti']) ? 'show' : '' }}">
                         <div class="dropdown-menu-columns">
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ request()->is(['karyawan']) ? 'active' : '' }}"
@@ -112,6 +122,9 @@
                                 </a>
                                 <a class="dropdown-item {{ request()->is(['cabang']) ? 'active' : '' }}" href="/cabang">
                                     Tikor Cabang
+                                </a>
+                                <a class="dropdown-item {{ request()->is(['cuti']) ? 'active' : '' }}" href="/cuti">
+                                    Cuti
                                 </a>
                             </div>
                         </div>
