@@ -40,7 +40,7 @@
                 <div class="form-group">
                     <input type="text" id="max_cuti" name="max_cuti" class="form-control" placeholder="sisa cuti"
                         readonly>
-                    
+
                 </div>
                 <div class="form-group">
                     <textarea name="keterangan" id="keterangan" cols="30" rows="5" class="form-group" placeholder="--Keterangan"
@@ -57,6 +57,7 @@
 @push('myscript')
     <script>
         var currYear = (new Date()).getFullYear();
+
 
         $(document).ready(function() {
             $('.datepicker').datepicker({
@@ -112,12 +113,25 @@
                         cache: false,
                         success: function(respond) {
                             $("#max_cuti").val(respond);
-                            
+
                         }
                     });
                 }
 
             });
+
+            $("#frmIzin").submit(function() {
+                var jml_hari = $("#jml_hari").val();
+                var max_cuti = $("#max_cuti").val();
+            });
+            if (parseInt(jml_hari) > parseInt(max_cuti)) {
+                swal.fire({
+                    title: "Oops !",
+                    text: 'Jumlah Hari cuti tidak bole lebih dari ' + max_cuti + " Hari",
+                    icon: 'warning'
+                });
+                return false;
+            }
         });
     </script>
 @endpush
