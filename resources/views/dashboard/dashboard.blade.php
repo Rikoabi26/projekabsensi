@@ -104,7 +104,7 @@
                         <div class="card-body">
                             <div class="presencecontent">
                                 <div class="iconpresence">
-                                    <ion-icon name="camera"></ion-icon>
+                                    <ion-icon name="time-outline"></ion-icon>
                                 </div>
                                 <div class="presencedetail">
                                     <h4 class="presencetitle">Masuk</h4>
@@ -119,7 +119,7 @@
                         <div class="card-body">
                             <div class="presencecontent">
                                 <div class="iconpresence">
-                                    <ion-icon name="camera"></ion-icon>
+                                    <ion-icon name="time-outline"></ion-icon>
                                 </div>
                                 <div class="presencedetail">
                                     <h4 class="presencetitle">Pulang</h4>

@@ -60,6 +60,7 @@
                                 aria-label="cloud upload outline"></ion-icon>
                             <i>Tap to Upload</i>
                         </strong>
+                        <h4 style="color:darkgray">*file: jpg,png,jpeg*</h4>
                     </span>
                 </label>
             </div>

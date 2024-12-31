@@ -1,10 +1,54 @@
+<style>
+    /* Mengatur flexbox pada navbar */
+    .navbar-nav.flex-row {
+        display: flex;
+        align-items: center;
+        /* Agar logo dan teks tegak lurus di tengah */
+    }
+
+    /* Mengurangi margin di sekitar logo dan nama perusahaan */
+    .navbar-nav .nav-item {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Mengurangi jarak antara logo dan teks */
+    .nav-item.d-flex.align-items-center {
+        margin-bottom: 5px;
+        /* Menurunkan jarak antar logo dan teks */
+    }
+
+    /* Mengatur ukuran logo agar lebih proporsional */
+    .navbar-nav img {
+        height: 30px;
+        /* Ukuran logo yang lebih kecil */
+        margin-right: 8px;
+        /* Mengurangi margin ke kanan logo */
+    }
+
+    /* Menambahkan padding pada menu di sidebar untuk merapikan */
+    .navbar-nav li.nav-item {
+        padding: 6px 8px;
+    }
+
+    /* Menambahkan efek hover pada menu */
+    .navbar-nav li.nav-item a:hover {
+        background-color: #495057;
+        /* Warna latar belakang hover */
+    }
+
+    /* Untuk responsif, memastikan logo dan teks tetap di bawah logo saat tampilan kecil */
+    @media (max-width: 992px) {
+        .navbar-nav .nav-item.d-flex.align-items-center {
+            flex-direction: column;
+            /* Membuat logo dan teks ditampilkan secara vertikal di mobile */
+            text-align: center;
+            /* Menyelaraskan teks di tengah */
+        }
+    }
+</style>
 <aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
     <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
-            aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
         <div class="navbar-nav flex-row d-lg-none">
             <div class="nav-item d-flex align-items-center me-3">
                 <!-- Logo -->
