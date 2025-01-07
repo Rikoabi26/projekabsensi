@@ -86,6 +86,8 @@ Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/izin/{kode_izin}/delete', [PresensiController::class, 'deleteizin']);
 });
 
+//Route untuk admin
+
 Route::middleware(['auth:user'])->group(function () {
     Route::get('/proseslogoutadmin', [AuthController::class, 'proseslogoutadmin']);
     Route::get('/panel/dashboardadmin', [DashboardController::class, 'dashboardadmin']);
@@ -96,7 +98,8 @@ Route::middleware(['auth:user'])->group(function () {
     Route::post('/karyawan/edit', [KaryawanController::class, 'edit']);
     Route::post('/karyawan/{email}/update', [KaryawanController::class, 'update']);
     Route::post('/karyawan/{email}/delete', [KaryawanController::class, 'delete']);
-    Route::get('karyawan/{email}/resetpassword', [KaryawanController::class, 'resetpassword']);
+    Route::get('/karyawan/{email}/resetpassword', [KaryawanController::class, 'resetpassword']);
+    Route::get('/karyawan/{email}/lockandunlocklocation', [KaryawanController::class, 'lockandunlocklocation']);
 
     //departemen
     Route::get('/departemen', [DepartemenController::class, 'index']);
@@ -150,16 +153,16 @@ Route::middleware(['auth:user'])->group(function () {
 
 
 // role permision baru sampe sini
-Route::get('/createrolepermission', function () {
+// Route::get('/createrolepermission', function () {
 
-    try {
-        //code...
-        Role::create(['name' => 'administrator']);
-        Permission::create(['name' => 'view-karyawan']);
-        Permission::create(['name' => 'view-departemen']);
-        echo "sukses";
-    } catch (\Throwable $th) {
-        //throw $e;
-        echo "Error";
-    }
-});
+//     try {
+//         //code...
+//         Role::create(['name' => 'administrator']);
+//         Permission::create(['name' => 'view-karyawan']);
+//         Permission::create(['name' => 'view-departemen']);
+//         echo "sukses";
+//     } catch (\Throwable $th) {
+//         //throw $e;
+//         echo "Error";
+//     }
+// });

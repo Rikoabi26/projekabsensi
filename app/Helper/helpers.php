@@ -10,11 +10,32 @@ function hitungjamterlambat($jadwal_jam_masuk, $jam_presensi)
     $jamterlambat = floor($diffterlambat / (60 * 60));
     $menitterlambat = floor(($diffterlambat - ($jamterlambat * (60 * 60))) / 60);
 
+    if ($diffterlambat <= 0) {
+        return "00:00";
+    }
+
     $jterlambat = $jamterlambat <= 9 ? "0" . $jamterlambat : $jamterlambat;
     $mterlambat = $menitterlambat <= 9 ? "0" . $menitterlambat : $menitterlambat;
 
     $terlambat = $jterlambat . ":" . $mterlambat;
     return $terlambat;
+}
+
+function hitungjamterlambatdesimal($jam_masuk, $jam_presensi)
+{
+    $j1 = strtotime($jam_masuk);
+    $j2 = strtotime($jam_presensi);
+
+    $diffterlambat = $j2 - $j1;
+
+    $jamterlambat = floor($diffterlambat / (60 * 60));
+    $menitterlambat = floor(($diffterlambat - ($jamterlambat * (60 * 60))) / 60);
+
+    $jterlambat = $jamterlambat <= 9 ? "0" . $jamterlambat : $jamterlambat;
+    $mterlambat = $menitterlambat <= 9 ? "0" . $menitterlambat : $menitterlambat;
+
+    $desimalterlambat = ROUND(($menitterlambat / 60), 2);
+    return $desimalterlambat;
 }
 
 function hitunghari($tanggal_mulai, $tanggal_akhir)
@@ -36,4 +57,22 @@ function buatkode($nomor_terakhir, $kunci, $jumlah_karakter = 0)
     //    menyusun kunci dan nomor baru
     $kode = $kunci . $nomor_baru_plus_nol;
     return $kode;
+}
+
+
+function hitungdenda($terlambat)
+{
+    // If no lateness or invalid format, return 0
+    if (empty($terlambat) || $terlambat === "00:00") {
+        return 0;
+    }
+
+    // Split hours and minutes
+    list($hours, $minutes) = explode(':', $terlambat);
+    
+    // Convert everything to minutes and calculate total penalty
+    $total_minutes = ($hours * 60) + $minutes;
+    $denda = $total_minutes * 1000;
+    
+    return $denda;
 }

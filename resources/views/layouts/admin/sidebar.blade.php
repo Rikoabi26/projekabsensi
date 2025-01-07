@@ -1,8 +1,10 @@
 <style>
+    
     /* Mengatur flexbox pada navbar */
     .navbar-nav.flex-row {
         display: flex;
         align-items: center;
+        
         /* Agar logo dan teks tegak lurus di tengah */
     }
 
@@ -10,6 +12,7 @@
     .navbar-nav .nav-item {
         margin: 0;
         padding: 0;
+       
     }
 
     /* Mengurangi jarak antara logo dan teks */
@@ -33,7 +36,7 @@
 
     /* Menambahkan efek hover pada menu */
     .navbar-nav li.nav-item a:hover {
-        background-color: #495057;
+        background-color: #c1ced3;
         /* Warna latar belakang hover */
     }
 
@@ -47,10 +50,10 @@
         }
     }
 </style>
-<aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark">
+<aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark" style="background-color: #0ae6d0;">
     <div class="container-fluid">
-         <!-- Tombol Toggle untuk Layar Kecil -->
-         <div class="navbar-nav flex-row d-lg-none">
+        <!-- Tombol Toggle untuk Layar Kecil -->
+        <div class="navbar-nav flex-row d-lg-none">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
                 aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -65,7 +68,7 @@
                 <span class="navbar-brand">Absensi Lisna</span>
             </div>
         </div>
-        <div class="collapse navbar-collapse" id="sidebar-menu">
+        <div class="collapse navbar-collapse" style="font-weight: bold;" id="sidebar-menu">
             <ul class="navbar-nav pt-lg-3">
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('panel/dashboardadmin') ? 'active' : '' }}"
@@ -73,12 +76,11 @@
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="icon">
+                            style="color: #f1f4f5"
+                                fill="currentColor" class="icon icon-tabler icons-tabler-filled icon-tabler-home">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
-                                <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
-                                <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+                                <path
+                                    d="M12.707 2.293l9 9c.63 .63 .184 1.707 -.707 1.707h-1v6a3 3 0 0 1 -3 3h-1v-7a3 3 0 0 0 -2.824 -2.995l-.176 -.005h-2a3 3 0 0 0 -3 3v7h-1a3 3 0 0 1 -3 -3v-6h-1c-.89 0 -1.337 -1.077 -.707 -1.707l9 -9a1 1 0 0 1 1.414 0m.293 11.707a1 1 0 0 1 1 1v7h-4v-7a1 1 0 0 1 .883 -.993l.117 -.007z" />
                             </svg>
                         </span>
                         <span class="nav-link-title">
@@ -93,6 +95,7 @@
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            style="color: #f1f4f5"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="icon">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -107,7 +110,8 @@
                             Data Master
                         </span>
                     </a>
-                    <div class="dropdown-menu {{ request()->is(['karyawan', 'departemen', 'cabang', 'cuti']) ? 'show' : '' }}">
+                    <div
+                        class="dropdown-menu {{ request()->is(['karyawan', 'departemen', 'cabang', 'cuti']) ? 'show' : '' }}">
                         <div class="dropdown-menu-columns">
                             <div class="dropdown-menu-column">
                                 <a class="dropdown-item {{ request()->is(['karyawan']) ? 'active' : '' }}"
@@ -134,20 +138,16 @@
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="icon icon-tabler icons-tabler-outline icon-tabler-heart-rate-monitor">
+                            style="color: #f1f4f5"
+                                fill="currentColor"
+                                class="icon icon-tabler icons-tabler-filled icon-tabler-device-desktop">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                 <path
-                                    d="M3 4m0 1a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v10a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1z" />
-                                <path d="M7 20h10" />
-                                <path d="M9 16v4" />
-                                <path d="M15 16v4" />
-                                <path d="M7 10h2l2 3l2 -6l1 3h3" />
+                                    d="M7 21a1 1 0 0 1 0 -2h1v-2h-4a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h16a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-4v2h1a1 1 0 0 1 0 2zm7 -4h-4v2h4z" />
                             </svg>
                         </span>
                         <span class="nav-link-title">
-                            Monitoring Absensi
+                            Monitoring Absen
                         </span>
                     </a>
                 </li>
@@ -157,6 +157,7 @@
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            style="color: #f1f4f5"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round"
                                 class="icon icon-tabler icons-tabler-outline icon-tabler-heart-rate-monitor">
@@ -170,7 +171,7 @@
                             </svg>
                         </span>
                         <span class="nav-link-title">
-                            Pengajuan Izin/Sakit
+                            Pengajuan Izin
                         </span>
                     </a>
                 </li>
@@ -181,6 +182,7 @@
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            style="color: #f1f4f5"
                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round"
                                 class="icon icon-tabler icons-tabler-outline icon-tabler-notes">
@@ -219,6 +221,7 @@
                         <span
                             class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            style="color: #f1f4f5"
                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round"
                                 class="icon icon-tabler icons-tabler-outline icon-tabler-settings">

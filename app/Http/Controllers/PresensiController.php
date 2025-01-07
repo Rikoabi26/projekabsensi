@@ -81,6 +81,7 @@ class PresensiController extends Controller
     public function store(Request $request)
     {
         $email = Auth::guard('karyawan')->user()->email;
+        $status_location = Auth::guard('karyawan')->user()->status_location;
         $kode_cabang = Auth::guard('karyawan')->user()->kode_cabang;
         $tgl_presensi = date("Y-m-d");
         $jam = date("H:i:s");
@@ -121,7 +122,7 @@ class PresensiController extends Controller
         $fileName  = $formatName . ".png";
         $file = $folderPath . $fileName;
 
-        if ($radius > $lok_kantor->radius_cabang) {
+        if ($status_location == 1 && $radius > $lok_kantor->radius_cabang) {
             echo "error|Maaf Anda Berada diluar Radius, Jarak anda " . $radius . " meter dari kantor|radius";
         } else {
             if ($cek > 0) {
@@ -429,24 +430,43 @@ class PresensiController extends Controller
         $bulan = str_pad($bulan, 2, '0', STR_PAD_LEFT);
 
         // Validasi bahwa bulan berada dalam rentang 1-12
-        $namabulan = [
-            "",
-            "Januari",
-            "Februari",
-            "Maret",
-            "April",
-            "Mei",
-            "Juni",
-            "Juli",
-            "Agustus",
-            "September",
-            "Oktober",
-            "November",
-            "Desember"
-        ];
+        // $namabulan = [
+        //     "",
+        //     "Januari",
+        //     "Februari",
+        //     "Maret",
+        //     "April",
+        //     "Mei",
+        //     "Juni",
+        //     "Juli",
+        //     "Agustus",
+        //     "September",
+        //     "Oktober",
+        //     "November",
+        //     "Desember"
+        // ];
+
+        $namabulan = array(
+            '01' => "Januari",
+            '02' => "Februari",
+            '03' => "Maret",
+            '04' => "April",
+            '05' => "Mei",
+            '06' => "Juni",
+            '07' => "Juli",
+            '08' => "Agustus",
+            '09' => "September",
+            '10' => "Oktober",
+            '11' => "November",
+            '12' => "Desember"
+        );
 
         // Pastikan bulan valid, jika tidak tampilkan pesan error
-        if (!isset($namabulan[(int)$bulan])) {
+        // if (!isset($namabulan[(int)$bulan])) {
+        //     return back()->withErrors(['message' => 'Bulan tidak valid']);
+        // }
+
+        if (!array_key_exists($bulan, $namabulan)) {
             return back()->withErrors(['message' => 'Bulan tidak valid']);
         }
 
@@ -523,7 +543,7 @@ class PresensiController extends Controller
     public function izinsakit(Request $request)
     {
         $query = Pengajuanizin::query();
-        $query->select('kode_izin', 'tgl_izin_dari', 'tgl_izin_sampai', 'pengajuan_izin.email', 'nama_lengkap', 'jabatan', 'status', 'status_approved', 'keterangan');
+        $query->select('kode_izin', 'tgl_izin_dari', 'tgl_izin_sampai', 'pengajuan_izin.email', 'nama_lengkap', 'jabatan', 'status', 'status_approved', 'keterangan', 'doc_sid');
         $query->join('karyawan', 'pengajuan_izin.email', '=', 'karyawan.email');
         if (!empty($request->dari) && !empty($request->sampai)) {
             $query->whereBetween('tgl_izin_dari', [$request->dari, $request->sampai]);
@@ -660,9 +680,9 @@ class PresensiController extends Controller
         $tanggal = $request->tanggal;
         //mengosongkan nilai jika berstatus alfa
         $jam_in = $status == "a" ? NULL : $request->jam_in;
-        $jam_out = $status == "a" ? NULL :$request->jam_out;
-        $kode_jam_kerja = $status == "a" ? NULL :$request->kode_jam_kerja;
-        
+        $jam_out = $status == "a" ? NULL : $request->jam_out;
+        $kode_jam_kerja = $status == "a" ? NULL : $request->kode_jam_kerja;
+
 
         try {
             $cekpresensi = DB::table('presensi')->where('email', $email)->where('tgl_presensi', $tanggal)->count();
