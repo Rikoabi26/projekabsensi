@@ -12,6 +12,9 @@
 
     var map = L.map('map').setView([latitude, longitude], 16);
 
+  L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+
+
     // leaflet
     // L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     //     maxZoom: 19,
@@ -20,6 +23,7 @@
 
     // googlemaps
     L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+
         maxZoom: 20,
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
     }).addTo(map);
