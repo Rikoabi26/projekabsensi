@@ -50,7 +50,7 @@
         }
     }
 </style>
-<aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="dark" style="background-color: #0ae6d0;">
+<aside class="navbar navbar-vertical navbar-expand-lg" style="background-color: #2BB980" data-bs-theme="dark" >
     <div class="container-fluid">
          <!-- Tombol Toggle untuk Layar Kecil -->
          <div class="navbar-nav flex-row d-lg-none">
@@ -69,6 +69,7 @@
                 <span class="navbar-brand">Absensi Lisna</span>
             </div>
         </div>
+        
         <div class="collapse navbar-collapse" style="font-weight: bold;" id="sidebar-menu">
             <ul class="navbar-nav pt-lg-3">
                 <li class="nav-item">
@@ -89,6 +90,7 @@
                         </span>
                     </a>
                 </li>
+                @role('administrator', 'user')
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->is(['karyawan', 'departemen', 'cabang']) ? 'show' : '' }}"
                         href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
@@ -133,6 +135,8 @@
                         </div>
                     </div>
                 </li>
+                @endrole
+                @role('administrator', 'user')
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('presensi/monitoring') ? 'active' : '' }} "
                         href="/presensi/monitoring">
@@ -152,6 +156,7 @@
                         </span>
                     </a>
                 </li>
+                @endrole
                 <li class="nav-item">
                     <a class="nav-link {{ request()->is('presensi/izinsakit') ? 'active' : '' }}"
                         href="/presensi/izinsakit">
@@ -176,6 +181,7 @@
                         </span>
                     </a>
                 </li>
+                @role('administrator', 'user')
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->is(['presensi/laporan', 'presensi/rekap']) ? 'show' : '' }}"
                         href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
@@ -215,6 +221,7 @@
                         </div>
                     </div>
                 </li>
+                @endrole
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}"
                         href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
@@ -247,14 +254,85 @@
                         </div> --}}
                         <div class="dropdown-menu-columns">
                             <div class="dropdown-menu-column">
+                                @role('administrator', 'user')
                                 <a class="dropdown-item {{ request()->is(['konfigurasi/jamkerja']) ? 'active' : '' }}"
                                     href="/konfigurasi/jamkerja">
                                     Jam Kerja
+                                </a>
+                                @endrole
+                                <a class="dropdown-item {{ request()->is(['konfigurasi/users']) ? 'active' : '' }}"
+                                    href="/konfigurasi/users">
+                                    Users
                                 </a>
                             </div>
                         </div>
                     </div>
                 </li>
+
+                @role('administrator', 'user')
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->is('workflow*') ? 'active' : '' }} "
+                        href="{{url('/workflow')}}">
+                        <span
+                            class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/home -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            style="color: #f1f4f5"
+                                fill="currentColor"
+                                class="icon icon-tabler icons-tabler-filled icon-tabler-device-desktop">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                    d="M7 21a1 1 0 0 1 0 -2h1v-2h-4a2 2 0 0 1 -2 -2v-10a2 2 0 0 1 2 -2h16a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-4v2h1a1 1 0 0 1 0 2zm7 -4h-4v2h4z" />
+                            </svg>
+                        </span>
+                        <span class="nav-link-title">
+                            Workflow
+                        </span>
+                    </a>
+                </li>
+                @endrole
+
+                {{-- <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}"
+                        href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
+                        aria-expanded="{{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'true' : '' }}">
+                        <span
+                            class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            style="color: #f1f4f5"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                    d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                                <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                            </svg>
+                        </span>
+                        <span class="nav-link-title">
+                            Monitor Kontrak
+                        </span>
+                    </a>
+                    <div class="dropdown-menu {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}">
+                        
+                        <div class="dropdown-menu-columns">
+                            <div class="dropdown-menu-column">
+                                <a class="dropdown-item {{ request()->is(['konfigurasi/jamkerja']) ? 'active' : '' }}"
+                                    href="/konfigurasi/jamkerja">
+                                     Nakes
+                                </a>
+                                <a class="dropdown-item {{ request()->is(['konfigurasi/users']) ? 'active' : '' }}"
+                                    href="/konfigurasi/users">
+                                    Non Nakes
+                                </a>
+                                <a class="dropdown-item {{ request()->is(['konfigurasi/users']) ? 'active' : '' }}"
+                                    href="/konfigurasi/users">
+                                    Sewa
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li> --}}
+
             </ul>
         </div>
     </div>

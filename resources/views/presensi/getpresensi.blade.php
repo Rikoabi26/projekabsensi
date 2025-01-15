@@ -20,6 +20,7 @@
     </tr>
 @else
     @foreach ($presensi as $d)
+
         @php
             $foto_in = Storage::url('uploads/absensi/' . $d->foto_in);
             $foto_out = Storage::url('uploads/absensi/' . $d->foto_out);
@@ -145,6 +146,7 @@
                 },
                 cache: false,
                 success: function(respond) {
+                    console.log("Respon Server:", respond); 
                     $("#loadmap").html(respond);
                 }
             });

@@ -110,10 +110,9 @@
                                     $terlambat = hitungjamterlambat($jam_masuk, $jam_in);
 
                                     if ($status == "h" && $terlambat > "00:00") {
-                    $denda_hari_ini = hitungdenda($terlambat);
-                    $total_denda += $denda_hari_ini; // Akumulasi denda
-                }
-                                    
+                                    $denda_hari_ini = hitungdenda($terlambat);
+                                    $total_denda += $denda_hari_ini; // Akumulasi denda
+                                   }
                                     
                                    }else {
                                     $status = "";
@@ -140,6 +139,8 @@
                                    if($status == "c"){
                                     $jml_cuti += 1;
                                     $color = "yellow";
+
+                                   
                                    }
                                    
                                    if(empty($status)){
@@ -148,6 +149,7 @@
                                    }
                         ?>
                         <td style="background-color: {{ $color }}">
+                            {{ $status }}
                             @if ($status == 'h' && $terlambat > 0)
                                 <span style="font-weight: bold">
 

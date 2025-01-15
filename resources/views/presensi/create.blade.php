@@ -57,9 +57,9 @@
         </div>
     </div>
     <div class="jam-digital-malasngoding">
-        <p>{{date("d-m-Y")}}</p>
+        <p>{{ date('d-m-Y') }}</p>
         <p id="jam"></p>
-        <p>{{$jamkerja->nama_jam_kerja}}</p>
+        <p>{{ $jamkerja->nama_jam_kerja }}</p>
         {{-- <p>Jam Masuk : {{$jamkerja->jam_masuk}}</p> --}}
     </div>
     <div class="row">
@@ -71,11 +71,7 @@
             @else
                 <button id="takeabsen" class="btn btn-primary btn-block mt-2">
                     <ion-icon name="camera-outline"></ion-icon>
-
-                    Take Absen</button>
-
                     Ambil Absen</button>
-
             @endif
 
         </div>
@@ -144,9 +140,9 @@
             var radius = "{{ $lok_kantor->radius_cabang }}";
 
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-            }).addTo(map);
+                    maxZoom: 19,
+                    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(map);
             var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
             var circle = L.circle([lat_kantor, long_kantor], {
                 color: 'red',

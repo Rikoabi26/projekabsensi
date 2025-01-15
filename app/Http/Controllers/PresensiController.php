@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\IzinWorkflow;
 use App\Models\Karyawan;
 use App\Models\Pengajuanizin;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use function Laravel\Prompts\select;
+
 
 class PresensiController extends Controller
 {
@@ -270,16 +270,14 @@ class PresensiController extends Controller
         $email = Auth::guard('karyawan')->user()->email;
 
         if (!empty($request->bulan) && !empty($request->tahun)) {
-            $dataizin = DB::table('pengajuan_izin')
-                ->leftJoin('master_cuti', 'pengajuan_izin.kode_cuti', '=', 'master_cuti.kode_cuti')
+            $dataizin = Pengajuanizin::leftJoin('master_cuti', 'pengajuan_izin.kode_cuti', '=', 'master_cuti.kode_cuti')
                 ->orderBy('tgl_izin_dari', 'desc')
                 ->where('email', $email)
                 ->whereRaw('MONTH(tgl_izin_dari)="' . $request->bulan . '"')
                 ->whereRaw('YEAR(tgl_izin_dari)="' . $request->tahun . '"')
                 ->get();
         } else {
-            $dataizin = DB::table('pengajuan_izin')
-                ->leftJoin('master_cuti', 'pengajuan_izin.kode_cuti', '=', 'master_cuti.kode_cuti')
+            $dataizin = Pengajuanizin::leftJoin('master_cuti', 'pengajuan_izin.kode_cuti', '=', 'master_cuti.kode_cuti')
                 ->orderBy('tgl_izin_dari', 'desc')
                 ->where('email', $email)->limit(5)->orderBy('tgl_izin_dari', 'desc')
                 ->get();
@@ -332,37 +330,55 @@ class PresensiController extends Controller
         $tanggal = $request->tanggal;
 
 
+        // $query = Karyawan::query();
+        // $query->selectRaw('karyawan.email, nama_lengkap, karyawan.kode_dept, karyawan.kode_cabang,jam_in,datapresensi.id,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,
+        // datapresensi.status,nama_jam_kerja, jam_masuk, jam_pulang,keterangan');
+        // $query->leftjoin(
+        //     DB::raw("(
+        //     SELECT 
+        //     presensi.email,presensi.id,jam_in,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,presensi.status,nama_jam_kerja, jam_masuk, jam_pulang,keterangan
+        //     FROM presensi
+        //     LEFT JOIN jam_kerja ON presensi.kode_jam_kerja = jam_kerja.kode_jam_kerja
+        //     LEFT JOIN pengajuan_izin ON presensi.kode_izin = pengajuan_izin.kode_izin
+        //     WHERE tgl_presensi = '$tanggal'
+        //     )datapresensi"),
+        //     function ($join) {
+        //         $join->on('karyawan.email', '=', 'datapresensi.email');
+        //     }
+
+        // );
+
         $query = Karyawan::query();
-        $query->selectRaw('karyawan.email, nama_lengkap, karyawan.kode_dept, karyawan.kode_cabang,jam_in,datapresensi.id,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,datapresensi.status,nama_jam_kerja, jam_masuk, jam_pulang,keterangan');
+        $query->selectRaw('karyawan.email, nama_lengkap, karyawan.kode_dept, karyawan.kode_cabang,jam_in,datapresensi.id,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,
+    COALESCE(datapresensi.status, pengajuan_izin.status) as status, 
+    nama_jam_kerja, jam_masuk, jam_pulang,
+    COALESCE(datapresensi.keterangan, pengajuan_izin.keterangan) as keterangan'); // Menggunakan COALESCE untuk mengambil status dari pengajuan_izin jika status presensi null
         $query->leftjoin(
             DB::raw("(
-            SELECT 
-            presensi.email,presensi.id,jam_in,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,presensi.status,nama_jam_kerja, jam_masuk, jam_pulang,keterangan
-            FROM presensi
-            LEFT JOIN jam_kerja ON presensi.kode_jam_kerja = jam_kerja.kode_jam_kerja
-            LEFT JOIN pengajuan_izin ON presensi.kode_izin = pengajuan_izin.kode_izin
-            WHERE tgl_presensi = '$tanggal'
-            )datapresensi"),
+        SELECT 
+        presensi.email,presensi.id,jam_in,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,
+        presensi.status,nama_jam_kerja, jam_masuk, jam_pulang,
+        presensi.kode_izin, keterangan
+        FROM presensi
+        LEFT JOIN jam_kerja ON presensi.kode_jam_kerja = jam_kerja.kode_jam_kerja
+        LEFT JOIN pengajuan_izin ON presensi.kode_izin = pengajuan_izin.kode_izin
+        WHERE tgl_presensi = '$tanggal'
+    )datapresensi"),
             function ($join) {
                 $join->on('karyawan.email', '=', 'datapresensi.email');
             }
-
         );
 
         if (!empty($request->kode_cabang)) {
             $query->where('karyawan.kode_cabang', $request->kode_cabang);
         }
-        $query->orderBy('nama_lengkap');
+        // $query->orderBy('nama_lengkap');
+        $query->leftJoin('pengajuan_izin', function ($join) use ($tanggal) {
+            $join->on('karyawan.email', '=', 'pengajuan_izin.email')
+                ->whereRaw("'$tanggal' BETWEEN tgl_izin_dari AND tgl_izin_sampai")
+                ->where('status_approved', 1);
+        });
         $presensi = $query->get();
-
-        // $presensi = DB::table('presensi')
-        //     ->select('presensi.*', 'nama_lengkap', 'karyawan.kode_dept', 'jam_masuk', 'nama_jam_kerja', 'jam_pulang', 'keterangan')
-        //     ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-        //     ->leftJoin('pengajuan_izin',  'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
-        //     ->join('karyawan', 'presensi.email', '=', 'karyawan.email')
-        //     ->join('departemen', 'karyawan.kode_dept', '=', 'departemen.kode_dept')
-        //     ->where('tgl_presensi', $tanggal)
-        //     ->get();
 
         return view('presensi.getpresensi', compact('presensi', 'tanggal'));
     }
@@ -429,23 +445,6 @@ class PresensiController extends Controller
         // Pastikan bulan memiliki dua digit (01, 02, ..., 12)
         $bulan = str_pad($bulan, 2, '0', STR_PAD_LEFT);
 
-        // Validasi bahwa bulan berada dalam rentang 1-12
-        // $namabulan = [
-        //     "",
-        //     "Januari",
-        //     "Februari",
-        //     "Maret",
-        //     "April",
-        //     "Mei",
-        //     "Juni",
-        //     "Juli",
-        //     "Agustus",
-        //     "September",
-        //     "Oktober",
-        //     "November",
-        //     "Desember"
-        // ];
-
         $namabulan = array(
             '01' => "Januari",
             '02' => "Februari",
@@ -460,11 +459,6 @@ class PresensiController extends Controller
             '11' => "November",
             '12' => "Desember"
         );
-
-        // Pastikan bulan valid, jika tidak tampilkan pesan error
-        // if (!isset($namabulan[(int)$bulan])) {
-        //     return back()->withErrors(['message' => 'Bulan tidak valid']);
-        // }
 
         if (!array_key_exists($bulan, $namabulan)) {
             return back()->withErrors(['message' => 'Bulan tidak valid']);
@@ -488,7 +482,6 @@ class PresensiController extends Controller
             $rangetanggal[] = null;
         }
         $columns = [];
-
 
         // Menyiapkan kolom berdasarkan tanggal
         foreach ($rangetanggal as $index => $tanggal) {
@@ -538,10 +531,12 @@ class PresensiController extends Controller
         return view('presensi.cetakrekap', compact('rekap', 'rangetanggal', 'namabulan', 'bulan', 'tahun', 'jmlhari'));
     }
 
-
-
     public function izinsakit(Request $request)
     {
+
+        $kode_cabang = Auth::guard('user')->user()->kode_cabang;
+        $user = User::find(Auth::guard('user')->user()->id);
+
         $query = Pengajuanizin::query();
         $query->select('kode_izin', 'tgl_izin_dari', 'tgl_izin_sampai', 'pengajuan_izin.email', 'nama_lengkap', 'jabatan', 'status', 'status_approved', 'keterangan', 'doc_sid');
         $query->join('karyawan', 'pengajuan_izin.email', '=', 'karyawan.email');
@@ -554,8 +549,16 @@ class PresensiController extends Controller
         if ($request->status_approved === "0" || $request->status_approved === "1" || $request->status_approved === "2") {
             $query->where('status_approved', $request->status_approved);
         }
+
+
         if (!empty($request->kode_cabang)) {
             $query->where('karyawan.kode_cabang', $request->kode_cabang);
+        }
+
+        //memberi hasrole sesuai lokasi unit
+        if ($user->hasRole('koor unit')) {
+            # code...
+            $query->where('karyawan.kode_cabang', $kode_cabang);
         }
         $query->orderBy('tgl_izin_dari', 'desc');
         $izinsakit = $query->paginate(10);
@@ -563,6 +566,60 @@ class PresensiController extends Controller
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         return view('presensi.izinsakit', compact('izinsakit', 'cabang'));
     }
+
+    public function formApprovalIzin($izin_workflow_id, $kode_izin)
+    {
+        $izin_workflow = IzinWorkflow::find($izin_workflow_id);
+        $izin = Pengajuanizin::where('kode_izin', $kode_izin)->first();
+        $status_flows = explode(',', $izin_workflow->workflow->status);
+
+        return view('presensi.form-approval-izin', compact(
+            'izin_workflow',
+            'izin',
+            'status_flows',
+        ));
+    }
+
+    public function formApprovalIzinStore(Request $request, $izin_workflow_id, $kode_izin)
+    {
+        $izin_workflow = IzinWorkflow::find($izin_workflow_id);
+        $izin = Pengajuanizin::where('kode_izin', $kode_izin)->first();
+
+        $validated = $request->validate([
+            'status' => 'required',
+            'notes' => 'nullable',
+        ]);
+
+        $validated['user_id'] = Auth::guard('user')->user()->id;
+
+        if ($request->status == 'Approve') {
+            $validated['active'] = 0;
+            $next_ordinal = $izin_workflow->ordinal + 1;
+            $next_workflow = IzinWorkflow::where('kode_izin', $kode_izin)->where('ordinal', $next_ordinal)->first();
+            if ($next_workflow) {
+                $next_workflow->update([
+                    'active' => 1
+                ]);
+
+                DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->update([
+                    'status_approved' => 3
+                ]);
+            } else {
+                DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->update([
+                    'status_approved' => 1
+                ]);
+            }
+        } else {
+            DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->update([
+                'status_approved' => 2
+            ]);
+        }
+
+        $izin_workflow->update($validated);
+
+        return redirect('/presensi/izinsakit')->with('success', $request->status . ' Successfully.');
+    }
+
 
     public function approveizinsakit(Request $request)
     {
@@ -573,6 +630,7 @@ class PresensiController extends Controller
         $tgl_dari = $dataizin->tgl_izin_dari;
         $tgl_sampai = $dataizin->tgl_izin_sampai;
         $status = $dataizin->status;
+
         //memproses status
         DB::beginTransaction();
         try {
@@ -597,17 +655,8 @@ class PresensiController extends Controller
             DB::rollBack();
             return Redirect::back()->with(['warning' => 'Data Gagal Diproses']);
         }
-
-
-        // $update = DB::table('pengajuan_izin')->where('id', $kode_izin)->update([
-        //     'status_approved' => $status_approved
-        // ]);
-        // if ($update) {
-        //     return Redirect::back()->with(['success' => 'Data BERHASIL Diajukan']);
-        // } else {
-        //     return Redirect::back()->with(['error' => 'Data GAGAL Diajukan']);
-        // }
     }
+
 
     public function batalkanizinsakit($kode_izin)
     {
@@ -623,14 +672,6 @@ class PresensiController extends Controller
             DB::rollBack();
             return Redirect::back()->with(['warning' => 'Data Gagal Di batalkan']);
         }
-        // $update = DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->update([
-        //     'status_approved' => 0
-        // ]);
-        // if ($update) {
-        //     return Redirect::back()->with(['success' => 'Data BERHASIL Diupdate']);
-        // } else {
-        //     return Redirect::back()->with(['error' => 'Data GAGAL Diupdate']);
-        // }
     }
 
     public function cekpengajuanizin(Request $request)

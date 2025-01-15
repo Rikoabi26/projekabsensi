@@ -269,6 +269,7 @@
                                             @endforeach
                                         </tbody>
                                     </table>
+                                    {{-- view pagination --}}
                                     {{ $karyawan->links('vendor.pagination.bootstrap-5') }}
                                 </div>
                             </div>

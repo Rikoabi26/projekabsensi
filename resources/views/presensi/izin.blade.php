@@ -26,7 +26,6 @@
             position: absolute;
             right: 15px;
         }
-        
     </style>
 @endsection
 
@@ -102,8 +101,8 @@
                         $status = 'Not Found';
                     }
                 @endphp
-                <div class="card mt-1 card_izin" kode_izin="{{ $d->kode_izin }}" status_approved = "{{$d->status_approved}}" data-toggle="modal"
-                    data-target="#actionSheetIconed">
+                <div class="card mt-1 card_izin" kode_izin="{{ $d->kode_izin }}"
+                    status_approved = "{{ $d->status_approved }}" data-toggle="modal" data-target="#actionSheetIconed">
                     <div class="card-body">
                         <div class="historicontent">
                             <div class="iconpresensi">
@@ -148,35 +147,37 @@
                                 @elseif($d->status_approved == '2')
                                     <span class="badge bg-danger">Ditolak</span>
                                 @endif
+                               
+
                                 <p style="margin-top: 5px; font-weight: bold">
                                     {{ hitunghari($d->tgl_izin_dari, $d->tgl_izin_sampai) }} Hari</p>
                             </div>
 
+
                         </div>
+                        @foreach ($d->izinWorkflow($d->kode_izin) as $item)
+                            <div class="historicontent">
+                                <div class="iconpresensi" style="font-weight:bold">
+                                    {{$item->role->name ?? '-'}} By :
+                                </div>
+                                <div class="status">
+                                    @if ($item->status == 'Approve')
+                                        <span class="badge bg-success">Approve</span>
+                                    @elseif($item->status == 'Reject')
+                                        <span class="badge bg-danger">Reject</span>
+                                    @else
+                                        <span class="badge bg-warning">Menunggu Approval</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="historicontent">
+                                <div class="iconpresensi">
+                                    {{$item->user->name ?? '-'}}
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
                 </div>
-                {{-- <ul class="listview image-listview">
-                    <li>
-                        <div class="item">
-                            {{-- <img src="{{ asset('assets/img/sample/avatar/avatar1.jpg') }}" alt="image" class="image"> --}}
-                {{-- <div class="in">
-                                <div>
-                                    <b>{{ date('d-m-Y', strtotime($d->tgl_izin_dari)) }}
-                                        ({{ $d->status == 's' ? 'Sakit' : 'Izin' }})
-                                    </b><br>
-                                    <small>{{ $d->keterangan }}</small>
-                                </div>
-                                @if ($d->status_approved == 0)
-                                    <span class="badge bg-warning">Diajukan</span>
-                                @elseif($d->status_approved == 1)
-                                    <span class="badge bg-success">Disetujui</span>
-                                @elseif($d->status_approved == 2)
-                                    <span class="badge bg-danger">Ditolak</span>
-                                @endif
-                            </div>
-                        </div>
-                    </li>
-                </ul> --}}
             @endforeach
         </div>
     </div>
@@ -245,13 +246,13 @@
                 var kode_izin = $(this).attr("kode_izin");
                 var status_approved = $(this).attr("status_approved");
 
-                if(status_approved == 1){
+                if (status_approved == 1) {
                     Swal.fire({
                         title: 'OOps !',
                         text: "Data Sudah Disetujui, Tidak dapat di ubah",
                         icon: 'warning'
                     })
-                }else{
+                } else {
                     $("#showact").load('/izin/' + kode_izin + '/showact');
                 }
 

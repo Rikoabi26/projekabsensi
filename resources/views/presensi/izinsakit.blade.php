@@ -86,17 +86,19 @@
                                         class="form-control" autocomplete="off" placeholder="Sampai">
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <select name="kode_cabang" class="form-select" id="kode_cabang" required>
-                                        <option value="">Cabang</option>
-                                        @foreach ($cabang as $d)
-                                            <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
-                                                value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
-                                        @endforeach
-                                    </select>
+                            @role('administrator', 'user')
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <select name="kode_cabang" class="form-select" id="kode_cabang" required>
+                                            <option value="">Cabang</option>
+                                            @foreach ($cabang as $d)
+                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
+                                                    value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
+                            @endrole
                         </div>
                         <div class="row">
                             <div class="col-4">
@@ -118,6 +120,7 @@
                                         placeholder="Nama Lengkap">
                                 </div>
                             </div>
+
                             <div class="col-4">
                                 <div class="form-group">
                                     <select name="status_approved" id="status_approved" class="form-select">
@@ -131,6 +134,8 @@
                                     </select>
                                 </div>
                             </div>
+
+
                             <div class="col-4">
                                 <div class="form-group">
                                     <button class="btn btn-primary" type="submit">
@@ -174,7 +179,9 @@
                                     </svg></th>
                                 <th>Keterangan</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <th style="min-width:400px">Approval</th>
+                                
+                                {{-- <th>Aksi</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -189,7 +196,6 @@
                                     <td>{{ $d->email }}</td>
                                     <td>{{ $d->nama_lengkap }}</td>
                                     <td>{{ $d->jabatan }}</td>
-                                    {{-- <td>{{ $d->status == 'i' ? 'Izin' : 'Sakit' }}</td> --}}
                                     <td>
                                         {{ $d->status == 'i' ? 'Izin' : ($d->status == 's' ? 'Sakit' : ($d->status == 'c' ? 'Cuti' : 'Tidak Diketahui')) }}
                                     </td>
@@ -210,18 +216,63 @@
                                                 </svg></a>
                                         @endif
                                     </td>
-
                                     <td>{{ $d->keterangan }}</td>
+
                                     <td>
                                         @if ($d->status_approved == 1)
-                                            <span class="badge bg-success">Disetujui</span>
+                                            <span class="badge bg-success">Approved</span>
                                         @elseif($d->status_approved == 2)
-                                            <span class="badge bg-success">Ditolak</span>
+                                            <span class="badge bg-danger">Rejected</span>
+                                        @elseif($d->status_approved == 3)
+                                            <span class="badge bg-primary">On Approval</span>
                                         @else
                                             <span class="badge bg-warning">Pending</span>
                                         @endif
                                     </td>
+
                                     <td>
+                                        @foreach ($d->izinWorkflow($d->kode_izin) as $index => $item)
+                                            <div class="float-start" style="font-weight: bold">
+                                                {{$item->role->name ?? '-'}} By :
+                                            </div>
+                                            <div class="float-end">
+                                                @if ($item->status == 'Approve')
+                                                    <span class="badge bg-success">Approve</span>
+                                                @elseif($item->status == 'Reject')
+                                                    <span class="badge bg-danger">Reject</span>
+                                                @else
+                                                    <span class="badge bg-warning">Waiting Approval</span>
+                                                @endif
+                                            </div>
+                                            <br>
+                                            <br>
+                                            <div class="float-start">
+                                                {{$item->user->name ?? '-'}}
+                                            </div>
+                                            <div class="float-end">
+                                                @php
+                                                    $user_id = Illuminate\Support\Facades\Auth::guard('user')->user()->id;
+                                                    $user = App\Models\User::find($user_id);
+
+                                                @endphp
+                                                @if ($item->active == 1 && $user->hasRole($item->role->name))
+                                                    <a href="{{url('/presensi/form-approval-izin/'.$item->id.'/'.$d->kode_izin)}}" class="btn btn-primary btn-sm">
+                                                        Form Approval
+                                                    </a>
+                                                @endif
+                                            </div>
+                                            <br>
+                                            <div class="float-start" style="font-size:12px; color:gray">
+                                                Notes : {{$item->notes ?? '-'}}
+                                            </div>
+                                            <br>
+                                            @if ($index < count($d->izinWorkflow($d->kode_izin)) - 1)
+                                                <hr>
+                                            @endif
+                                        @endforeach
+                                    </td>
+
+                                    {{-- <td>
                                         @if ($d->status_approved == 0)
                                             <a href="#" class="btn btn-sm btn-primary approve"
                                                 kode_izin="{{ $d->kode_izin }}">
@@ -250,7 +301,9 @@
                                                 </svg>
                                             </a>
                                         @endif
-                                    </td>
+
+
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
@@ -302,6 +355,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 @push('myscript')
     <script>
@@ -319,6 +373,15 @@
                 todayHighlight: true,
                 dateFormat: 'yy-mm-dd'
             });
+        });
+
+        document.getElementById('status_approved').addEventListener('change', function() {
+            const rejectionDiv = document.querySelector('.rejection-reason');
+            if (this.value === '2') {
+                rejectionDiv.style.display = 'block';
+            } else {
+                rejectionDiv.style.display = 'none';
+            }
         });
     </script>
 @endpush

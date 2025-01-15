@@ -17,7 +17,7 @@
             <td>{{ date('d-m-Y', strtotime($tanggal)) }}</td>
         </tr>
     </table>
-    <div class="row">
+    <div class="row mb-2">
         <div class="col-12">
             <div class="form-group">
                 <select name="status" id="status" class="form-select" required>
