@@ -15,6 +15,7 @@
     <div class="page-body">
         <div class="container-xl">
             <div class="row">
+                @role('administrator', 'user')
                 <div class="col-sm-6 col-lg-3">
                     <div class="card card-sm">
                         <div class="card-body">
@@ -35,6 +36,7 @@
                                         </svg>
                                     </span>
                                 </div>
+                                
                                 <div class="col">
                                     <div class="font-weight-medium">
                                         {{ $rekappresensi->jmlhadir }}
@@ -43,10 +45,12 @@
                                         <a href="/presensi/monitoring"> Total Hadir</a>
                                     </div>
                                 </div>
+                               
                             </div>
                         </div>
                     </div>
                 </div>
+                @endrole
                 <div class="col-sm-6 col-lg-3">
                     <div class="card card-sm">
                         <div class="card-body">

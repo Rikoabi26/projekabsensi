@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Workflow;
+use App\Models\IzinWorkflow;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class IzincutiController extends Controller
 {
@@ -82,6 +84,17 @@ class IzincutiController extends Controller
             return redirect('/presensi/izin')->with(['error' => 'Tak bisa melakukan pengajuan di tanggal tersebut, karna ada tanggal yang sudah di gunakan']);
         } else {
             $simpan = DB::table('pengajuan_izin')->insert($data);
+            $pengajuan_izin =  DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->first();
+            $workflows = Workflow::where('name', 'Cuti / Izin')->get();
+            foreach ($workflows as $workflow) {
+                IzinWorkflow::create([
+                    'workflow_id' => $workflow->id,
+                    'ordinal' => $workflow->ordinal,
+                    'role_id' => $workflow->role_id,
+                    'kode_izin' => $pengajuan_izin->kode_izin,
+                    'active' => $workflow->ordinal == 1 ? 1 : 0,
+                ]);
+            }
 
 
             if ($simpan) {

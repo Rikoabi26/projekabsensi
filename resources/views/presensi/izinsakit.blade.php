@@ -19,7 +19,11 @@
                     {{ Session::get('success') }}
                 </div>
             @endif
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> origin/main
             @if (Session::get('warning'))
                 <div class="alert alert-warning">
                     {{ Session::get('warning') }}
@@ -29,6 +33,7 @@
     </div>
     <div class="page-body">
         <div class="container-xl">
+
             <div class="row">
                 <div class="col-12">
                     <form action="/presensi/izinsakit" method="GET" autocomplete="off">
@@ -85,17 +90,19 @@
                                         class="form-control" autocomplete="off" placeholder="Sampai">
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="form-group">
-                                    <select name="kode_cabang" class="form-select" id="kode_cabang" required>
-                                        <option value="">Cabang</option>
-                                        @foreach ($cabang as $d)
-                                            <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
-                                                value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
-                                        @endforeach
-                                    </select>
+                            @role('administrator', 'user')
+                                <div class="col-4">
+                                    <div class="form-group">
+                                        <select name="kode_cabang" class="form-select" id="kode_cabang" required>
+                                            <option value="">Cabang</option>
+                                            @foreach ($cabang as $d)
+                                                <option {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
+                                                    value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
+                            @endrole
                         </div>
                         <div class="row">
                             <div class="col-4">
@@ -117,6 +124,7 @@
                                         placeholder="Nama Lengkap">
                                 </div>
                             </div>
+
                             <div class="col-4">
                                 <div class="form-group">
                                     <select name="status_approved" id="status_approved" class="form-select">
@@ -130,6 +138,8 @@
                                     </select>
                                 </div>
                             </div>
+
+
                             <div class="col-4">
                                 <div class="form-group">
                                     <button class="btn btn-primary" type="submit">
@@ -161,9 +171,21 @@
                                 <th>Nama Karyawan</th>
                                 <th>Jabatan</th>
                                 <th>Status</th>
+                                <th><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-checklist">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M9.615 20h-2.615a2 2 0 0 1 -2 -2v-12a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v8" />
+                                        <path d="M14 19l2 2l4 -4" />
+                                        <path d="M9 8h4" />
+                                        <path d="M9 12h2" />
+                                    </svg></th>
                                 <th>Keterangan</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <th style="min-width:400px">Approval</th>
+                                
+                                {{-- <th>Aksi</th> --}}
                             </tr>
                         </thead>
                         <tbody>
@@ -178,22 +200,83 @@
                                     <td>{{ $d->email }}</td>
                                     <td>{{ $d->nama_lengkap }}</td>
                                     <td>{{ $d->jabatan }}</td>
-                                    {{-- <td>{{ $d->status == 'i' ? 'Izin' : 'Sakit' }}</td> --}}
                                     <td>
                                         {{ $d->status == 'i' ? 'Izin' : ($d->status == 's' ? 'Sakit' : ($d->status == 'c' ? 'Cuti' : 'Tidak Diketahui')) }}
                                     </td>
+                                    <td>
+                                        @if (!empty($d->doc_sid))
+                                            @php
+                                                $path = Storage::url('uploads/sid/' . $d->doc_sid);
+                                            @endphp
+                                            <a href="{{ url($path) }}" target="_blank">
 
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="icon icon-tabler icons-tabler-outline icon-tabler-paperclip">
+                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                    <path
+                                                        d="M15 7l-6.5 6.5a1.5 1.5 0 0 0 3 3l6.5 -6.5a3 3 0 0 0 -6 -6l-6.5 6.5a4.5 4.5 0 0 0 9 9l6.5 -6.5" />
+                                                </svg></a>
+                                        @endif
+                                    </td>
                                     <td>{{ $d->keterangan }}</td>
+
                                     <td>
                                         @if ($d->status_approved == 1)
-                                            <span class="badge bg-success">Disetujui</span>
+                                            <span class="badge bg-success">Approved</span>
                                         @elseif($d->status_approved == 2)
-                                            <span class="badge bg-success">Ditolak</span>
+                                            <span class="badge bg-danger">Rejected</span>
+                                        @elseif($d->status_approved == 3)
+                                            <span class="badge bg-primary">On Approval</span>
                                         @else
                                             <span class="badge bg-warning">Pending</span>
                                         @endif
                                     </td>
+
                                     <td>
+                                        @foreach ($d->izinWorkflow($d->kode_izin) as $index => $item)
+                                            <div class="float-start" style="font-weight: bold">
+                                                {{$item->role->name ?? '-'}} By :
+                                            </div>
+                                            <div class="float-end">
+                                                @if ($item->status == 'Approve')
+                                                    <span class="badge bg-success">Approve</span>
+                                                @elseif($item->status == 'Reject')
+                                                    <span class="badge bg-danger">Reject</span>
+                                                @else
+                                                    <span class="badge bg-warning">Waiting Approval</span>
+                                                @endif
+                                            </div>
+                                            <br>
+                                            <br>
+                                            <div class="float-start">
+                                                {{$item->user->name ?? '-'}}
+                                            </div>
+                                            <div class="float-end">
+                                                @php
+                                                    $user_id = Illuminate\Support\Facades\Auth::guard('user')->user()->id;
+                                                    $user = App\Models\User::find($user_id);
+
+                                                @endphp
+                                                @if ($item->active == 1 && $user->hasRole($item->role->name))
+                                                    <a href="{{url('/presensi/form-approval-izin/'.$item->id.'/'.$d->kode_izin)}}" class="btn btn-primary btn-sm">
+                                                        Form Approval
+                                                    </a>
+                                                @endif
+                                            </div>
+                                            <br>
+                                            <div class="float-start" style="font-size:12px; color:gray">
+                                                Notes : {{$item->notes ?? '-'}}
+                                            </div>
+                                            <br>
+                                            @if ($index < count($d->izinWorkflow($d->kode_izin)) - 1)
+                                                <hr>
+                                            @endif
+                                        @endforeach
+                                    </td>
+
+                                    {{-- <td>
                                         @if ($d->status_approved == 0)
                                             <a href="#" class="btn btn-sm btn-primary approve"
                                                 kode_izin="{{ $d->kode_izin }}">
@@ -222,7 +305,9 @@
                                                 </svg>
                                             </a>
                                         @endif
-                                    </td>
+
+
+                                    </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>
@@ -274,6 +359,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 @push('myscript')
     <script>
@@ -291,6 +377,15 @@
                 todayHighlight: true,
                 dateFormat: 'yy-mm-dd'
             });
+        });
+
+        document.getElementById('status_approved').addEventListener('change', function() {
+            const rejectionDiv = document.querySelector('.rejection-reason');
+            if (this.value === '2') {
+                rejectionDiv.style.display = 'block';
+            } else {
+                rejectionDiv.style.display = 'none';
+            }
         });
     </script>
 @endpush

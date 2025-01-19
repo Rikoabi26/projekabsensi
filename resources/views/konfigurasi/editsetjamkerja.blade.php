@@ -170,7 +170,7 @@
                     type: 'POST',
                     url: '/konfigurasi/getjadwal',
                     data: {
-                        _token: $('meta[name="csrf-token"]').attr('content'),
+                        _token:"{{csrf_token();}}" ,
                         bulan: bulan,
                         tahun: tahun,
                         email: email

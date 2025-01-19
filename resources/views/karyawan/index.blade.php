@@ -71,6 +71,7 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            @role('administrator', 'user')
                                             <div class="col-3">
                                                 <div class="form-group">
                                                     <select name="kode_cabang" class="form-select" id="kode_cabang">
@@ -83,6 +84,7 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            @endrole
                                             <div class="col-2">
                                                 <div class="form-group">
                                                     <button type="submit" class="btn btn-primary">
@@ -116,6 +118,9 @@
                                                 <th>Foto</th>
                                                 <th>Department</th>
                                                 <th>Cabang</th>
+                                                @role('administrasi', 'user')
+                                                <th>Lokasi</th>
+                                                @endrole
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -141,6 +146,49 @@
                                                     </td>
                                                     <td>{{ $d->nama_dept }}</td>
                                                     <td>{{ $d->kode_cabang }}</td>
+                                                    @role('administrasi', 'user')
+                                                    <td class="text-center">
+                                                        @if ($d->status_location == 1)
+                                                            <a href="/karyawan/{{$d->email}}/lockandunlocklocation">
+                                                                <span class="badge bg-danger badge-sm">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                        height="24" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="icon icon-tabler icons-tabler-outline icon-tabler-lock-pin">
+                                                                        <path stroke="none" d="M0 0h24v24H0z"
+                                                                            fill="none" />
+                                                                        <path
+                                                                            d="M12.5 21h-5.5a2 2 0 0 1 -2 -2v-6a2 2 0 0 1 2 -2h10c.24 0 .47 .042 .683 .12" />
+                                                                        <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0" />
+                                                                        <path d="M8 11v-4a4 4 0 1 1 8 0v4" />
+                                                                        <path
+                                                                            d="M21.121 20.121a3 3 0 1 0 -4.242 0c.418 .419 1.125 1.045 2.121 1.879c1.051 -.89 1.759 -1.516 2.121 -1.879z" />
+                                                                        <path d="M19 18v.01" />
+                                                                    </svg>
+                                                                </span>
+                                                            </a>
+                                                        @else
+                                                            <a href="/karyawan/{{$d->email}}/lockandunlocklocation">
+                                                                <span class="badge bg-success badge-sm">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
+                                                                        height="24" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="icon icon-tabler icons-tabler-outline icon-tabler-lock-open">
+                                                                        <path stroke="none" d="M0 0h24v24H0z"
+                                                                            fill="none" />
+                                                                        <path
+                                                                            d="M5 11m0 2a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2z" />
+                                                                        <path
+                                                                            d="M12 16m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
+                                                                        <path d="M8 11v-5a4 4 0 0 1 8 0" />
+                                                                    </svg>
+                                                                </span>
+                                                            </a>
+                                                        @endif
+                                                    </td>
+                                                    @endrole
                                                     <td>
                                                         <div class="btn-group">
                                                             <a href="#" class="edit btn btn-info btn-sm"
@@ -150,7 +198,8 @@
                                                                     stroke="currentColor" stroke-width="2"
                                                                     stroke-linecap="round" stroke-linejoin="round"
                                                                     class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
-                                                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                                    <path stroke="none" d="M0 0h24v24H0z"
+                                                                        fill="none" />
                                                                     <path
                                                                         d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1" />
                                                                     <path
@@ -179,6 +228,7 @@
                                                                     </svg>
                                                                 </a>
                                                             </form>
+
                                                             <div>
                                                                 <a href="/konfigurasi/{{ $d->email }}/setjamkerja"
                                                                     class="btn btn-success btn-sm"
@@ -196,8 +246,8 @@
                                                                         <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
                                                                     </svg>
                                                                 </a>
-                                                                <a href="/karyawan/{{ Crypt::encrypt($d->email) }}/resetpassword" method="GET"
-                                                                    class="btn btn-sm btn-warning">
+                                                                <a href="/karyawan/{{ Crypt::encrypt($d->email) }}/resetpassword"
+                                                                    method="GET" class="btn btn-sm btn-warning">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                         height="24" viewBox="0 0 24 24" fill="none"
                                                                         stroke="currentColor" stroke-width="2"
@@ -225,6 +275,7 @@
                                             @endforeach
                                         </tbody>
                                     </table>
+                                    {{-- view pagination --}}
                                     {{ $karyawan->links('vendor.pagination.bootstrap-5') }}
                                 </div>
                             </div>

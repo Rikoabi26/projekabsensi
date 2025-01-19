@@ -49,24 +49,60 @@ class DashboardController extends Controller
 
     public function dashboardadmin()
     {
+        // $bulanini = date('m');
+        // $tahunini = date('Y');
+        // $hariini = date('Y-m-d');
+
+        // $rekappresensi = DB::table('presensi')
+        //     ->selectRaw('
+        //     SUM(IF(status="h", 1,0))as jmlhadir,
+        //     SUM(IF(status="i", 1,0))as jmlizin,
+        //     SUM(IF(status="s", 1,0))as jmlsakit,
+        //     SUM(IF(status="c", 1,0))as jmlcuti,
+        //     SUM(IF(jam_in > jam_masuk,1,0)) as jmlterlambat
+        //     ')
+        //     ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+        //     ->where('tgl_presensi', $hariini)
+        //     ->first();
+
+
+        // return view('dashboard.dashboardadmin', compact('rekappresensi'));
         $bulanini = date('m');
         $tahunini = date('Y');
         $hariini = date('Y-m-d');
 
-        $rekappresensi = DB::table('presensi')
+        $rekappresensi = DB::table(function ($query) use ($hariini) {
+            $query->select(
+                'presensi.status',
+                'presensi.jam_in',
+                'jam_kerja.jam_masuk'
+            )
+                ->from('presensi')
+                ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
+                ->where('tgl_presensi', $hariini)
+
+                ->union(
+                    // Menambahkan data izin/sakit/cuti yang diapprove
+                    DB::table('pengajuan_izin')
+                        ->select(
+                            'status',
+                            DB::raw('NULL as jam_in'),
+                            DB::raw('NULL as jam_masuk')
+                        )
+                        ->where('status_approved', 1)
+                        ->where('tgl_izin_dari', '<=', $hariini)
+                        ->where('tgl_izin_sampai', '>=', $hariini)
+                );
+        }, 'combined_data')
             ->selectRaw('
-            SUM(IF(status="h", 1,0))as jmlhadir,
-            SUM(IF(status="i", 1,0))as jmlizin,
-            SUM(IF(status="s", 1,0))as jmlsakit,
-            SUM(IF(status="c", 1,0))as jmlcuti,
-            SUM(IF(jam_in > jam_masuk,1,0)) as jmlterlambat
-            ')
-            ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-            ->where('tgl_presensi', $hariini)
+        SUM(IF(status="h", 1, 0)) as jmlhadir,
+        SUM(IF(status="i", 1, 0)) as jmlizin,
+        SUM(IF(status="s", 1, 0)) as jmlsakit,
+        SUM(IF(status="c", 1, 0)) as jmlcuti,
+        SUM(IF(jam_in > jam_masuk AND status="h", 1, 0)) as jmlterlambat
+    ')
             ->first();
 
-
-        return view('dashboard.dashboardadmin', compact('rekappresensi'));
-       
+        return view('dashboard.dashboardadmin', compact('rekappresensi')); 
     }
 }

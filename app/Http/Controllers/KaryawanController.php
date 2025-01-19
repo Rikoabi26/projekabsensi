@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +18,8 @@ class KaryawanController extends Controller
     public function index(Request $request)
     {
         $query = Karyawan::query();
+        $kode_cabang = Auth::guard('user')->user()->kode_cabang;
+        $user = User::find(Auth::guard('user')->user()->id);
         $query->select('karyawan.*', 'nama_dept');
         $query->join('departemen', 'karyawan.kode_dept', '=', 'departemen.kode_dept');
         $query->orderBy('nama_lengkap');
@@ -27,6 +31,11 @@ class KaryawanController extends Controller
         }
         if (!empty($request->kode_cabang)) {
             $query->where('karyawan.kode_cabang', $request->kode_cabang);
+        }
+        //memberi hasrole sesuai lokasi unit
+        if ($user->hasRole('koor unit')) {
+            # code...
+            $query->where('karyawan.kode_cabang', $kode_cabang);
         }
         $karyawan = $query->paginate(10);
         $departemen = DB::table('departemen')->get();
@@ -58,7 +67,7 @@ class KaryawanController extends Controller
                 'kode_dept' => $kode_dept,
                 'foto' => $foto,
                 'password' => $passowrd,
-                'kode_cabang'=>$kode_cabang
+                'kode_cabang' => $kode_cabang
             ];
             $simpan = DB::table('karyawan')->insert($data);
             if ($simpan) {
@@ -69,10 +78,10 @@ class KaryawanController extends Controller
                 return Redirect::back()->with(['success' => 'Data berhasil disimpan']);
             }
         } catch (\Exception $e) {
-            if($e->getCode()==23000){
-                $message = "Data dengan email = " .$email. " Sudah Ada";
+            if ($e->getCode() == 23000) {
+                $message = "Data dengan email = " . $email . " Sudah Ada";
             }
-            return Redirect::back()->with(['warning' => 'Data Gagal disimpan '. $message]);
+            return Redirect::back()->with(['warning' => 'Data Gagal disimpan ' . $message]);
         }
     }
     public function edit(Request $request)
@@ -135,24 +144,45 @@ class KaryawanController extends Controller
     public function delete($email)
     {
         $delete = DB::table('karyawan')->where('email', $email)->delete();
-        if($delete){
-            return Redirect::back()->with(['success'=>'Data berhasil di hapus']);
-        }else{
-            return Redirect::back()->with(['warning'=>'Data Gagal di hapus']);
+        if ($delete) {
+            return Redirect::back()->with(['success' => 'Data berhasil di hapus']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal di hapus']);
         }
     }
 
-    public function resetpassword($email){
+    public function resetpassword($email)
+    {
         $email = Crypt::decrypt($email);
         $password = Hash::make('Lisna2024');
         $reset = DB::table('karyawan')->where('email', $email)->update([
-            'password'=>$password
+            'password' => $password
         ]);
 
-        if($reset){
-            return Redirect::back()->with(['success'=>'Data Berhasil di Reset']);
-        }else{
-            return Redirect::back()->with(['warning'=>'Data Gagal di Reset']);
+        if ($reset) {
+            return Redirect::back()->with(['success' => 'Data Berhasil di Reset']);
+        } else {
+            return Redirect::back()->with(['warning' => 'Data Gagal di Reset']);
+        }
+    }
+
+    public function lockandunlocklocation($email)
+    {
+        try {
+            $karyawan = DB::table('karyawan')->where('email', $email)->first();
+            $status_location = $karyawan->status_location;
+            if ($status_location == '1') {
+                DB::table('karyawan')->where('email', $email)->update([
+                    'status_location' => '0'
+                ]);
+            } else {
+                DB::table('karyawan')->where('email', $email)->update([
+                    'status_location' => '1'
+                ]);
+            }
+            return Redirect::back()->with(['success' => 'Data Berhasil di update']);
+        } catch (\Exception $e) {
+            return Redirect::back()->with(['warning' => 'Data Gagal di update']);
         }
     }
 }

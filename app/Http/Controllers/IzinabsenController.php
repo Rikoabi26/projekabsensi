@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Workflow;
+use App\Models\IzinWorkflow;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class IzinabsenController extends Controller
 {
@@ -53,14 +55,23 @@ class IzinabsenController extends Controller
             ->where('email', $email)
             ->count();
 
-
         if ($cekpresensi > 0) {
             return redirect('/presensi/izin')->with(['error' => 'Tak bisa melakukan pengajuan di tanggal tersebut, karna ada tanggal yang anda sudah melakukan absen']);
         } else if ($cekpengajuan > 0) {
             return redirect('/presensi/izin')->with(['error' => 'Tak bisa melakukan pengajuan di tanggal tersebut, karna ada tanggal yang sudah di gunakan']);
         } else {
             $simpan = DB::table('pengajuan_izin')->insert($data);
-
+            $pengajuan_izin =  DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->first();
+            $workflows = Workflow::where('name', 'Cuti / Izin')->get();
+            foreach ($workflows as $workflow) {
+                IzinWorkflow::create([
+                    'workflow_id' => $workflow->id,
+                    'ordinal' => $workflow->ordinal,
+                    'role_id' => $workflow->role_id,
+                    'kode_izin' => $pengajuan_izin->kode_izin,
+                    'active' => $workflow->ordinal == 1 ? 1 : 0,
+                ]);
+            }
             if ($simpan) {
                 return redirect('/presensi/izin')->with(['success' => 'Data BERHASIL Diajukan']);
             } else {
@@ -70,8 +81,7 @@ class IzinabsenController extends Controller
     }
     public function edit($kode_izin)
     {
-        $dataizin = DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->first();
-        // dd($dataizin);
+        $dataizin = DB::table(table: 'pengajuan_izin')->where('kode_izin', $kode_izin)->first();
         return view('izin.edit', compact('dataizin'));
     }
 
@@ -90,7 +100,6 @@ class IzinabsenController extends Controller
             DB::table('pengajuan_izin')->where('kode_izin', $kode_izin)->update($data);
             return redirect('/presensi/izin')->with(['success' => 'Data BERHASIL diupdate']);
         } catch (\Exception $e) {
-            //throw $th;
             return redirect('/presensi/izin')->with(['error' => 'Data GAGAL Di update']);
         }
     }
