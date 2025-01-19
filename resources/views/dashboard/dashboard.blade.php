@@ -284,7 +284,7 @@
                                         <span class="badge bg-info">
                                             {{ $d->jam_out != null
                                                 ? date('H:i', strtotime($d->jam_out))
-                                                : '- Belum Absen' }}
+                                                : '-' }}
                                         </span>
                                     </div>
                                 </div>

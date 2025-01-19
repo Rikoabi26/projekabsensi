@@ -150,16 +150,16 @@ Route::middleware(['auth:user'])->group(function () {
 
 
 // role permision baru sampe sini
-Route::get('/createrolepermission', function () {
+// Route::get('/createrolepermission', function () {
 
-    try {
-        //code...
-        Role::create(['name' => 'administrator']);
-        Permission::create(['name' => 'view-karyawan']);
-        Permission::create(['name' => 'view-departemen']);
-        echo "sukses";
-    } catch (\Throwable $th) {
-        //throw $e;
-        echo "Error";
-    }
-});
+//     try {
+//         //code...
+//         Role::create(['name' => 'administrator']);
+//         Permission::create(['name' => 'view-karyawan']);
+//         Permission::create(['name' => 'view-departemen']);
+//         echo "sukses";
+//     } catch (\Throwable $th) {
+//         //throw $e;
+//         echo "Error";
+//     }
+// });

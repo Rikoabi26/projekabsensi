@@ -429,24 +429,43 @@ class PresensiController extends Controller
         $bulan = str_pad($bulan, 2, '0', STR_PAD_LEFT);
 
         // Validasi bahwa bulan berada dalam rentang 1-12
-        $namabulan = [
-            "",
-            "Januari",
-            "Februari",
-            "Maret",
-            "April",
-            "Mei",
-            "Juni",
-            "Juli",
-            "Agustus",
-            "September",
-            "Oktober",
-            "November",
-            "Desember"
-        ];
+        // $namabulan = [
+        //     "",
+        //     "Januari",
+        //     "Februari",
+        //     "Maret",
+        //     "April",
+        //     "Mei",
+        //     "Juni",
+        //     "Juli",
+        //     "Agustus",
+        //     "September",
+        //     "Oktober",
+        //     "November",
+        //     "Desember"
+        // ];
+        
+        $namabulan = array(
+            '01' => "Januari",
+            '02' => "Februari",
+            '03' => "Maret",
+            '04' => "April",
+            '05' => "Mei",
+            '06' => "Juni",
+            '07' => "Juli",
+            '08' => "Agustus",
+            '09' => "September",
+            '10' => "Oktober",
+            '11' => "November",
+            '12' => "Desember"
+        );
 
         // Pastikan bulan valid, jika tidak tampilkan pesan error
-        if (!isset($namabulan[(int)$bulan])) {
+        // if (!isset($namabulan[(int)$bulan])) {
+        //     return back()->withErrors(['message' => 'Bulan tidak valid']);
+        // }
+        
+        if (!array_key_exists($bulan, $namabulan)) {
             return back()->withErrors(['message' => 'Bulan tidak valid']);
         }
 
@@ -578,16 +597,8 @@ class PresensiController extends Controller
             return Redirect::back()->with(['warning' => 'Data Gagal Diproses']);
         }
 
-
-        // $update = DB::table('pengajuan_izin')->where('id', $kode_izin)->update([
-        //     'status_approved' => $status_approved
-        // ]);
-        // if ($update) {
-        //     return Redirect::back()->with(['success' => 'Data BERHASIL Diajukan']);
-        // } else {
-        //     return Redirect::back()->with(['error' => 'Data GAGAL Diajukan']);
-        // }
     }
+    
 
     public function batalkanizinsakit($kode_izin)
     {

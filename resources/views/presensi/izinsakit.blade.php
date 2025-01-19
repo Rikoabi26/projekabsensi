@@ -12,6 +12,21 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-12">
+            @if (Session::get('success'))
+                <div class="alert alert-success">
+                    {{ Session::get('success') }}
+                </div>
+            @endif
+    
+            @if (Session::get('warning'))
+                <div class="alert alert-warning">
+                    {{ Session::get('warning') }}
+                </div>
+            @endif
+        </div>
+    </div>
     <div class="page-body">
         <div class="container-xl">
             <div class="row">
