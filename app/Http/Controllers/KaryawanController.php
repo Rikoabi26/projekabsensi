@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Karyawan;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,6 +18,8 @@ class KaryawanController extends Controller
     public function index(Request $request)
     {
         $query = Karyawan::query();
+        $kode_cabang = Auth::guard('user')->user()->kode_cabang;
+        $user = User::find(Auth::guard('user')->user()->id);
         $query->select('karyawan.*', 'nama_dept');
         $query->join('departemen', 'karyawan.kode_dept', '=', 'departemen.kode_dept');
         $query->orderBy('nama_lengkap');
@@ -27,6 +31,11 @@ class KaryawanController extends Controller
         }
         if (!empty($request->kode_cabang)) {
             $query->where('karyawan.kode_cabang', $request->kode_cabang);
+        }
+        //memberi hasrole sesuai lokasi unit
+        if ($user->hasRole('koor unit')) {
+            # code...
+            $query->where('karyawan.kode_cabang', $kode_cabang);
         }
         $karyawan = $query->paginate(10);
         $departemen = DB::table('departemen')->get();

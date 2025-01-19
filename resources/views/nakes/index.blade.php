@@ -6,11 +6,11 @@
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        Workflow
+                        Kontrak Nakes
                     </h2>
                 </div>
                 <div class="col">
-                    <a href="{{url('/workflow/tambah')}}" class="btn btn-primary float-end">+ Tambah</a>
+                    <a href="{{ url('/nakes/tambah') }}" class="btn btn-primary float-end">+ Tambah</a>
                 </div>
             </div>
         </div>
@@ -22,7 +22,6 @@
                     {{ Session::get('success') }}
                 </div>
             @endif
-
             @if (Session::get('warning'))
                 <div class="alert alert-warning">
                     {{ Session::get('warning') }}
@@ -34,7 +33,7 @@
         <div class="container-xl">
             <div class="row">
                 <div class="col-12">
-                    <form action="{{url('/workflow')}}" method="GET" autocomplete="off">
+                    <form action="{{ url('/nakes') }}" method="GET" autocomplete="off">
                         <div class="row">
                             <div class="col-4">
                                 <div class="input-icon mb-3">
@@ -50,9 +49,9 @@
                                             <path d="M21 21v-2a4 4 0 0 0 -3 -3.85" />
                                         </svg>
                                     </span>
-                                    <input type="text" value="{{ Request('search') }}" name="search"
-                                        id="search" class="form-control" autocomplete="off"
-                                        placeholder="Search">
+
+                                    <input type="text" value="{{ Request('search') }}" name="search" id="search"
+                                        class="form-control" autocomplete="off" placeholder="Search">
                                 </div>
                             </div>
                             <div class="col-4">
@@ -69,50 +68,42 @@
                                         Search</button>
                                 </div>
                             </div>
-                        </div>
                     </form>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col-12">
                     <table class="table table-bordered">
                         <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>Nama Workflow</th>
-                                <th>Role</th>
-                                <th>Urutan</th>
-                                <th>Status</th>
+                                <th>SIP</th>
+                                <th>Nama Lengkap</th>
+                                <th>Jenis Kelamin</th>
+                                <th>Unit</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($workflows as $key => $workflow)
+                            @foreach ($nakes as $d)
                                 <tr>
-                                    <td>{{ ($workflows->currentpage()-1) * $workflows->perpage() + $key + 1 }}.</td>
-                                    <td>{{ $workflow->name ?? '-' }}</td>
-                                    <td>{{ $workflow->role->name ?? '-' }}</td>
-                                    <td>{{ $workflow->ordinal ?? '-' }}</td>
-                                    <td>{{ $workflow->status ?? '-' }}</td>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $d->SIP }}</td>
+                                    <td>{{ $d->nama_lengkap }}</td>
+                                    <td>{{ $d->jen_kel }}</td>
+                                    <td>{{ $d->nama_cabang }}</td>
                                     <td>
-                                        <a href="{{url('/workflow/edit/'.$workflow->id)}}" class="btn btn-sm bg-warning">
-                                            Edit
-                                        </a>
+                                        <a href="{{url('/nakes/edit/'.$d->id)}}" class="btn btn-sm btn-warning">Edit</a>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
+
                     </table>
-                    {{ $workflows->links('vendor.pagination.bootstrap-5') }}
+                    {{ $nakes->links('vendor.pagination.bootstrap-5') }}
                 </div>
+
             </div>
         </div>
     </div>
-
 @endsection
-@push('myscript')
-    <script>
-           
-    </script>
-@endpush

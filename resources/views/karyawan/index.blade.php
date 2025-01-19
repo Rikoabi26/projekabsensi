@@ -71,6 +71,7 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            @role('administrator', 'user')
                                             <div class="col-3">
                                                 <div class="form-group">
                                                     <select name="kode_cabang" class="form-select" id="kode_cabang">
@@ -83,6 +84,7 @@
                                                     </select>
                                                 </div>
                                             </div>
+                                            @endrole
                                             <div class="col-2">
                                                 <div class="form-group">
                                                     <button type="submit" class="btn btn-primary">
@@ -116,7 +118,9 @@
                                                 <th>Foto</th>
                                                 <th>Department</th>
                                                 <th>Cabang</th>
+                                                @role('administrasi', 'user')
                                                 <th>Lokasi</th>
+                                                @endrole
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -142,6 +146,7 @@
                                                     </td>
                                                     <td>{{ $d->nama_dept }}</td>
                                                     <td>{{ $d->kode_cabang }}</td>
+                                                    @role('administrasi', 'user')
                                                     <td class="text-center">
                                                         @if ($d->status_location == 1)
                                                             <a href="/karyawan/{{$d->email}}/lockandunlocklocation">
@@ -183,6 +188,7 @@
                                                             </a>
                                                         @endif
                                                     </td>
+                                                    @endrole
                                                     <td>
                                                         <div class="btn-group">
                                                             <a href="#" class="edit btn btn-info btn-sm"

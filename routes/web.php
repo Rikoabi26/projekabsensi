@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\KontrakController;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Route;
@@ -98,15 +99,22 @@ Route::group(['middleware' => ['role:administrator|koor unit,user']], function (
     Route::post('/presensi/approveizinsakit', [PresensiController::class, 'approveizinsakit']);
     Route::get('/presensi/{kode_izin}/batalkanizinsakit', [PresensiController::class, 'batalkanizinsakit']);
 
+    Route::get('/karyawan', [KaryawanController::class, 'index']);
+    Route::post('/karyawan/store', [KaryawanController::class, 'store']);
+    Route::post('/karyawan/edit', [KaryawanController::class, 'edit']);
+    Route::post('/karyawan/{email}/update', [KaryawanController::class, 'update']);
+    Route::post('/karyawan/{email}/delete', [KaryawanController::class, 'delete']);
+    Route::get('/karyawan/{email}/resetpassword', [KaryawanController::class, 'resetpassword']);
+    Route::get('/konfigurasi/{nik}/setjamkerja', [KonfigurasiController::class, 'setjamkerja']);
+    Route::post('/konfigurasi/storesetjamkerja', [KonfigurasiController::class, 'storesetjamkerja']);
+    Route::post('/konfigurasi/updatesetjamkerja', [KonfigurasiController::class, 'updatesetjamkerja']);
+    Route::post('/konfigurasi/getjadwal', [KonfigurasiController::class, 'getjadwal']);
+
     Route::get('/presensi/form-approval-izin/{izin_workflow_id}/{kode_izin}', [PresensiController::class, 'formApprovalIzin']);
     Route::post('/presensi/form-approval-izin/store/{izin_workflow_id}/{kode_izin}', [PresensiController::class, 'formApprovalIzinStore']);
 
     //user
-    Route::get('/konfigurasi/users', [UserController::class, 'index']);
-    Route::post('/konfigurasi/users/store', [UserController::class, 'store']);
-    Route::post('/konfigurasi/users/edit', [UserController::class, 'edit']);
-    Route::post('/konfigurasi/users/{id_user}/update', [UserController::class, 'update']);
-    Route::post('/konfigurasi/users/{id_user}/delete', [UserController::class, 'delete']);
+   
 });
 
 
@@ -114,15 +122,7 @@ Route::group(['middleware' => ['role:administrator|koor unit,user']], function (
 
 //Route yang hanya bisa di akses oleh admin 
 Route::group(['middleware' => ['role:administrator,user']], function () {
-
-
     //Karyawan
-    Route::get('/karyawan', [KaryawanController::class, 'index'])->middleware('permission:view-karyawan,user');
-    Route::post('/karyawan/store', [KaryawanController::class, 'store']);
-    Route::post('/karyawan/edit', [KaryawanController::class, 'edit']);
-    Route::post('/karyawan/{email}/update', [KaryawanController::class, 'update']);
-    Route::post('/karyawan/{email}/delete', [KaryawanController::class, 'delete']);
-    Route::get('/karyawan/{email}/resetpassword', [KaryawanController::class, 'resetpassword']);
     Route::get('/karyawan/{email}/lockandunlocklocation', [KaryawanController::class, 'lockandunlocklocation']);
 
     //departemen
@@ -160,11 +160,12 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::post('/konfigurasi/editjamkerja', [KonfigurasiController::class, 'editjamkerja']);
     Route::post('/konfigurasi/updatejamkerja', [KonfigurasiController::class, 'updatejamkerja']);
     Route::post('/konfigurasi/{kode_jam_kerja}/delete', [KonfigurasiController::class, 'deletejamkerja']);
-    Route::get('/konfigurasi/{nik}/setjamkerja', [KonfigurasiController::class, 'setjamkerja']);
-    Route::post('/konfigurasi/storesetjamkerja', [KonfigurasiController::class, 'storesetjamkerja']);
-    Route::post('/konfigurasi/updatesetjamkerja', [KonfigurasiController::class, 'updatesetjamkerja']);
-    Route::post('/konfigurasi/getjadwal', [KonfigurasiController::class, 'getjadwal']);
-    
+   //users
+    Route::get('/konfigurasi/users', [UserController::class, 'index']);
+    Route::post('/konfigurasi/users/store', [UserController::class, 'store']);
+    Route::post('/konfigurasi/users/edit', [UserController::class, 'edit']);
+    Route::post('/konfigurasi/users/{id_user}/update', [UserController::class, 'update']);
+    Route::post('/konfigurasi/users/{id_user}/delete', [UserController::class, 'delete']);
     
     Route::get('/workflow', [WorkflowController::class, 'index']);
     Route::get('/workflow/tambah', [WorkflowController::class, 'tambah']);
@@ -173,14 +174,18 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::put('/workflow/update/{id}', [WorkflowController::class, 'update']);
     Route::delete('/workflow/delete/{id}', [WorkflowController::class, 'delete']);
 
-
-
     //cuti
     Route::get('/cuti', [CutiController::class, 'index']);
     Route::post('/cuti/store', [CutiController::class, 'store']);
     Route::post('/cuti/edit', [CutiController::class, 'edit']);
     Route::post('/cuti/{kode_cuti}/update', [CutiController::class, 'update']);
     Route::post('/cuti/{kode_cuti}/delete', [CutiController::class, 'delete']);
+
+    //Kontrak
+    Route::get(uri: '/nakes', action: [KontrakController::class,'index']);
+    Route::get('/nakes/tambah', [KontrakController::class, 'tambah']);
+    Route::post('/nakes/store', [KontrakController::class, 'store']);
+    Route::get('/nakes/edit/{id}', [KontrakController::class, 'edit']);
 });
 
 

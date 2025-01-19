@@ -6,6 +6,7 @@ use App\Models\IzinWorkflow;
 use App\Models\Karyawan;
 use App\Models\Pengajuanizin;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -329,25 +330,6 @@ class PresensiController extends Controller
         $user = User::find(Auth::guard('user')->user()->id);
         $tanggal = $request->tanggal;
 
-
-        // $query = Karyawan::query();
-        // $query->selectRaw('karyawan.email, nama_lengkap, karyawan.kode_dept, karyawan.kode_cabang,jam_in,datapresensi.id,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,
-        // datapresensi.status,nama_jam_kerja, jam_masuk, jam_pulang,keterangan');
-        // $query->leftjoin(
-        //     DB::raw("(
-        //     SELECT 
-        //     presensi.email,presensi.id,jam_in,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,presensi.status,nama_jam_kerja, jam_masuk, jam_pulang,keterangan
-        //     FROM presensi
-        //     LEFT JOIN jam_kerja ON presensi.kode_jam_kerja = jam_kerja.kode_jam_kerja
-        //     LEFT JOIN pengajuan_izin ON presensi.kode_izin = pengajuan_izin.kode_izin
-        //     WHERE tgl_presensi = '$tanggal'
-        //     )datapresensi"),
-        //     function ($join) {
-        //         $join->on('karyawan.email', '=', 'datapresensi.email');
-        //     }
-
-        // );
-
         $query = Karyawan::query();
         $query->selectRaw('karyawan.email, nama_lengkap, karyawan.kode_dept, karyawan.kode_cabang,jam_in,datapresensi.id,jam_out,foto_in,foto_out,lokasi_in,lokasi_out,
     COALESCE(datapresensi.status, pengajuan_izin.status) as status, 
@@ -412,6 +394,7 @@ class PresensiController extends Controller
             ->where('presensi.email', $email)
             ->whereRaw('MONTH(tgl_presensi)="' . $bulan . '"')
             ->whereRaw('YEAR(tgl_presensi)="' . $tahun . '"')
+
             ->orderBy('tgl_presensi')
             ->get();
         if (isset($_POST['exportexcel'])) {
@@ -481,26 +464,50 @@ class PresensiController extends Controller
         for ($i = $jmlhari; $i < 31; $i++) {
             $rangetanggal[] = null;
         }
-        $columns = [];
+        // $columns = [];
 
-        // Menyiapkan kolom berdasarkan tanggal
+        // // Menyiapkan kolom berdasarkan tanggal
+        // foreach ($rangetanggal as $index => $tanggal) {
+        //     if ($tanggal) {
+        //         $columns[] = "MAX(CASE WHEN tgl_presensi = '$tanggal' THEN 
+        //         CONCAT(
+        //             IFNULL(jam_in, 'NA'), '|',
+        //             IFNULL(jam_out, 'NA'), '|',
+        //             IFNULL(presensi.status, 'NA'), '|',
+        //             IFNULL(nama_jam_kerja, 'NA'), '|',
+        //             IFNULL(jam_masuk, 'NA'), '|',
+        //             IFNULL(jam_pulang, 'NA'), '|',
+        //             IFNULL(presensi.kode_izin, 'NA'), '|',
+        //             IFNULL(keterangan, 'NA')
+        //         ) ELSE NULL END) as tgl_" . ($index + 1);
+        //     } else {
+        //         $columns[] = "NULL as tgl_" . ($index + 1);
+        //     }
+        // }
+
+        $columns = [];
         foreach ($rangetanggal as $index => $tanggal) {
             if ($tanggal) {
-                $columns[] = "MAX(CASE WHEN tgl_presensi = '$tanggal' THEN 
+                $columns[] = "MAX(CASE WHEN tgl_presensi = '$tanggal' OR (
+                    pengajuan_izin.tgl_izin_dari <= '$tanggal' AND 
+                    pengajuan_izin.tgl_izin_sampai >= '$tanggal' AND 
+                    pengajuan_izin.status_approved = 1
+                ) THEN 
                 CONCAT(
                     IFNULL(jam_in, 'NA'), '|',
                     IFNULL(jam_out, 'NA'), '|',
-                    IFNULL(presensi.status, 'NA'), '|',
+                    COALESCE(presensi.status, pengajuan_izin.status, 'NA'), '|',
                     IFNULL(nama_jam_kerja, 'NA'), '|',
                     IFNULL(jam_masuk, 'NA'), '|',
                     IFNULL(jam_pulang, 'NA'), '|',
-                    IFNULL(presensi.kode_izin, 'NA'), '|',
+                    IFNULL(presensi.kode_izin, pengajuan_izin.kode_izin), '|',
                     IFNULL(keterangan, 'NA')
                 ) ELSE NULL END) as tgl_" . ($index + 1);
             } else {
                 $columns[] = "NULL as tgl_" . ($index + 1);
             }
         }
+
 
         // Query utama
         $query = Karyawan::query();
@@ -512,7 +519,11 @@ class PresensiController extends Controller
         ")
             ->leftJoin('presensi', 'karyawan.email', '=', 'presensi.email')
             ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-            ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
+            // ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
+            ->leftJoin('pengajuan_izin', function ($join) {
+                $join->on('karyawan.email', '=', 'pengajuan_izin.email')
+                    ->where('pengajuan_izin.status_approved', '=', 1);
+            })
             ->groupBy('karyawan.email', 'nama_lengkap', 'jabatan');
 
         $query->orderBy('nama_lengkap');

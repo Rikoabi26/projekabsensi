@@ -125,7 +125,7 @@
                                    
                                    if($status == "h"){
                                     $jml_hadir += 1;
-                                    $color ="white";
+                                    $color ="gray";
                                     
                                    }
                                    if($status == "i"){
@@ -139,13 +139,11 @@
                                    if($status == "c"){
                                     $jml_cuti += 1;
                                     $color = "yellow";
-
-                                   
                                    }
                                    
                                    if(empty($status)){
                                     $jml_alpa += 1;
-                                    $color = "red";
+                                    $color = "white";
                                    }
                         ?>
                         <td style="background-color: {{ $color }}">
