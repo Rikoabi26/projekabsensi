@@ -220,7 +220,7 @@
                         </div>
                     </li>
                 @endrole
-                @role('administrasi', 'user')
+                
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}"
                             href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
@@ -241,15 +241,9 @@
                                 Konfigurasi
                             </span>
                         </a>
+                        
                         <div class="dropdown-menu {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}">
-                            {{-- <div class="dropdown-menu-columns">
-                            <div class="dropdown-menu-column">
-                                <a class="dropdown-item {{ request()->is(['konfigurasi/lokasikantor']) ? 'active' : '' }}"
-                                    href="/konfigurasi/lokasikantor">
-                                    Lokasi Kantor
-                                </a>
-                            </div>
-                        </div> --}}
+                            
                             <div class="dropdown-menu-columns">
                                 <div class="dropdown-menu-column">
 
@@ -265,8 +259,9 @@
                                 </div>
                             </div>
                         </div>
+                       
                     </li>
-                @endrole
+                
                 @role('administrator', 'user')
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('workflow*') ? 'active' : '' }} "

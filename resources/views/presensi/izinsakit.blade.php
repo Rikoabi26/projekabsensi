@@ -29,7 +29,6 @@
     </div>
     <div class="page-body">
         <div class="container-xl">
-
             <div class="row">
                 <div class="col-12">
                     <form action="/presensi/izinsakit" method="GET" autocomplete="off">
@@ -156,8 +155,8 @@
             </div>
 
             <div class="row">
-                <div class="col-12">
-                    <table class="table table-bordered">
+                <div class="col-12" style="overflow-x: auto;">
+                    <table class="table table-bordered" style="width: 100%; border-collapse: collapse;">
                         <thead>
                             <tr>
                                 <th>No.</th>
@@ -179,7 +178,7 @@
                                     </svg></th>
                                 <th>Keterangan</th>
                                 <th>Status</th>
-                                <th style="min-width:400px">Approval</th>
+                                <th style="min-width:250px">Approval</th>
                                 
                                 {{-- <th>Aksi</th> --}}
                             </tr>
@@ -241,7 +240,7 @@
                                                 @elseif($item->status == 'Reject')
                                                     <span class="badge bg-danger">Reject</span>
                                                 @else
-                                                    <span class="badge bg-warning">Waiting Approval</span>
+                                                    <span class="badge bg-warning">Waiting</span>
                                                 @endif
                                             </div>
                                             <br>

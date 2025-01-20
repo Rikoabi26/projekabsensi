@@ -110,6 +110,8 @@ Route::group(['middleware' => ['role:administrator|koor unit,user']], function (
     Route::post('/konfigurasi/updatesetjamkerja', [KonfigurasiController::class, 'updatesetjamkerja']);
     Route::post('/konfigurasi/getjadwal', [KonfigurasiController::class, 'getjadwal']);
 
+    
+
     Route::get('/presensi/form-approval-izin/{izin_workflow_id}/{kode_izin}', [PresensiController::class, 'formApprovalIzin']);
     Route::post('/presensi/form-approval-izin/store/{izin_workflow_id}/{kode_izin}', [PresensiController::class, 'formApprovalIzinStore']);
 
@@ -160,12 +162,13 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::post('/konfigurasi/editjamkerja', [KonfigurasiController::class, 'editjamkerja']);
     Route::post('/konfigurasi/updatejamkerja', [KonfigurasiController::class, 'updatejamkerja']);
     Route::post('/konfigurasi/{kode_jam_kerja}/delete', [KonfigurasiController::class, 'deletejamkerja']);
-   //users
-    Route::get('/konfigurasi/users', [UserController::class, 'index']);
-    Route::post('/konfigurasi/users/store', [UserController::class, 'store']);
-    Route::post('/konfigurasi/users/edit', [UserController::class, 'edit']);
-    Route::post('/konfigurasi/users/{id_user}/update', [UserController::class, 'update']);
-    Route::post('/konfigurasi/users/{id_user}/delete', [UserController::class, 'delete']);
+  
+     //users
+     Route::get('/konfigurasi/users', [UserController::class, 'index']);
+     Route::post('/konfigurasi/users/store', [UserController::class, 'store']);
+     Route::post('/konfigurasi/users/edit', [UserController::class, 'edit']);
+     Route::post('/konfigurasi/users/{id_user}/update', [UserController::class, 'update']);
+     Route::post('/konfigurasi/users/{id_user}/delete', [UserController::class, 'delete']);
     
     Route::get('/workflow', [WorkflowController::class, 'index']);
     Route::get('/workflow/tambah', [WorkflowController::class, 'tambah']);
@@ -217,6 +220,8 @@ Route::get('/give-user-role', function () {
 
 Route::get('/give-user-permission', function () {
     try {
+
+        // angka 1 merupakan id administrator
         $role = Role::findOrFail(1);
         $role->givePermissionTo('view-departemen');
         echo "Sukses";
