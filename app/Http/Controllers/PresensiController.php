@@ -428,6 +428,7 @@ class PresensiController extends Controller
         // Pastikan bulan memiliki dua digit (01, 02, ..., 12)
         $bulan = str_pad($bulan, 2, '0', STR_PAD_LEFT);
 
+
         $namabulan = array(
             '01' => "Januari",
             '02' => "Februari",
@@ -666,9 +667,9 @@ class PresensiController extends Controller
             DB::rollBack();
             return Redirect::back()->with(['warning' => 'Data Gagal Diproses']);
         }
+
     }
-
-
+    
     public function batalkanizinsakit($kode_izin)
     {
         DB::beginTransaction();

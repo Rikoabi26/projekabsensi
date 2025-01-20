@@ -127,11 +127,13 @@
 
         var lokasi = document.getElementById('lokasi');
         if (navigator.geolocation) {
+
             navigator.geolocation.getCurrentPosition(successCallback, errorCallback, {
                 enableHighAccuracy: true, // Meningkatkan akurasi lokasi
                 timeout: 10000, // Batas waktu 10 detik
                 maximumAge: 0 // Tidak menggunakan data lokasi lama
             });
+
         }
 
         function successCallback(position) {
@@ -143,11 +145,13 @@
             var long_kantor = lok[1];
             var radius = "{{ $lok_kantor->radius_cabang }}";
 
+
             L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                 maxZoom: 20,
                 subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
                 detectRetina: true
             }).addTo(map);
+
             var marker = L.marker([position.coords.latitude, position.coords.longitude]).addTo(map);
             var circle = L.circle([lat_kantor, long_kantor], {
                 color: 'red',
