@@ -220,48 +220,47 @@
                         </div>
                     </li>
                 @endrole
-                
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}"
-                            href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
-                            aria-expanded="{{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'true' : '' }}">
-                            <span
-                                class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                    style="color: #f1f4f5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                    class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
-                                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                    <path
-                                        d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
-                                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
-                                </svg>
-                            </span>
-                            <span class="nav-link-title">
-                                Konfigurasi
-                            </span>
-                        </a>
-                        
-                        <div class="dropdown-menu {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}">
-                            
-                            <div class="dropdown-menu-columns">
-                                <div class="dropdown-menu-column">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}"
+                        href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
+                        aria-expanded="{{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'true' : '' }}">
+                        <span
+                            class="nav-link-icon d-md-none d-lg-inline-block"><!-- Download SVG icon from http://tabler-icons.io/i/package -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                style="color: #f1f4f5" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                    d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                                <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                            </svg>
+                        </span>
+                        <span class="nav-link-title">
+                            Konfigurasi
+                        </span>
+                    </a>
 
+                    <div class="dropdown-menu {{ request()->is(['konfigurasi', 'konfigurasi/*']) ? 'show' : '' }}">
+
+                        <div class="dropdown-menu-columns">
+                            <div class="dropdown-menu-column">
+                                @role('administrator', 'user')
                                     <a class="dropdown-item {{ request()->is(['konfigurasi/jamkerja']) ? 'active' : '' }}"
                                         href="/konfigurasi/jamkerja">
                                         Jam Kerja
                                     </a>
-
-                                    <a class="dropdown-item {{ request()->is(['konfigurasi/users']) ? 'active' : '' }}"
-                                        href="/konfigurasi/users">
-                                        Users
-                                    </a>
-                                </div>
+                                @endrole
+                                <a class="dropdown-item {{ request()->is(['konfigurasi/users']) ? 'active' : '' }}"
+                                    href="/konfigurasi/users">
+                                    Users
+                                </a>
                             </div>
                         </div>
-                       
-                    </li>
-                
+                    </div>
+
+                </li>
+
                 @role('administrator', 'user')
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('workflow*') ? 'active' : '' }} "
@@ -316,10 +315,10 @@
                                         href="/nonnakes">
                                         Non Nakes
                                     </a>
-                                    {{-- <a class="dropdown-item {{ request()->is(['konfigurasi/users']) ? 'active' : '' }}"
-                                    href="/konfigurasi/users">
+                                    <a class="dropdown-item {{ request()->is(['sewa']) ? 'active' : '' }}"
+                                    href="/sewa">
                                     Sewa
-                                </a> --}}
+                                </a>
                                 </div>
                             </div>
                         </div>

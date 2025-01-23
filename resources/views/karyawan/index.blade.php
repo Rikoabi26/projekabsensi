@@ -118,9 +118,9 @@
                                                 <th>Foto</th>
                                                 <th>Department</th>
                                                 <th>Cabang</th>
-                                               
-                                                <th>Lokasi</th>
                                               
+                                                <th>Lokasi</th>
+                                             
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -146,7 +146,7 @@
                                                     </td>
                                                     <td>{{ $d->nama_dept }}</td>
                                                     <td>{{ $d->kode_cabang }}</td>
-                                                  @role('administrator', 'user')
+                                                  
                                                     <td class="text-center">
                                                         @if ($d->status_location == 1)
                                                             <a href="/karyawan/{{$d->email}}/lockandunlocklocation">
@@ -188,7 +188,7 @@
                                                             </a>
                                                         @endif
                                                     </td>
-                                                  @endrole
+                                                 
                                                     <td>
                                                         <div class="btn-group">
                                                             <a href="#" class="edit btn btn-info btn-sm"

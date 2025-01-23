@@ -6,11 +6,11 @@
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        Kontrak Nakes
+                        Kontrak Kerja Karyawan
                     </h2>
                 </div>
                 <div class="col">
-                    <a href="{{ url('/nakes/tambah') }}" class="btn btn-primary float-end">+ Tambah</a>
+                    <a href="{{ route('nonnakes.tambah') }}" class="btn btn-primary float-end">+ Tambah</a>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
         <div class="container-xl">
             <div class="row">
                 <div class="col-12">
-                    <form action="{{ url('/nakes') }}" method="GET" autocomplete="off">
+                    <form action="{{ url('/nonnakes') }}" method="GET" autocomplete="off">
                         <div class="row">
                             <div class="col-4">
                                 <div class="input-icon mb-3">
@@ -77,30 +77,32 @@
                         <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>SIP</th>
-                                <th>Batas SIP</th>
                                 <th>Nama Lengkap</th>
+                                <th>Awal Kontrak</th>
+                                <th>Habis Kontrak</th>
+                                <th>Lama Kerja</th>
                                 <th>Jenis Kelamin</th>
                                 <th>Unit</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($nakes as $d)
+                            @foreach ($nonnakes as $d)
                                 @php
-                                    $isExpiring = \Carbon\Carbon::parse($d->sip_expiry_date)->lessThanOrEqualTo(
-                                        \Carbon\Carbon::now()->addMonths(6),
+                                    $isExpiring = \Carbon\Carbon::parse($d->habis_kontrak)->lessThanOrEqualTo(
+                                        \Carbon\Carbon::now()->addMonth(),
                                     );
                                 @endphp
-                                <tr class="{{ $isExpiring ? 'table-warning' : '' }}">
+                                <tr class="{{ $isExpiring ? 'table-danger' : '' }}">
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $d->SIP }}</td>
-                                    <td>{{ $d->sip_expiry_date }}</td>
                                     <td>{{ $d->nama_lengkap }}</td>
+                                    <td>{{ $d->awal_kontrak }}</td>
+                                    <td>{{ $d->habis_kontrak }}</td>
+                                    <td>{{ $d->lama_kerja }}</td>
                                     <td>{{ $d->jen_kel }}</td>
                                     <td>{{ $d->nama_cabang }}</td>
                                     <td>
-                                        <a href="{{ url('/nakes/edit/' . $d->id) }}"
+                                        <a href="{{ url('/nonnakes/edit/' . $d->id) }}"
                                             class="btn btn-sm btn-warning">Edit</a>
                                     </td>
                                 </tr>
@@ -108,7 +110,7 @@
                         </tbody>
 
                     </table>
-                    {{ $nakes->links('vendor.pagination.bootstrap-5') }}
+                    {{ $nonnakes->links('vendor.pagination.bootstrap-5') }}
                 </div>
 
             </div>

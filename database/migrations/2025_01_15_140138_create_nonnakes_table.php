@@ -16,6 +16,9 @@ return new class extends Migration
             $table->string('nama_lengkap', 30);
             $table->string('jen_kel', 30);
             $table->date('awal_kontrak');
+            $table->date('habis_kontrak');
+            $table->string('lama_kerja', 40);
+            $table->string('kode_cabang', 3);
             $table->timestamps();
         });
     }

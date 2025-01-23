@@ -16,40 +16,40 @@
         <div class="container-xl">
             <div class="row">
                 @role('administrator', 'user')
-                <div class="col-sm-6 col-lg-3">
-                    <div class="card card-sm">
-                        <div class="card-body">
-                            <div class="row align-items-center">
-                                <div class="col-auto">
-                                    <span
-                                        class="bg-success text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="icon icon-tabler icons-tabler-outline icon-tabler-fingerprint">
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <path d="M18.9 7a8 8 0 0 1 1.1 5v1a6 6 0 0 0 .8 3" />
-                                            <path d="M8 11a4 4 0 0 1 8 0v1a10 10 0 0 0 2 6" />
-                                            <path d="M12 11v2a14 14 0 0 0 2.5 8" />
-                                            <path d="M8 15a18 18 0 0 0 1.8 6" />
-                                            <path d="M4.9 19a22 22 0 0 1 -.9 -7v-1a8 8 0 0 1 12 -6.95" />
-                                        </svg>
-                                    </span>
-                                </div>
-                                
-                                <div class="col">
-                                    <div class="font-weight-medium">
-                                        {{ $rekappresensi->jmlhadir }}
+                    <div class="col-sm-6 col-lg-3">
+                        <div class="card card-sm">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <span
+                                            class="bg-success text-white avatar"><!-- Download SVG icon from http://tabler-icons.io/i/currency-dollar -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                stroke-linecap="round" stroke-linejoin="round"
+                                                class="icon icon-tabler icons-tabler-outline icon-tabler-fingerprint">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                                <path d="M18.9 7a8 8 0 0 1 1.1 5v1a6 6 0 0 0 .8 3" />
+                                                <path d="M8 11a4 4 0 0 1 8 0v1a10 10 0 0 0 2 6" />
+                                                <path d="M12 11v2a14 14 0 0 0 2.5 8" />
+                                                <path d="M8 15a18 18 0 0 0 1.8 6" />
+                                                <path d="M4.9 19a22 22 0 0 1 -.9 -7v-1a8 8 0 0 1 12 -6.95" />
+                                            </svg>
+                                        </span>
                                     </div>
-                                    <div class="text-secondary">
-                                        <a href="/presensi/monitoring"> Total Hadir</a>
+
+                                    <div class="col">
+                                        <div class="font-weight-medium">
+                                            {{ $rekappresensi->jmlhadir }}
+                                        </div>
+                                        <div class="text-secondary">
+                                            <a href="/presensi/monitoring"> Total Hadir</a>
+                                        </div>
                                     </div>
+
                                 </div>
-                               
                             </div>
                         </div>
                     </div>
-                </div>
                 @endrole
                 <div class="col-sm-6 col-lg-3">
                     <div class="card card-sm">
@@ -146,6 +146,83 @@
                     </div>
                 </div>
             </div>
+            @role('administrator', 'user')
+                <div class="container" style="margin-top: 20px;">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">Grafik Sewa</div>
+                                <div class="card-body">
+                                    <canvas id="sewaChart" style="max-width: 100%;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 20px">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">Grafik SIP Nakes</div>
+                                <div class="card-body">
+                                    <canvas id="nakesChart" style="max-width: 100%;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">Grafik Kontrak Karyawan</div>
+                                <div class="card-body">
+                                    <canvas id="nonNakesChart" style="max-width: 100%;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endrole
         </div>
+
     </div>
 @endsection
+{{-- grafik --}}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@push('myscript')
+    <script>
+        // Grafik Nakes
+        const nakesCtx = document.getElementById('nakesChart').getContext('2d');
+        new Chart(nakesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['SIP Hampir Expired', 'SIP Masih Berlaku'],
+                datasets: [{
+                    data: [{{ $expiringNakes }}, {{ $validNakes }}],
+                    backgroundColor: ['#f39c12', '#00a65a'],
+                }]
+            }
+        });
+
+        // Grafik NonNakes
+        const nonNakesCtx = document.getElementById('nonNakesChart').getContext('2d');
+        new Chart(nonNakesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Kontrak Hampir Habis', 'Kontrak Masih Berlaku'],
+                datasets: [{
+                    data: [{{ $expiringNonNakes }}, {{ $validNonNakes }}],
+                    backgroundColor: ['#f39c12', '#00a65a'],
+                }]
+            }
+        });
+
+        const sewaCtx = document.getElementById('sewaChart').getContext('2d');
+        new Chart(sewaCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Kontrak Hampir Habis', 'Kontrak Masih Berlaku'],
+                datasets: [{
+                    data: [{{ $expiringSewa }}, {{ $validSewa }}],
+                    backgroundColor: ['#f39c12', '#00a65a'],
+                }]
+            }
+        });
+    </script>
+@endpush

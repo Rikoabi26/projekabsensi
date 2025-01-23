@@ -380,6 +380,7 @@ class PresensiController extends Controller
         return view('presensi.laporan', compact('namabulan', 'karyawan'));
     }
 
+
     public function cetaklaporan(Request $request)
     {
         $email = $request->email;
@@ -394,7 +395,6 @@ class PresensiController extends Controller
             ->where('presensi.email', $email)
             ->whereRaw('MONTH(tgl_presensi)="' . $bulan . '"')
             ->whereRaw('YEAR(tgl_presensi)="' . $tahun . '"')
-
             ->orderBy('tgl_presensi')
             ->get();
         if (isset($_POST['exportexcel'])) {
@@ -428,7 +428,6 @@ class PresensiController extends Controller
         // Pastikan bulan memiliki dua digit (01, 02, ..., 12)
         $bulan = str_pad($bulan, 2, '0', STR_PAD_LEFT);
 
-
         $namabulan = array(
             '01' => "Januari",
             '02' => "Februari",
@@ -448,8 +447,20 @@ class PresensiController extends Controller
             return back()->withErrors(['message' => 'Bulan tidak valid']);
         }
 
-        $dari = $tahun . "-" . $bulan . "-01"; // Pastikan bulan memiliki 2 digit
-        $sampai = date("Y-m-t", strtotime($dari)); // Mendapatkan akhir bulan
+        // $dari = $tahun . "-" . $bulan . "-01"; // Pastikan bulan memiliki 2 digit
+        // $sampai = date("Y-m-t", strtotime($dari)); // Mendapatkan akhir bulan
+
+        //tanggal 24-23
+        if ($bulan == 1) {
+            $bulanlalu = 12;
+            $tahunlalu = $tahun - 1;
+        } else {
+            $bulanlalu = $bulan - 1;
+            $tahunlalu = $tahun;
+        }
+        $dari = $tahunlalu . "-" . $bulanlalu . "-24";
+        $sampai = $tahun . "-" . $bulan . "-23";
+
         $rangetanggal = [];
 
         // Membuat array tanggal dalam bulan yang diminta
@@ -465,50 +476,26 @@ class PresensiController extends Controller
         for ($i = $jmlhari; $i < 31; $i++) {
             $rangetanggal[] = null;
         }
-        // $columns = [];
-
-        // // Menyiapkan kolom berdasarkan tanggal
-        // foreach ($rangetanggal as $index => $tanggal) {
-        //     if ($tanggal) {
-        //         $columns[] = "MAX(CASE WHEN tgl_presensi = '$tanggal' THEN 
-        //         CONCAT(
-        //             IFNULL(jam_in, 'NA'), '|',
-        //             IFNULL(jam_out, 'NA'), '|',
-        //             IFNULL(presensi.status, 'NA'), '|',
-        //             IFNULL(nama_jam_kerja, 'NA'), '|',
-        //             IFNULL(jam_masuk, 'NA'), '|',
-        //             IFNULL(jam_pulang, 'NA'), '|',
-        //             IFNULL(presensi.kode_izin, 'NA'), '|',
-        //             IFNULL(keterangan, 'NA')
-        //         ) ELSE NULL END) as tgl_" . ($index + 1);
-        //     } else {
-        //         $columns[] = "NULL as tgl_" . ($index + 1);
-        //     }
-        // }
-
         $columns = [];
+
+        // Menyiapkan kolom berdasarkan tanggal
         foreach ($rangetanggal as $index => $tanggal) {
             if ($tanggal) {
-                $columns[] = "MAX(CASE WHEN tgl_presensi = '$tanggal' OR (
-                    pengajuan_izin.tgl_izin_dari <= '$tanggal' AND 
-                    pengajuan_izin.tgl_izin_sampai >= '$tanggal' AND 
-                    pengajuan_izin.status_approved = 1
-                ) THEN 
+                $columns[] = "MAX(CASE WHEN tgl_presensi = '$tanggal' THEN 
                 CONCAT(
                     IFNULL(jam_in, 'NA'), '|',
                     IFNULL(jam_out, 'NA'), '|',
-                    COALESCE(presensi.status, pengajuan_izin.status, 'NA'), '|',
+                    IFNULL(presensi.status, 'NA'), '|',
                     IFNULL(nama_jam_kerja, 'NA'), '|',
                     IFNULL(jam_masuk, 'NA'), '|',
                     IFNULL(jam_pulang, 'NA'), '|',
-                    IFNULL(presensi.kode_izin, pengajuan_izin.kode_izin), '|',
+                    IFNULL(presensi.kode_izin, 'NA'), '|',
                     IFNULL(keterangan, 'NA')
                 ) ELSE NULL END) as tgl_" . ($index + 1);
             } else {
                 $columns[] = "NULL as tgl_" . ($index + 1);
             }
         }
-
 
         // Query utama
         $query = Karyawan::query();
@@ -520,11 +507,7 @@ class PresensiController extends Controller
         ")
             ->leftJoin('presensi', 'karyawan.email', '=', 'presensi.email')
             ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-            // ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
-            ->leftJoin('pengajuan_izin', function ($join) {
-                $join->on('karyawan.email', '=', 'pengajuan_izin.email')
-                    ->where('pengajuan_izin.status_approved', '=', 1);
-            })
+            ->leftJoin('pengajuan_izin', 'presensi.kode_izin', '=', 'pengajuan_izin.kode_izin')
             ->groupBy('karyawan.email', 'nama_lengkap', 'jabatan');
 
         $query->orderBy('nama_lengkap');
@@ -667,9 +650,8 @@ class PresensiController extends Controller
             DB::rollBack();
             return Redirect::back()->with(['warning' => 'Data Gagal Diproses']);
         }
-
     }
-    
+
     public function batalkanizinsakit($kode_izin)
     {
         DB::beginTransaction();

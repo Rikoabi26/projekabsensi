@@ -36,6 +36,10 @@
                     <input type="text" id="sip" value="" name="SIP" class="form-control" required>
                 </div>
                 <div class="form-group mb-4">
+                    <label for="sip">Batas SIP</label>
+                    <input type="date" id="sip_expiry_date" value="" name="sip_expiry_date" class="form-control" required>
+                </div>
+                <div class="form-group mb-4">
                     <label for="nama_lengkap">Nama Lengkap</label>
                     <input type="text" id="nama_lengkap" value="" name="nama_lengkap" class="form-control"
                         required>

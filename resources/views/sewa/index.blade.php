@@ -6,11 +6,11 @@
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        Kontrak Nakes
+                        Kontrak Sewa
                     </h2>
                 </div>
                 <div class="col">
-                    <a href="{{ url('/nakes/tambah') }}" class="btn btn-primary float-end">+ Tambah</a>
+                    <a href="{{ route('sewa.tambah') }}" class="btn btn-primary float-end">+ Tambah</a>
                 </div>
             </div>
         </div>
@@ -33,7 +33,7 @@
         <div class="container-xl">
             <div class="row">
                 <div class="col-12">
-                    <form action="{{ url('/nakes') }}" method="GET" autocomplete="off">
+                    <form action="{{ url('/sewa') }}" method="GET" autocomplete="off">
                         <div class="row">
                             <div class="col-4">
                                 <div class="input-icon mb-3">
@@ -50,8 +50,8 @@
                                         </svg>
                                     </span>
 
-                                    <input type="text" value="{{ Request('nama_karyawan') }}" name="nama_karyawan"
-                                        id="search" class="form-control" autocomplete="off" placeholder="Search">
+                                    <input type="text" value="{{ Request('jen_sewa') }}" name="jen_sewa" id="search"
+                                        class="form-control" autocomplete="off" placeholder="Search">
                                 </div>
                             </div>
                             <div class="col-4">
@@ -77,41 +77,70 @@
                         <thead>
                             <tr>
                                 <th>No.</th>
-                                <th>SIP</th>
-                                <th>Batas SIP</th>
-                                <th>Nama Lengkap</th>
-                                <th>Jenis Kelamin</th>
+                                <th>Jenis Sewa</th>
+                                <th>Awal Sela</th>
+                                <th>Habis Kontrak</th>
                                 <th>Unit</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($nakes as $d)
+                            @foreach ($sewa as $d)
                                 @php
-                                    $isExpiring = \Carbon\Carbon::parse($d->sip_expiry_date)->lessThanOrEqualTo(
-                                        \Carbon\Carbon::now()->addMonths(6),
+                                    $isExpiring = \Carbon\Carbon::parse($d->akir_sewa)->lessThanOrEqualTo(
+                                        \Carbon\Carbon::now()->addMonth(),
                                     );
                                 @endphp
-                                <tr class="{{ $isExpiring ? 'table-warning' : '' }}">
+                                <tr class="{{ $isExpiring ? 'table-danger' : '' }}">
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $d->SIP }}</td>
-                                    <td>{{ $d->sip_expiry_date }}</td>
-                                    <td>{{ $d->nama_lengkap }}</td>
-                                    <td>{{ $d->jen_kel }}</td>
+                                    <td>{{ $d->jen_sewa }}</td>
+                                    <td>{{ $d->awal_sewa }}</td>
+                                    <td>{{ $d->akir_sewa }}</td>
                                     <td>{{ $d->nama_cabang }}</td>
-                                    <td>
-                                        <a href="{{ url('/nakes/edit/' . $d->id) }}"
-                                            class="btn btn-sm btn-warning">Edit</a>
+                                    <td class="d-flex align-items-center">
+                                        <a href="{{ url('/sewa/edit/' . $d->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                                        <form action="{{ '/sewa/delete/' . $d->id }}" method="POST">
+                                            @csrf
+                                            <a class="btn btn-sm btn-danger delete">Hapus</a>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
 
                     </table>
-                    {{ $nakes->links('vendor.pagination.bootstrap-5') }}
+                    {{ $sewa->links('vendor.pagination.bootstrap-5') }}
                 </div>
 
             </div>
         </div>
     </div>
 @endsection
+@push('myscript')
+    <script>
+        $(function() {
+            $(".delete").click(function(e) {
+                var form = $(this).closest('form');
+                e.preventDefault();
+                Swal.fire({
+                    title: "Anda yakin menghapus data ini?",
+                    text: "Data akan terhapus permanen",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "YA, Hapus"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                        Swal.fire({
+                            title: "Deleted!",
+                            text: "Data berhasil di hapus",
+                            icon: "success"
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

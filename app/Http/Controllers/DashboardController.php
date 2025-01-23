@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Nakes;
+use App\Models\NonNakes;
+use App\Models\Sewa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -49,27 +52,24 @@ class DashboardController extends Controller
 
     public function dashboardadmin()
     {
-        // $bulanini = date('m');
-        // $tahunini = date('Y');
-        // $hariini = date('Y-m-d');
 
-        // $rekappresensi = DB::table('presensi')
-        //     ->selectRaw('
-        //     SUM(IF(status="h", 1,0))as jmlhadir,
-        //     SUM(IF(status="i", 1,0))as jmlizin,
-        //     SUM(IF(status="s", 1,0))as jmlsakit,
-        //     SUM(IF(status="c", 1,0))as jmlcuti,
-        //     SUM(IF(jam_in > jam_masuk,1,0)) as jmlterlambat
-        //     ')
-        //     ->leftJoin('jam_kerja', 'presensi.kode_jam_kerja', '=', 'jam_kerja.kode_jam_kerja')
-        //     ->where('tgl_presensi', $hariini)
-        //     ->first();
-
-
-        // return view('dashboard.dashboardadmin', compact('rekappresensi'));
         $bulanini = date('m');
         $tahunini = date('Y');
         $hariini = date('Y-m-d');
+
+        $oneMonthFromNow = now()->addMonth();
+        $sixMonthsFromNow = now()->addMonths(6);
+        // Data Nakes
+    $expiringNakes = Nakes::whereDate('sip_expiry_date', '<=', $sixMonthsFromNow)->count();
+    $validNakes = Nakes::whereDate('sip_expiry_date', '>', $sixMonthsFromNow)->count();
+
+    // Data NonNakes
+    $expiringNonNakes = NonNakes::whereDate('habis_kontrak', '<=', $oneMonthFromNow)->count();
+    $validNonNakes = NonNakes::whereDate('habis_kontrak', '>', value: $oneMonthFromNow)->count();
+
+    //data sewa
+    $expiringSewa = Sewa::whereDate('akir_sewa', '<=', value: $oneMonthFromNow)->count();
+    $validSewa = Sewa::whereDate('akir_sewa', '>', value: $oneMonthFromNow)->count();
 
         $rekappresensi = DB::table(function ($query) use ($hariini) {
             $query->select(
@@ -103,6 +103,7 @@ class DashboardController extends Controller
     ')
             ->first();
 
-        return view('dashboard.dashboardadmin', compact('rekappresensi')); 
+
+        return view('dashboard.dashboardadmin', compact('rekappresensi', 'expiringNakes', 'validNakes', 'expiringNonNakes', 'validNonNakes', 'expiringSewa', 'validSewa'));
     }
 }

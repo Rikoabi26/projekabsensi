@@ -8,6 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class NonNakes extends Model
 {
     use HasFactory;
-    protected $tabel = 'nonnakes';
+    protected $table = 'nonnakes';
 
+    protected $fillable = [
+        'nama_lengkap',
+        'awal_kontrak',
+        'habis_kontrak',
+        'lama_kerja',
+        'jen_kel',
+        'kode_cabang',
+    ];
 }

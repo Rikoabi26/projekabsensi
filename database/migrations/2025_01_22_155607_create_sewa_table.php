@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('nakes', function (Blueprint $table) {
+        Schema::create('sewa', function (Blueprint $table) {
             $table->id();
-            $table->string('SIP', 30)->primary();
-            $table->date('sip_expiry_date');
-            $table->string('nama_lengkap', 30);
-            $table->enum('jen_kel', ['Laki-laki', 'Perempuan']);
-            $table->string('kode_cabang', 3);
-            
+            $table->string('jen_sewa', 40);
+            $table->date('awal_sewa');
+            $table->date('akir_sewa');
+            $table->char('kode_cabang', 3);
             $table->timestamps();
         });
     }
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('nakes');
+        Schema::dropIfExists('sewa');
     }
 };

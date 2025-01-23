@@ -6,7 +6,7 @@
             <div class="row g-2 align-items-center">
                 <div class="col">
                     <h2 class="page-title">
-                        Edit Data Nakes
+                        Edit Data Sewa
                     </h2>
                 </div>
             </div>
@@ -29,36 +29,30 @@
     </div>
     <div class="page-body">
         <div class="container-xl">
-            <form action="/nakes/{{ $nakes->id }}/update" method="POST" class="p-4" enctype="multipart/form-data">
-                
+            <form action="/sewa/{{$sewa->id}}/update" method="POST" class="p-4">
                 @csrf
                 <div class="form-group mb-4">
-                    <label for="sip">SIP</label>
-                    <input type="text" id="sip" value="{{old('SIP', $nakes->SIP)}}" name="SIP" class="form-control" required>
-                </div>
-                <div class="form-group mb-4">
-                    <label for="sip">Batas SIP</label>
-                    <input type="date" id="sip_expiry_date" value="{{old('sip_expiry_date', $nakes->sip_expiry_date)}}" name="sip_expiry_date" class="form-control" required>
-                </div>
-                <div class="form-group mb-4">
-                    <label for="nama_lengkap">Nama Lengkap</label>
-                    <input type="text" id="nama_lengkap" value="{{old('nama_lengkap', $nakes->nama_lengkap)}}" name="nama_lengkap" class="form-control"
+                    <label for="jen_sewa">Jenis Sewa</label>
+                    <input type="text" id="jen_sewa" value="{{old('jen_sewa', $sewa->jen_sewa)}}" name="jen_sewa" class="form-control"
                         required>
                 </div>
                 <div class="form-group mb-4">
-                    <label for="jen_kel">Jenis Kelamin</label>
-                    <select name="jen_kel" id="jen_kel" class="form-select" required>
-                        <option value="">Jenis Kelamin</option>
-                        <option value="laki-laki" {{old('jen_kel', $nakes->jen_kel) == 'laki-laki' ? 'selected' : ''}}>Laki-Laki</option>
-                        <option value="perempuan" {{old('jen_kel', $nakes->jen_kel) == 'perempuan' ? 'selected' : ''}}>Perempuan</option>
-                    </select>
+                    <label for="awal_sewa">Awal Kontrak</label>
+                    <input type="date" id="awal_sewa" value="{{old('awal_sewa', $sewa->awal_sewa)}}" name="awal_sewa" class="form-control"
+                        required>
                 </div>
+                <div class="form-group mb-4">
+                    <label for="akir_sewa">Habis Kontrak</label>
+                    <input type="date" id="akir_sewa" value="{{old('akir_sewa', $sewa->akir_sewa)}}" name="akir_sewa" class="form-control"
+                        required>
+                </div>
+                
                 <div class="form-group mb-4">
                     <label for="cabang">Unit</label>
                     <select name="kode_cabang" id="kode_cabang" class="form-select" required>
                         <option value="">Unit</option>
                         @foreach ($cabang as $d)
-                        <option {{$nakes->kode_cabang == $d->kode_cabang ? 'selected' : ''}} value="{{$d->kode_cabang}}">{{$d->nama_cabang}}</option>
+                            <option {{$sewa->kode_cabang == $d->kode_cabang ? 'selected' : ''}} value="{{ $d->kode_cabang }}">{{ strtoupper($d->nama_cabang) }}</option>
                         @endforeach
                     </select>
                 </div>

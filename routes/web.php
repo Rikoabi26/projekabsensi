@@ -105,21 +105,24 @@ Route::group(['middleware' => ['role:administrator|koor unit,user']], function (
     Route::post('/karyawan/{email}/update', [KaryawanController::class, 'update']);
     Route::post('/karyawan/{email}/delete', [KaryawanController::class, 'delete']);
     Route::get('/karyawan/{email}/resetpassword', [KaryawanController::class, 'resetpassword']);
+
     Route::get('/konfigurasi/{nik}/setjamkerja', [KonfigurasiController::class, 'setjamkerja']);
     Route::post('/konfigurasi/storesetjamkerja', [KonfigurasiController::class, 'storesetjamkerja']);
     Route::post('/konfigurasi/updatesetjamkerja', [KonfigurasiController::class, 'updatesetjamkerja']);
     Route::post('/konfigurasi/getjadwal', [KonfigurasiController::class, 'getjadwal']);
 
-    
-
     Route::get('/presensi/form-approval-izin/{izin_workflow_id}/{kode_izin}', [PresensiController::class, 'formApprovalIzin']);
     Route::post('/presensi/form-approval-izin/store/{izin_workflow_id}/{kode_izin}', [PresensiController::class, 'formApprovalIzinStore']);
 
-    //user
+  
+      //users
+      Route::get('/konfigurasi/users', [UserController::class, 'index']);
+      Route::post('/konfigurasi/users/store', [UserController::class, 'store']);
+      Route::post('/konfigurasi/users/edit', [UserController::class, 'edit']);
+      Route::post('/konfigurasi/users/{id_user}/update', [UserController::class, 'update']);
+      Route::post('/konfigurasi/users/{id_user}/delete', [UserController::class, 'delete']);
    
 });
-
-
 
 
 //Route yang hanya bisa di akses oleh admin 
@@ -163,12 +166,7 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::post('/konfigurasi/updatejamkerja', [KonfigurasiController::class, 'updatejamkerja']);
     Route::post('/konfigurasi/{kode_jam_kerja}/delete', [KonfigurasiController::class, 'deletejamkerja']);
   
-     //users
-     Route::get('/konfigurasi/users', [UserController::class, 'index']);
-     Route::post('/konfigurasi/users/store', [UserController::class, 'store']);
-     Route::post('/konfigurasi/users/edit', [UserController::class, 'edit']);
-     Route::post('/konfigurasi/users/{id_user}/update', [UserController::class, 'update']);
-     Route::post('/konfigurasi/users/{id_user}/delete', [UserController::class, 'delete']);
+   
     
     Route::get('/workflow', [WorkflowController::class, 'index']);
     Route::get('/workflow/tambah', [WorkflowController::class, 'tambah']);
@@ -185,11 +183,30 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::post('/cuti/{kode_cuti}/delete', [CutiController::class, 'delete']);
 
     //Kontrak
-    Route::get(uri: '/nakes', action: [KontrakController::class,'index']);
+    //nakes
+    Route::get( '/nakes', action: [KontrakController::class,'index']);
     Route::get('/nakes/tambah', [KontrakController::class, 'tambah']);
     Route::post('/nakes/store', [KontrakController::class, 'store']);
     Route::get('/nakes/edit/{id}', [KontrakController::class, 'edit']);
+    Route::post('/nakes/{id}/update', [KontrakController::class, 'update']);
+
+    //nonnakes
+    Route::get( '/nonnakes', [KontrakController::class,'nonnakes']);
+    Route::get('/nonnakes/tambah', [KontrakController::class, 'nonnakestambah'])->name('nonnakes.tambah');
+    Route::post('/nonnakes/store', [KontrakController::class, 'nonnakesstore'])->name('nonnakes.store');
+    Route::get('/nonnakes/edit/{id}', [KontrakController::class, 'nonnakesedit']);
+    Route::post('/nonnakes/{id}/update', [KontrakController::class, 'nonnakesupdate'])->name('nonnakes.{id}.update');
+
+
+    //seewa
+    Route::get( '/sewa', [KontrakController::class,'createsewa']);
+    Route::get('/sewa/tambah', [KontrakController::class, 'sewatambah'])->name('sewa.tambah');
+    Route::post('/sewa/store', [KontrakController::class, 'sewastore'])->name('sewa.store');
+    Route::get('/sewa/edit/{id}', [KontrakController::class, 'sewaedit']);
+    Route::post('/sewa/{id}/update', [KontrakController::class, 'sewaupdate'])->name('sewa.{id}.update');
+    Route::post('/sewa/delete/{id}', [KontrakController::class, 'deletesewa']);
 });
+
 
 
 //spatie role permission
