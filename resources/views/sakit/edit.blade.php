@@ -38,7 +38,8 @@
                     <div class="row">
                         <div class="col-12">
                             @php
-                                $docsid = Storage::url('/uploads/sid/' . $dataizin->doc_sid);
+                                // $docsid = Storage::url('/uploads/sid/' . $dataizin->doc_sid);
+                                $docsid = asset('assets/new_uploads/sid/' . $dataizin->doc_sid);
                             @endphp
                             <img src="{{ url($docsid) }}" alt="" width="100px">
                         </div>

@@ -201,7 +201,9 @@
                                     <td>
                                         @if (!empty($d->doc_sid))
                                             @php
-                                                $path = Storage::url('uploads/sid/' . $d->doc_sid);
+                                                // $path = Storage::url('uploads/sid/' . $d->doc_sid);
+                                                $path = asset('assets/new-uploads/sid/' . $d->doc_sid);
+
                                             @endphp
                                             <a href="{{ url($path) }}" target="_blank">
 
@@ -228,7 +230,6 @@
                                             <span class="badge bg-warning">Pending</span>
                                         @endif
                                     </td>
-
                                     <td>
                                         @foreach ($d->izinWorkflow($d->kode_izin) as $index => $item)
                                             <div class="float-start" style="font-weight: bold">
@@ -238,14 +239,14 @@
                                                 @if ($item->status == 'Approve')
                                                     <span class="badge bg-success">Approve</span>
                                                 @elseif($item->status == 'Reject')
-                                                    <span class="badge bg-danger">Reject</span>
+                                                    <span class="badge bg-danger">Reject </span>
                                                 @else
                                                     <span class="badge bg-warning">Waiting</span>
                                                 @endif
                                             </div>
                                             <br>
                                             <br>
-                                            <div class="float-start">
+                                            <div class="float-start"> 
                                                 {{$item->user->name ?? '-'}}
                                             </div>
                                             <div class="float-end">

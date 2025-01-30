@@ -36,6 +36,7 @@ Route::middleware(['guest:karyawan'])->group(function () {
         return view('auth.login');
     })->name('login');
     Route::post('/proseslogin', [AuthController::class, 'proseslogin']);
+    
 });
 Route::middleware(['guest:user'])->group(function () {
     Route::get('/panel', function () {
@@ -48,7 +49,7 @@ Route::middleware(['guest:user'])->group(function () {
 Route::middleware(['auth:karyawan'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/proseslogout', [AuthController::class, 'proseslogout']);
-
+    
 
     ///presensi
     Route::get('/presensi/create', [PresensiController::class, 'create']);
@@ -184,7 +185,7 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
 
     //Kontrak
     //nakes
-    Route::get( '/nakes', action: [KontrakController::class,'index']);
+    Route::get( '/nakes',  [KontrakController::class,'index']);
     Route::get('/nakes/tambah', [KontrakController::class, 'tambah']);
     Route::post('/nakes/store', [KontrakController::class, 'store']);
     Route::get('/nakes/edit/{id}', [KontrakController::class, 'edit']);
@@ -195,7 +196,7 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::get('/nonnakes/tambah', [KontrakController::class, 'nonnakestambah'])->name('nonnakes.tambah');
     Route::post('/nonnakes/store', [KontrakController::class, 'nonnakesstore'])->name('nonnakes.store');
     Route::get('/nonnakes/edit/{id}', [KontrakController::class, 'nonnakesedit']);
-    Route::post('/nonnakes/{id}/update', [KontrakController::class, 'nonnakesupdate'])->name('nonnakes.{id}.update');
+    Route::post('/nonnakes/{id}/update', [KontrakController::class, 'nonnakesupdate'])->name('nonnakes.update');
 
 
     //seewa
@@ -203,8 +204,8 @@ Route::group(['middleware' => ['role:administrator,user']], function () {
     Route::get('/sewa/tambah', [KontrakController::class, 'sewatambah'])->name('sewa.tambah');
     Route::post('/sewa/store', [KontrakController::class, 'sewastore'])->name('sewa.store');
     Route::get('/sewa/edit/{id}', [KontrakController::class, 'sewaedit']);
-    Route::post('/sewa/{id}/update', [KontrakController::class, 'sewaupdate'])->name('sewa.{id}.update');
-    Route::post('/sewa/delete/{id}', [KontrakController::class, 'deletesewa']);
+    Route::post('/sewa/{id}/update', [KontrakController::class, 'sewaupdate'])->name('sewa.update');
+    Route::post('/sewa/delete/{id}', [KontrakController::class, 'deletesewa'])->name('sewa.delete');
 });
 
 

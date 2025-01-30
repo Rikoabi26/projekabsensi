@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Spatie\Permission\Models\Role;
@@ -15,11 +16,19 @@ class UserController extends Controller
     {
         $role = DB::table('roles')->orderBy('id')->get();
         $query = User::query();
+        $user = User::find(Auth::guard('user')->user()->id);
+        $kode_cabang = Auth::guard('user')->user()->kode_cabang;
+
         $query->select('users.id', 'users.name', 'email', 'roles.name as role', 'kode_cabang');
         $query->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id');
         $query->join('roles', 'model_has_roles.role_id', '=', 'roles.id');
         if (!empty($request->name)) {
             $query->where('users.name', 'like', '%'. $request->name . '%');
+        }
+        //memberi hasrole sesuai lokasi unit
+        if ($user->hasRole('koor unit')) {
+            # code...
+            $query->where('users.kode_cabang', $kode_cabang);
         }
         $users = $query->paginate(10);
         $users->appends(request()->all());

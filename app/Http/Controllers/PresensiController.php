@@ -116,7 +116,8 @@ class PresensiController extends Controller
         }
 
         $image = $request->image;
-        $folderPath = "public/uploads/absensi/";
+        // $folderPath = "public/uploads/absensi/";
+        $folderPath = base_path('public/assets/new-uploads/absensi/');
         $formatName = $email . "-" . $tgl_presensi . "-" . $ket;
         $image_parts = explode(";base64", $image);
         $image_base64 = base64_decode($image_parts[1]);
@@ -141,7 +142,8 @@ class PresensiController extends Controller
                     $update = DB::table('presensi')->where('tgl_presensi', $tgl_presensi)->where('email', $email)->update($data_pulang);
                     if ($update) {
                         echo "success|Terima Kasih, Hati-Hati Di Jalan|out";
-                        Storage::put($file, $image_base64);
+                        // Storage::put($file, $image_base64);
+                        file_put_contents($file, $image_base64);
                     } else {
                         echo "error|Maaf Gagal Absen|out";
                     }
@@ -164,10 +166,12 @@ class PresensiController extends Controller
                     $simpan = DB::table('presensi')->insert($data);
                     if ($simpan) {
                         echo "success|Terima Kasih, Selamat Bekerja|in";
-                        Storage::put($file, $image_base64);
+                        file_put_contents($file, $image_base64);
+
                     } else {
                         echo "error|Maaf Gagal Absen|in";
                     }
+                    
                 }
             }
         }
@@ -236,8 +240,8 @@ class PresensiController extends Controller
         $update = DB::table('karyawan')->where('email', $email)->update($data);
         if ($update) {
             if ($request->hasFile('foto')) {
-                $folderPath = "public/uploads/karyawan/";
-                $request->file('foto')->storeAs($folderPath, $foto);
+                $folderPath = public_path('assets/new-uploads/karyawan/');
+                $request->file('foto')->move($folderPath, $foto);
             }
             return Redirect::back()->with(['success' => 'Data berhasil di update']);
         } else {
@@ -558,6 +562,9 @@ class PresensiController extends Controller
         $query->orderBy('tgl_izin_dari', 'desc');
         $izinsakit = $query->paginate(10);
         $izinsakit->appends($request->all());
+      
+       
+
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         return view('presensi.izinsakit', compact('izinsakit', 'cabang'));
     }

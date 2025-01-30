@@ -72,18 +72,18 @@
                                                 </div>
                                             </div>
                                             @role('administrator', 'user')
-                                            <div class="col-3">
-                                                <div class="form-group">
-                                                    <select name="kode_cabang" class="form-select" id="kode_cabang">
-                                                        <option value="">Semua Cabang</option>
-                                                        @foreach ($cabang as $d)
-                                                            <option
-                                                                {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
-                                                                value="{{ $d->kode_cabang }}">{{ $d->nama_cabang }}</option>
-                                                        @endforeach
-                                                    </select>
+                                                <div class="col-3">
+                                                    <div class="form-group">
+                                                        <select name="kode_cabang" class="form-select" id="kode_cabang">
+                                                            <option value="">Semua Cabang</option>
+                                                            @foreach ($cabang as $d)
+                                                                <option
+                                                                    {{ Request('kode_cabang') == $d->kode_cabang ? 'selected' : '' }}
+                                                                    value="{{ $d->kode_cabang }}">{{ $d->nama_cabang }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </div>
                                             @endrole
                                             <div class="col-2">
                                                 <div class="form-group">
@@ -118,9 +118,9 @@
                                                 <th>Foto</th>
                                                 <th>Department</th>
                                                 <th>Cabang</th>
-                                              
+
                                                 <th>Lokasi</th>
-                                             
+
                                                 <th>Aksi</th>
                                             </tr>
                                         </thead>
@@ -140,16 +140,17 @@
                                                             <img src="{{ asset('assets/img/nophoto.jpg') }}" class="avatar"
                                                                 alt="">
                                                         @else
-                                                            <img src="{{ url($path) }}" class="avatar" alt="">
+                                                            {{-- <img src="{{ url($path) }}" class="avatar" alt=""> --}}
+                                                            <img src="{{ asset('assets/new-uploads/karyawan/') . '/' . $d->foto }}" class="avatar" alt="">
                                                         @endif
 
                                                     </td>
                                                     <td>{{ $d->nama_dept }}</td>
                                                     <td>{{ $d->kode_cabang }}</td>
-                                                  
+
                                                     <td class="text-center">
                                                         @if ($d->status_location == 1)
-                                                            <a href="/karyawan/{{$d->email}}/lockandunlocklocation">
+                                                            <a href="/karyawan/{{ $d->email }}/lockandunlocklocation">
                                                                 <span class="badge bg-danger badge-sm">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                         height="24" viewBox="0 0 24 24" fill="none"
@@ -169,7 +170,7 @@
                                                                 </span>
                                                             </a>
                                                         @else
-                                                            <a href="/karyawan/{{$d->email}}/lockandunlocklocation">
+                                                            <a href="/karyawan/{{ $d->email }}/lockandunlocklocation">
                                                                 <span class="badge bg-success badge-sm">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                         height="24" viewBox="0 0 24 24" fill="none"
@@ -188,7 +189,7 @@
                                                             </a>
                                                         @endif
                                                     </td>
-                                                 
+
                                                     <td>
                                                         <div class="btn-group">
                                                             <a href="#" class="edit btn btn-info btn-sm"

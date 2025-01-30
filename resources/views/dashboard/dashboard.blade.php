@@ -28,11 +28,13 @@
             <div class="avatar">
                 @php
                     // Mendapatkan path lengkap dari gambar pengguna
-                    $userFotoPath = 'uploads/karyawan/' . Auth::guard('karyawan')->user()->foto;
+                    // $userFotoPath = 'uploads/karyawan/' . Auth::guard('karyawan')->user()->foto;
+                    $userFotoPath = public_path('assets/new-uploads/karyawan/' . Auth::guard('karyawan')->user()->foto);
+
                 @endphp
 
-                @if (!@empty(Auth::guard('karyawan')->user()->foto) && Storage::disk('public')->exists($userFotoPath))
-                    <img src="{{ asset('storage/' . $userFotoPath) }}" alt="avatar" class="imaged w64"
+                @if (!@empty(Auth::guard('karyawan')->user()->foto) && file_exists($userFotoPath))
+                    <img src="{{ asset('assets/new-uploads/karyawan/' . Auth::guard('karyawan')->user()->foto)  }}" alt="avatar" class="imaged w64"
                         style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover">
                 @else
                     <img src="{{ asset('assets/img/sample/avatar/avatar1.jpg') }}" alt="avatar"

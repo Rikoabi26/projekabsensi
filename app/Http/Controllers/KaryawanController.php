@@ -37,7 +37,7 @@ class KaryawanController extends Controller
             # code...
             $query->where('karyawan.kode_cabang', $kode_cabang);
         }
-        $karyawan = $query->paginate(10);
+        $karyawan = $query->paginate(15);
         $departemen = DB::table('departemen')->get();
         $cabang = DB::table('cabang')->orderBy('kode_cabang')->get();
         return view('karyawan.index', compact('karyawan', 'departemen', 'cabang'));

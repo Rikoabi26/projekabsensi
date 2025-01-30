@@ -216,7 +216,7 @@ class KontrakController extends Controller
             $query->where('jen_sewa', 'like', '%' . $request->jen_sewa . '%');
         }
         $sewa = $query->paginate(15);
-        return view('sewa.index', compact('sewa',));
+        return view('sewa.index', compact('sewa'));
     }
 
     public function sewatambah()

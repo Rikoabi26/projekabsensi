@@ -20,14 +20,13 @@
     </tr>
 @else
     @foreach ($presensi as $d)
-
         @php
             $foto_in = Storage::url('uploads/absensi/' . $d->foto_in);
             $foto_out = Storage::url('uploads/absensi/' . $d->foto_out);
 
         @endphp
-        @if ($d->status == 'h')
         
+        @if ($d->status == 'h')
             <tr>
                 <td>{{ $loop->iteration }}</td>
                 <td>{{ $d->email }}</td>
@@ -37,7 +36,10 @@
                 <td>{{ $d->jam_in }}</td>
                 <td>
                     @if ($d->foto_in != null)
-                        <img src="{{ url($foto_in) }}" class="avatar" alt="">
+                        {{-- <img src="{{ url($foto_in) }}" class="avatar" alt="">   --}}
+                        <img src="{{ asset('assets/new-uploads/absensi/') . '/' . $d->foto_in }}"
+                            class="avatar clickable-gambar" alt=""
+                            data-src="{{ asset('assets/new-uploads/absensi/') . '/' . $d->foto_in }}">
                     @else
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -53,7 +55,10 @@
                 <td>{!! $d->jam_out != null ? $d->jam_out : '<span class="badge bg-info"> Belum absen</span> ' !!}</td>
                 <td>
                     @if ($d->foto_out != null)
-                        <img src="{{ url($foto_out) }}" class="avatar" alt="">
+                        {{-- <img src="{{ url($foto_out) }}" class="avatar" alt=""> --}}
+                        <img src="{{ asset('assets/new-uploads/absensi/') . '/' . $d->foto_out }}" class="avatar clickable-gambar"
+                            alt=""
+                            data-src="{{ asset('assets/new-uploads/absensi/') . '/' . $d->foto_out }}">
                     @else
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -133,6 +138,8 @@
     @endforeach
 @endif
 
+
+
 <script>
     $(function() {
         $(".tampilkanpeta").click(function(e) {
@@ -146,7 +153,7 @@
                 },
                 cache: false,
                 success: function(respond) {
-                    console.log("Respon Server:", respond); 
+                    console.log("Respon Server:", respond);
                     $("#loadmap").html(respond);
                 }
             });
@@ -171,5 +178,12 @@
             });
             $('#modal-koreksipresensi').modal("show");
         });
+
+        $(".clickable-gambar").on("click", function() {
+            var src = $(this).data("src");
+            $("#gambar-besar").attr("src", src); // Set gambar ke modal
+            $("#modal-gambar").modal("show"); // Tampilkan modal
+        });
+
     });
 </script>

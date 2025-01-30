@@ -1,5 +1,21 @@
 @extends('layouts.admin.tabler')
 
+<style>
+    .clickable-gambar {
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+    .clickable-gambar:hover {
+        transform: scale(1.1);
+    }
+    #gambar-besar {
+        max-width: 100%; /* Batas lebar sesuai ukuran modal */
+        max-height: 80vh; /* Batas tinggi sesuai dengan viewport */
+        object-fit: contain; /* Gambar akan disesuaikan dengan proporsional */
+        margin: auto; /* Pusatkan gambar secara vertikal dan horizontal */
+    }
+</style>
 @section('content')
     <div class="page-header d-print-none">
         <div class="container-fluid">
@@ -105,6 +121,20 @@
             </div>
         </div>
     </div>
+    <!-- Modal untuk menampilkan gambar besar -->
+    <div class="modal fade" id="modal-gambar" tabindex="-1" aria-labelledby="modalGambarLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalGambarLabel">Detail Gambar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="gambar-besar" src="" class="img-fluid" alt="Gambar Besar">
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('myscript')
     <script>
@@ -133,6 +163,8 @@
                 loadpresensi();
             });
             loadpresensi();
+
+
         });
     </script>
 @endpush

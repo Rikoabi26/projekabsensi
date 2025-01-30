@@ -10,11 +10,7 @@ class AuthController extends Controller
 {
     public function proseslogin(Request $request)
     {
-        // $pass = 123;
-        // echo Hash::make($pass);
 
-        // dd($request->email, $request->password);
-        // Mencoba login dengan guard 'karyawan'
         if (Auth::guard('karyawan')->attempt(['email' => $request->email, 'password' => $request->password])) {
 
             return redirect()->intended('/dashboard'); // Redirect ke dashboard jika login berhasil
@@ -38,7 +34,7 @@ class AuthController extends Controller
     {
         if (Auth::guard('user')->check()) {
             Auth::guard('user')->logout();
-            return redirect('/panel')->with('message', 'Logout berhasil');
+            return redirect('/')->with('message', 'Logout berhasil');
         }
     }
 
@@ -51,7 +47,10 @@ class AuthController extends Controller
         }
     }
 
-    public function loginadmin(){
+    public function loginadmin()
+    {
         return view('/loginadmin');
     }
+
+  
 }

@@ -124,6 +124,7 @@
                                     <div class="form-footer">
                                         <button type="submit" class="btn btn-primary w-100">Sign in</button>
                                     </div>
+                                    
                                 </form>
                             </div>
 
